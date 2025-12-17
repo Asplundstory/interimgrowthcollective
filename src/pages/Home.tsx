@@ -1,4 +1,8 @@
+"use client";
+
+import { useRef } from "react";
 import { Link } from "react-router-dom";
+import { motion, useInView } from "framer-motion";
 import { Hero, Section, SectionHeader, EditorialCard, CTA, AreaGrid } from "@/components/editorial";
 import { pageContent } from "@/content/pages";
 import { areas } from "@/content/areas";
@@ -7,6 +11,9 @@ import { insights } from "@/content/insights";
 const content = pageContent.home;
 
 export default function HomePage() {
+  const valueRef = useRef(null);
+  const isValueInView = useInView(valueRef, { once: true, margin: "-50px" });
+  
   return (
     <>
       {/* Hero */}
@@ -31,12 +38,17 @@ export default function HomePage() {
         <SectionHeader 
           headline={content.valueProposition.headline}
         />
-        <div className="grid md:grid-cols-3 gap-8 md:gap-12">
+        <div ref={valueRef} className="grid md:grid-cols-3 gap-8 md:gap-12">
           {content.valueProposition.items.map((item, index) => (
-            <div 
-              key={item.title} 
-              className="fade-in-up"
-              style={{ animationDelay: `${index * 0.1}s` }}
+            <motion.div 
+              key={item.title}
+              initial={{ opacity: 0, y: 30 }}
+              animate={isValueInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ 
+                duration: 0.6, 
+                delay: index * 0.15,
+                ease: [0.25, 0.1, 0.25, 1]
+              }}
             >
               <h3 className="font-serif text-lg md:text-xl text-editorial">
                 {item.title}
@@ -44,7 +56,7 @@ export default function HomePage() {
               <p className="mt-3 text-muted-foreground leading-relaxed">
                 {item.description}
               </p>
-            </div>
+            </motion.div>
           ))}
         </div>
       </Section>
@@ -56,14 +68,20 @@ export default function HomePage() {
           headline="Var vi gör skillnad"
         />
         <AreaGrid areas={areas.slice(0, 4)} />
-        <div className="mt-12">
+        <motion.div 
+          className="mt-12"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.5 }}
+        >
           <Link 
             to="/areas" 
             className="text-sm font-medium link-underline"
           >
             Se alla områden
           </Link>
-        </div>
+        </motion.div>
       </Section>
       
       {/* Latest insights */}
@@ -73,7 +91,7 @@ export default function HomePage() {
           headline="Senaste tankarna"
         />
         <div className="space-y-0">
-          {insights.slice(0, 3).map((post) => (
+          {insights.slice(0, 3).map((post, index) => (
             <EditorialCard
               key={post.slug}
               title={post.title}
@@ -85,17 +103,24 @@ export default function HomePage() {
                 day: 'numeric' 
               })}
               tags={post.tags}
+              index={index}
             />
           ))}
         </div>
-        <div className="mt-8">
+        <motion.div 
+          className="mt-8"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.4 }}
+        >
           <Link 
             to="/insights" 
             className="text-sm font-medium link-underline"
           >
             Alla inlägg
           </Link>
-        </div>
+        </motion.div>
       </Section>
       
       {/* CTA */}

@@ -1,5 +1,9 @@
+"use client";
+
+import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
+import { motion, useInView } from "framer-motion";
 
 interface EditorialCardProps {
   title: string;
@@ -7,11 +11,25 @@ interface EditorialCardProps {
   href?: string;
   meta?: string;
   tags?: string[];
+  index?: number;
 }
 
-export function EditorialCard({ title, description, href, meta, tags }: EditorialCardProps) {
+export function EditorialCard({ title, description, href, meta, tags, index = 0 }: EditorialCardProps) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
+  
   const content = (
-    <div className="group py-8 border-t border-border">
+    <motion.div 
+      ref={ref}
+      initial={{ opacity: 0, y: 20 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ 
+        duration: 0.5, 
+        delay: index * 0.1,
+        ease: [0.25, 0.1, 0.25, 1]
+      }}
+      className="group py-8 border-t border-border"
+    >
       {meta && (
         <span className="text-label block mb-3">{meta}</span>
       )}
@@ -40,7 +58,7 @@ export function EditorialCard({ title, description, href, meta, tags }: Editoria
           <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
         </div>
       )}
-    </div>
+    </motion.div>
   );
   
   if (href) {

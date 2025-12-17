@@ -1,3 +1,7 @@
+"use client";
+
+import { useRef } from "react";
+import { motion, useInView } from "framer-motion";
 import { Area } from "@/content/areas";
 
 interface AreaGridProps {
@@ -5,13 +9,21 @@ interface AreaGridProps {
 }
 
 export function AreaGrid({ areas }: AreaGridProps) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
+  
   return (
-    <div className="grid md:grid-cols-2 gap-8 md:gap-12">
+    <div ref={ref} className="grid md:grid-cols-2 gap-8 md:gap-12">
       {areas.map((area, index) => (
-        <div 
-          key={area.id} 
-          className="fade-in-up"
-          style={{ animationDelay: `${index * 0.1}s` }}
+        <motion.div 
+          key={area.id}
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ 
+            duration: 0.6, 
+            delay: index * 0.1,
+            ease: [0.25, 0.1, 0.25, 1]
+          }}
         >
           <h3 className="font-serif text-xl md:text-2xl text-editorial">
             {area.title}
@@ -33,7 +45,7 @@ export function AreaGrid({ areas }: AreaGridProps) {
               ))}
             </div>
           )}
-        </div>
+        </motion.div>
       ))}
     </div>
   );
