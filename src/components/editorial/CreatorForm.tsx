@@ -3,6 +3,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface CreatorFormProps {
   submitText?: string;
@@ -16,18 +18,43 @@ export function CreatorForm({
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [codeOfConduct, setCodeOfConduct] = useState(false);
+  const { toast } = useToast();
   
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!codeOfConduct) return;
     
     setIsSubmitting(true);
     
-    // Simulate submission (UI only, no backend)
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setIsSubmitted(true);
-    }, 1000);
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      name: formData.get('name') as string,
+      email: formData.get('email') as string,
+      role: formData.get('role') as string,
+      portfolio_url: formData.get('portfolio') as string,
+      q1_feeling: formData.get('q1') as string,
+      q2_structure: formData.get('q2') as string,
+      q3_pressure: formData.get('q3') as string,
+      code_of_conduct_accepted: codeOfConduct,
+    };
+    
+    const { error } = await supabase
+      .from('creator_applications')
+      .insert(data);
+    
+    setIsSubmitting(false);
+    
+    if (error) {
+      console.error('Error submitting application:', error);
+      toast({
+        title: "Något gick fel",
+        description: "Försök igen eller kontakta oss direkt via e-post.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setIsSubmitted(true);
   };
   
   if (isSubmitted) {

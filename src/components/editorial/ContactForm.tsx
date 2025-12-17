@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface ContactFormProps {
   submitText?: string;
@@ -14,16 +16,37 @@ export function ContactForm({
 }: ContactFormProps) {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
   
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate submission (UI only, no backend)
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setIsSubmitted(true);
-    }, 1000);
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      name: formData.get('name') as string,
+      email: formData.get('email') as string,
+      company: formData.get('company') as string || null,
+      message: formData.get('message') as string,
+    };
+    
+    const { error } = await supabase
+      .from('contact_submissions')
+      .insert(data);
+    
+    setIsSubmitting(false);
+    
+    if (error) {
+      console.error('Error submitting contact form:', error);
+      toast({
+        title: "Något gick fel",
+        description: "Försök igen eller kontakta oss direkt via e-post.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setIsSubmitted(true);
   };
   
   if (isSubmitted) {
