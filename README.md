@@ -1,73 +1,106 @@
-# Welcome to your Lovable project
+# Interim Growth Collective
 
-## Project info
+Interimslösningar inom brand, marketing, kommunikation och kreativa discipliner.
 
-**URL**: https://lovable.dev/projects/09a14ae7-bd4a-415b-b22e-66bbeb1a9240
+## Tech Stack
 
-## How can I edit this code?
+- React + Vite
+- React Router (client-side routing)
+- Tailwind CSS
+- shadcn/ui
+- TypeScript
 
-There are several ways of editing your application.
+## Projektstruktur
 
-**Use Lovable**
+```
+src/
+├── components/
+│   ├── editorial/     # Återanvändbara UI-komponenter
+│   │   ├── Hero.tsx
+│   │   ├── Section.tsx
+│   │   ├── EditorialCard.tsx
+│   │   ├── AreaGrid.tsx
+│   │   ├── CTA.tsx
+│   │   ├── ContactForm.tsx
+│   │   ├── CreatorForm.tsx
+│   │   ├── Header.tsx
+│   │   └── Footer.tsx
+│   ├── ui/            # shadcn/ui komponenter
+│   └── Layout.tsx     # Gemensam layout med Header/Footer
+├── content/           # Content layer
+│   ├── site.ts        # Site-wide config
+│   ├── pages.ts       # Sidinnehåll
+│   ├── areas.ts       # Områden/discipliner
+│   ├── insights.ts    # Blogginlägg
+│   └── adapter.ts     # Content adapter (för framtida CMS)
+├── pages/             # Sidkomponenter
+│   ├── Home.tsx
+│   ├── ForCompanies.tsx
+│   ├── ForCreators.tsx
+│   ├── Areas.tsx
+│   ├── AboutPage.tsx
+│   ├── Insights.tsx
+│   ├── InsightPage.tsx
+│   ├── ContactPage.tsx
+│   ├── PrivacyPage.tsx
+│   ├── TermsPage.tsx
+│   └── NotFoundPage.tsx
+└── App.tsx            # Routing
+```
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/09a14ae7-bd4a-415b-b22e-66bbeb1a9240) and start prompting.
+## Content Layer
 
-Changes made via Lovable will be committed automatically to this repo.
+All text hämtas via content layer i `src/content/`. Detta gör det enkelt att:
+1. Uppdatera copy utan att ändra komponenter
+2. Byta till ett CMS senare
 
-**Use your preferred IDE**
+### Byta till CMS
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+1. Skapa ny adapter-implementation i `src/content/cmsAdapter.ts`
+2. Implementera `getAllPosts()` och `getPostBySlug()` 
+3. Byt import i `adapter.ts`
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## Routes
 
-Follow these steps:
+| Path | Sida |
+|------|------|
+| `/` | Startsida |
+| `/for-companies` | För företag |
+| `/for-creators` | För kreatörer (ansökan) |
+| `/areas` | Områden |
+| `/about` | Om oss |
+| `/insights` | Alla inlägg |
+| `/insights/:slug` | Enskilt inlägg |
+| `/contact` | Kontakt |
+| `/privacy` | Integritetspolicy |
+| `/terms` | Villkor |
+
+## Public Files Checklist
+
+Följande filer måste ligga i `public/` för att publiceras:
+
+- [x] `robots.txt`
+- [x] `llms.txt` - AI-instruktioner
+- [x] `.well-known/security.txt` - Säkerhetskontakt
+- [ ] `og-image.jpg` - OpenGraph-bild (1200x630px)
+- [ ] `favicon.ico` - Uppdatera med faktisk favicon
+
+## TODO innan lansering
+
+- [ ] Ersätt placeholder-copy i `src/content/pages.ts`
+- [ ] Lägg till faktiska blogginlägg i `src/content/insights.ts`
+- [ ] Skapa OG-bild och lägg i `public/og-image.jpg`
+- [ ] Uppdatera `src/content/site.ts` med faktisk e-post
+- [ ] Koppla kontaktformulär till backend (Lovable Cloud)
+- [ ] Skriv faktisk integritetspolicy och villkor
+
+## Lokal utveckling
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+npm install
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+## Deploy
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/09a14ae7-bd4a-415b-b22e-66bbeb1a9240) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Publicera via Lovable: Share → Publish
