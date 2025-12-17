@@ -2,6 +2,7 @@
 // Switch between local data and Sanity CMS by changing USE_SANITY
 
 import { insights } from './insights';
+import { pageContent as localPageContent } from './pages';
 import { sanityAdapter } from './sanityAdapter';
 
 // Set to true when you have configured your Sanity Project ID
@@ -14,6 +15,15 @@ export interface Post {
   excerpt: string;
   tags: string[];
   content: string;
+}
+
+// Type for page content structure
+export interface PageContent {
+  home: typeof localPageContent.home;
+  forCompanies: typeof localPageContent.forCompanies;
+  forCreators: typeof localPageContent.forCreators;
+  about: typeof localPageContent.about;
+  contact: typeof localPageContent.contact;
 }
 
 // Local adapter using TypeScript files
@@ -33,6 +43,10 @@ const localAdapter = {
       post.tags.some(t => t.toLowerCase() === tag.toLowerCase())
     );
   },
+
+  getPageContent: async (): Promise<PageContent> => {
+    return localPageContent;
+  },
 };
 
 // Select adapter based on configuration
@@ -42,3 +56,4 @@ const activeAdapter = USE_SANITY ? sanityAdapter : localAdapter;
 export const getAllPosts = activeAdapter.getAllPosts;
 export const getPostBySlug = activeAdapter.getPostBySlug;
 export const getPostsByTag = activeAdapter.getPostsByTag;
+export const getPageContent = activeAdapter.getPageContent;

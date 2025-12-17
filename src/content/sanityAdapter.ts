@@ -1,5 +1,5 @@
 import { createClient } from '@sanity/client';
-import type { Post } from './adapter';
+import type { Post, PageContent } from './adapter';
 
 // Configure your Sanity project here
 const SANITY_PROJECT_ID = 'YOUR_PROJECT_ID'; // Replace with your Sanity Project ID
@@ -21,6 +21,19 @@ const postFields = `
   excerpt,
   tags,
   "content": body
+`;
+
+const pageFields = `
+  pageId,
+  hero,
+  intro,
+  valueProposition,
+  process,
+  expectations,
+  story,
+  values,
+  cta,
+  form
 `;
 
 export const sanityAdapter = {
@@ -63,6 +76,24 @@ export const sanityAdapter = {
     } catch (error) {
       console.error('Error fetching posts by tag from Sanity:', error);
       return [];
+    }
+  },
+
+  getPageContent: async (): Promise<PageContent | null> => {
+    const query = `{
+      "home": *[_type == "page" && pageId == "home"][0] { ${pageFields} },
+      "forCompanies": *[_type == "page" && pageId == "forCompanies"][0] { ${pageFields} },
+      "forCreators": *[_type == "page" && pageId == "forCreators"][0] { ${pageFields} },
+      "about": *[_type == "page" && pageId == "about"][0] { ${pageFields} },
+      "contact": *[_type == "page" && pageId == "contact"][0] { ${pageFields} }
+    }`;
+    
+    try {
+      const content = await sanityClient.fetch<PageContent>(query);
+      return content;
+    } catch (error) {
+      console.error('Error fetching page content from Sanity:', error);
+      return null;
     }
   },
 };
