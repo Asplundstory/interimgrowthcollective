@@ -1,8 +1,11 @@
 // Content adapter pattern
-// Default implementation reads from local TypeScript files
-// Can be swapped for CMS implementation later
+// Switch between local data and Sanity CMS by changing USE_SANITY
 
 import { insights } from './insights';
+import { sanityAdapter } from './sanityAdapter';
+
+// Set to true when you have configured your Sanity Project ID
+const USE_SANITY = false;
 
 export interface Post {
   slug: string;
@@ -13,7 +16,7 @@ export interface Post {
   content: string;
 }
 
-// Default adapter using local data
+// Local adapter using TypeScript files
 const localAdapter = {
   getAllPosts: async (): Promise<Post[]> => {
     return insights.sort((a, b) => 
@@ -32,14 +35,10 @@ const localAdapter = {
   },
 };
 
-// Export functions that use the adapter
-// When switching to CMS, only change the adapter implementation
+// Select adapter based on configuration
+const activeAdapter = USE_SANITY ? sanityAdapter : localAdapter;
 
-export const getAllPosts = localAdapter.getAllPosts;
-export const getPostBySlug = localAdapter.getPostBySlug;
-export const getPostsByTag = localAdapter.getPostsByTag;
-
-// For future CMS integration:
-// 1. Create a new adapter file (e.g., cmsAdapter.ts)
-// 2. Import and use that adapter instead of localAdapter
-// 3. No changes needed in UI components
+// Export functions that use the active adapter
+export const getAllPosts = activeAdapter.getAllPosts;
+export const getPostBySlug = activeAdapter.getPostBySlug;
+export const getPostsByTag = activeAdapter.getPostsByTag;
