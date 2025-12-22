@@ -1,15 +1,16 @@
 import { Hero, Section, SectionHeader, CTA } from "@/components/editorial";
-import { pageContent } from "@/content/pages";
-
-const content = pageContent.forCompanies;
+import { usePageContent } from "@/hooks/usePageContent";
 
 export default function ForCompaniesPage() {
+  const { content } = usePageContent();
+  const pageData = content.forCompanies;
+
   return (
     <>
       {/* Hero */}
       <Hero 
-        headline={content.hero.headline}
-        subheadline={content.hero.subheadline}
+        headline={pageData.hero.headline}
+        subheadline={pageData.hero.subheadline}
         size="medium"
       />
       
@@ -17,7 +18,7 @@ export default function ForCompaniesPage() {
       <Section background="muted" spacing="default">
         <div className="max-w-2xl">
           <p className="text-lg leading-relaxed text-muted-foreground">
-            {content.intro.text}
+            {pageData.intro.text}
           </p>
         </div>
       </Section>
@@ -25,10 +26,10 @@ export default function ForCompaniesPage() {
       {/* Process */}
       <Section spacing="large">
         <SectionHeader 
-          headline={content.process.headline}
+          headline={pageData.process.headline}
         />
         <div className="grid md:grid-cols-3 gap-8 md:gap-12">
-          {content.process.steps.map((step, index) => (
+          {pageData.process.steps.map((step, index) => (
             <div 
               key={step.title} 
               className="fade-in-up relative"
@@ -83,9 +84,9 @@ export default function ForCompaniesPage() {
       
       {/* CTA */}
       <CTA 
-        headline={content.cta.headline}
-        text={content.cta.text}
-        buttonText={content.cta.buttonText}
+        headline={pageData.cta.headline}
+        text={pageData.cta.text}
+        buttonText={pageData.cta.buttonText}
         href="/contact"
         variant="subtle"
       />

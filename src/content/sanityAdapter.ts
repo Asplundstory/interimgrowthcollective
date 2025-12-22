@@ -1,5 +1,6 @@
 import { createClient } from "@sanity/client";
 import type { Post, PageContent } from "./adapter";
+import { pageContent as localPageContent } from "./pages";
 
 // Configure your Sanity project here
 const SANITY_PROJECT_ID = "ymo20o7y"; // Replace with your Sanity Project ID
@@ -79,7 +80,7 @@ export const sanityAdapter = {
     }
   },
 
-  getPageContent: async (): Promise<PageContent | null> => {
+  getPageContent: async (): Promise<PageContent> => {
     const query = `{
       "home": *[_type == "page" && pageId == "home"][0] { ${pageFields} },
       "forCompanies": *[_type == "page" && pageId == "forCompanies"][0] { ${pageFields} },
@@ -90,10 +91,17 @@ export const sanityAdapter = {
 
     try {
       const content = await sanityClient.fetch<PageContent>(query);
-      return content;
+      // Merge with local content as fallback for missing fields
+      return {
+        home: content?.home || localPageContent.home,
+        forCompanies: content?.forCompanies || localPageContent.forCompanies,
+        forCreators: content?.forCreators || localPageContent.forCreators,
+        about: content?.about || localPageContent.about,
+        contact: content?.contact || localPageContent.contact,
+      };
     } catch (error) {
-      console.error("Error fetching page content from Sanity:", error);
-      return null;
+      console.error("Error fetching page content from Sanity, using local fallback:", error);
+      return localPageContent;
     }
   },
 };

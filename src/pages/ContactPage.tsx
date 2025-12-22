@@ -1,16 +1,17 @@
 import { Hero, Section, ContactForm } from "@/components/editorial";
-import { pageContent } from "@/content/pages";
+import { usePageContent } from "@/hooks/usePageContent";
 import { siteConfig } from "@/content/site";
 
-const content = pageContent.contact;
-
 export default function ContactPage() {
+  const { content } = usePageContent();
+  const pageData = content.contact;
+
   return (
     <>
       {/* Hero */}
       <Hero 
-        headline={content.hero.headline}
-        subheadline={content.hero.subheadline}
+        headline={pageData.hero.headline}
+        subheadline={pageData.hero.subheadline}
         size="medium"
       />
       
@@ -20,8 +21,8 @@ export default function ContactPage() {
           {/* Form */}
           <div>
             <ContactForm 
-              submitText={content.form.submitText}
-              successMessage={content.form.successMessage}
+              submitText={pageData.form.submitText}
+              successMessage={pageData.form.successMessage}
             />
           </div>
           
