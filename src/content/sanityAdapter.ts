@@ -1,10 +1,10 @@
-import { createClient } from '@sanity/client';
-import type { Post, PageContent } from './adapter';
+import { createClient } from "@sanity/client";
+import type { Post, PageContent } from "./adapter";
 
 // Configure your Sanity project here
-const SANITY_PROJECT_ID = 'YOUR_PROJECT_ID'; // Replace with your Sanity Project ID
-const SANITY_DATASET = 'production';
-const SANITY_API_VERSION = '2024-01-01';
+const SANITY_PROJECT_ID = ""; // Replace with your Sanity Project ID
+const SANITY_DATASET = "production";
+const SANITY_API_VERSION = "2024-01-01";
 
 export const sanityClient = createClient({
   projectId: SANITY_PROJECT_ID,
@@ -41,12 +41,12 @@ export const sanityAdapter = {
     const query = `*[_type == "insight"] | order(publishedAt desc) {
       ${postFields}
     }`;
-    
+
     try {
       const posts = await sanityClient.fetch<Post[]>(query);
       return posts;
     } catch (error) {
-      console.error('Error fetching posts from Sanity:', error);
+      console.error("Error fetching posts from Sanity:", error);
       return [];
     }
   },
@@ -55,12 +55,12 @@ export const sanityAdapter = {
     const query = `*[_type == "insight" && slug.current == $slug][0] {
       ${postFields}
     }`;
-    
+
     try {
       const post = await sanityClient.fetch<Post | null>(query, { slug });
       return post;
     } catch (error) {
-      console.error('Error fetching post from Sanity:', error);
+      console.error("Error fetching post from Sanity:", error);
       return null;
     }
   },
@@ -69,12 +69,12 @@ export const sanityAdapter = {
     const query = `*[_type == "insight" && $tag in tags] | order(publishedAt desc) {
       ${postFields}
     }`;
-    
+
     try {
       const posts = await sanityClient.fetch<Post[]>(query, { tag: tag.toLowerCase() } as Record<string, string>);
       return posts;
     } catch (error) {
-      console.error('Error fetching posts by tag from Sanity:', error);
+      console.error("Error fetching posts by tag from Sanity:", error);
       return [];
     }
   },
@@ -87,12 +87,12 @@ export const sanityAdapter = {
       "about": *[_type == "page" && pageId == "about"][0] { ${pageFields} },
       "contact": *[_type == "page" && pageId == "contact"][0] { ${pageFields} }
     }`;
-    
+
     try {
       const content = await sanityClient.fetch<PageContent>(query);
       return content;
     } catch (error) {
-      console.error('Error fetching page content from Sanity:', error);
+      console.error("Error fetching page content from Sanity:", error);
       return null;
     }
   },
