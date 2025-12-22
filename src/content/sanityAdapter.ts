@@ -2,7 +2,7 @@ import { createClient } from "@sanity/client";
 import type { Post, PageContent } from "./adapter";
 
 // Configure your Sanity project here
-const SANITY_PROJECT_ID = ""; // Replace with your Sanity Project ID
+const SANITY_PROJECT_ID = "ymo20o7y"; // Replace with your Sanity Project ID
 const SANITY_DATASET = "production";
 const SANITY_API_VERSION = "2024-01-01";
 
