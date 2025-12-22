@@ -1,15 +1,16 @@
 import { Hero, Section, SectionHeader, CreatorForm } from "@/components/editorial";
-import { pageContent } from "@/content/pages";
-
-const content = pageContent.forCreators;
+import { usePageContent } from "@/hooks/usePageContent";
 
 export default function ForCreatorsPage() {
+  const { content } = usePageContent();
+  const pageData = content.forCreators;
+
   return (
     <>
       {/* Hero */}
       <Hero 
-        headline={content.hero.headline}
-        subheadline={content.hero.subheadline}
+        headline={pageData.hero.headline}
+        subheadline={pageData.hero.subheadline}
         size="medium"
       />
       
@@ -17,7 +18,7 @@ export default function ForCreatorsPage() {
       <Section background="muted" spacing="default">
         <div className="max-w-2xl">
           <p className="text-lg leading-relaxed text-muted-foreground">
-            {content.intro.text}
+            {pageData.intro.text}
           </p>
         </div>
       </Section>
@@ -28,10 +29,10 @@ export default function ForCreatorsPage() {
           {/* What you get */}
           <div className="fade-in-up">
             <SectionHeader 
-              headline={content.expectations.whatYouGet.headline}
+              headline={pageData.expectations.whatYouGet.headline}
             />
             <ul className="space-y-4">
-              {content.expectations.whatYouGet.items.map((item) => (
+              {pageData.expectations.whatYouGet.items.map((item) => (
                 <li key={item} className="flex items-start gap-3">
                   <span className="text-accent mt-1">—</span>
                   <span className="text-muted-foreground">{item}</span>
@@ -43,10 +44,10 @@ export default function ForCreatorsPage() {
           {/* What we expect */}
           <div className="fade-in-up stagger-1">
             <SectionHeader 
-              headline={content.expectations.whatWeExpect.headline}
+              headline={pageData.expectations.whatWeExpect.headline}
             />
             <ul className="space-y-4">
-              {content.expectations.whatWeExpect.items.map((item) => (
+              {pageData.expectations.whatWeExpect.items.map((item) => (
                 <li key={item} className="flex items-start gap-3">
                   <span className="text-accent mt-1">—</span>
                   <span className="text-muted-foreground">{item}</span>
@@ -60,13 +61,13 @@ export default function ForCreatorsPage() {
       {/* Application Form */}
       <Section background="card" spacing="large">
         <SectionHeader 
-          headline={content.form.headline}
+          headline={pageData.form.headline}
           description="Alla ansökningar granskas manuellt. Vi letar efter människor som delar våra värderingar kring kvalitet och ansvar."
         />
         <div className="max-w-2xl">
           <CreatorForm 
-            submitText={content.form.submitText}
-            successMessage={content.form.successMessage}
+            submitText={pageData.form.submitText}
+            successMessage={pageData.form.successMessage}
           />
         </div>
       </Section>

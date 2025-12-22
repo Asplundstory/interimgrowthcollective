@@ -1,22 +1,23 @@
 import { Hero, Section, SectionHeader } from "@/components/editorial";
-import { pageContent } from "@/content/pages";
-
-const content = pageContent.about;
+import { usePageContent } from "@/hooks/usePageContent";
 
 export default function AboutPage() {
+  const { content } = usePageContent();
+  const pageData = content.about;
+
   return (
     <>
       {/* Hero */}
       <Hero 
-        headline={content.hero.headline}
-        subheadline={content.hero.subheadline}
+        headline={pageData.hero.headline}
+        subheadline={pageData.hero.subheadline}
         size="medium"
       />
       
       {/* Story */}
       <Section spacing="large">
         <div className="max-w-2xl">
-          {content.story.text.split('\n\n').map((paragraph, index) => (
+          {pageData.story.text.split('\n\n').map((paragraph, index) => (
             <p 
               key={index} 
               className="text-muted-foreground leading-relaxed mb-6 last:mb-0"
@@ -30,10 +31,10 @@ export default function AboutPage() {
       {/* Values */}
       <Section background="card" spacing="large">
         <SectionHeader 
-          headline={content.values.headline}
+          headline={pageData.values.headline}
         />
         <div className="grid md:grid-cols-3 gap-8 md:gap-12">
-          {content.values.items.map((value, index) => (
+          {pageData.values.items.map((value, index) => (
             <div 
               key={value.title} 
               className="fade-in-up"

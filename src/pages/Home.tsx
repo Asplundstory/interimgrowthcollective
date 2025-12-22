@@ -4,13 +4,14 @@ import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion, useInView } from "framer-motion";
 import { Hero, Section, SectionHeader, EditorialCard, CTA, AreaGrid } from "@/components/editorial";
-import { pageContent } from "@/content/pages";
+import { usePageContent } from "@/hooks/usePageContent";
 import { areas } from "@/content/areas";
 import { insights } from "@/content/insights";
 
-const content = pageContent.home;
-
 export default function HomePage() {
+  const { content } = usePageContent();
+  const homeContent = content.home;
+  
   const valueRef = useRef(null);
   const isValueInView = useInView(valueRef, { once: true, margin: "-50px" });
   
@@ -18,9 +19,9 @@ export default function HomePage() {
     <>
       {/* Hero */}
       <Hero 
-        headline={content.hero.headline}
-        subheadline={content.hero.subheadline}
-        cta={{ text: content.hero.cta, href: "/contact" }}
+        headline={homeContent.hero.headline}
+        subheadline={homeContent.hero.subheadline}
+        cta={{ text: homeContent.hero.cta, href: "/contact" }}
         size="large"
       />
       
@@ -28,7 +29,7 @@ export default function HomePage() {
       <Section background="muted" spacing="large">
         <div className="max-w-2xl">
           <p className="text-lg md:text-xl leading-relaxed text-muted-foreground">
-            {content.intro.text}
+            {homeContent.intro.text}
           </p>
         </div>
       </Section>
@@ -36,10 +37,10 @@ export default function HomePage() {
       {/* Value Proposition */}
       <Section spacing="large">
         <SectionHeader 
-          headline={content.valueProposition.headline}
+          headline={homeContent.valueProposition.headline}
         />
         <div ref={valueRef} className="grid md:grid-cols-3 gap-8 md:gap-12">
-          {content.valueProposition.items.map((item, index) => (
+          {homeContent.valueProposition.items.map((item, index) => (
             <motion.div 
               key={item.title}
               initial={{ opacity: 0, y: 30 }}
