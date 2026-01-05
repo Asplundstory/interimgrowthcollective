@@ -6,7 +6,7 @@ import { pageContent as localPageContent } from "./pages";
 import { sanityAdapter } from "./sanityAdapter";
 
 // Set to true when you have configured your Sanity Project ID
-const USE_SANITY = true;
+const USE_SANITY = false;
 
 export interface Post {
   slug: string;
