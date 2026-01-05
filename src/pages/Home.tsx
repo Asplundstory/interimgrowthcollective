@@ -7,6 +7,7 @@ import { Hero, Section, SectionHeader, EditorialCard, CTA, AreaGrid } from "@/co
 import { usePageContent } from "@/hooks/usePageContent";
 import { areas } from "@/content/areas";
 import { insights } from "@/content/insights";
+import heroImage from "@/assets/hero-architecture.jpg";
 
 export default function HomePage() {
   const { content } = usePageContent();
@@ -23,6 +24,7 @@ export default function HomePage() {
         subheadline={homeContent.hero.subheadline}
         cta={{ text: homeContent.hero.cta, href: "/contact" }}
         size="large"
+        backgroundImage={heroImage}
       />
       
       {/* Intro */}
