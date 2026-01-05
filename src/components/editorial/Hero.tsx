@@ -11,12 +11,28 @@ interface HeroProps {
     href: string;
   };
   size?: "large" | "medium" | "small";
+  backgroundImage?: string;
 }
 
-export function Hero({ headline, subheadline, cta, size = "large" }: HeroProps) {
+export function Hero({ headline, subheadline, cta, size = "large", backgroundImage }: HeroProps) {
+  const hasBackground = !!backgroundImage;
+  
   return (
-    <section className={`${size === "large" ? "py-24 md:py-32 lg:py-40" : size === "medium" ? "py-20 md:py-28" : "py-16 md:py-20"}`}>
-      <div className="container-editorial">
+    <section 
+      className={`relative ${size === "large" ? "py-24 md:py-32 lg:py-40" : size === "medium" ? "py-20 md:py-28" : "py-16 md:py-20"} ${hasBackground ? "min-h-[70vh] flex items-center" : ""}`}
+    >
+      {/* Background Image */}
+      {hasBackground && (
+        <>
+          <div 
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style={{ backgroundImage: `url(${backgroundImage})` }}
+          />
+          <div className="absolute inset-0 bg-black/40" />
+        </>
+      )}
+      
+      <div className={`container-editorial ${hasBackground ? "relative z-10" : ""}`}>
         <div className="max-w-3xl">
           <motion.h1 
             initial={{ opacity: 0, y: 30 }}
@@ -28,7 +44,7 @@ export function Hero({ headline, subheadline, cta, size = "large" }: HeroProps) 
                 : size === "medium"
                 ? "text-3xl md:text-4xl lg:text-5xl"
                 : "text-2xl md:text-3xl lg:text-4xl"
-            }`}
+            } ${hasBackground ? "text-white" : ""}`}
           >
             {headline}
           </motion.h1>
@@ -38,7 +54,7 @@ export function Hero({ headline, subheadline, cta, size = "large" }: HeroProps) 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.15, ease: [0.25, 0.1, 0.25, 1] }}
-              className="mt-6 md:mt-8 text-lg md:text-xl text-muted-foreground leading-relaxed"
+              className={`mt-6 md:mt-8 text-lg md:text-xl leading-relaxed ${hasBackground ? "text-white/80" : "text-muted-foreground"}`}
             >
               {subheadline}
             </motion.p>
@@ -53,7 +69,11 @@ export function Hero({ headline, subheadline, cta, size = "large" }: HeroProps) 
             >
               <Link
                 to={cta.href}
-                className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground text-sm font-medium transition-all hover:bg-primary/90 hover:translate-y-[-2px]"
+                className={`inline-flex items-center px-6 py-3 text-sm font-medium transition-all hover:translate-y-[-2px] ${
+                  hasBackground 
+                    ? "bg-white text-black hover:bg-white/90" 
+                    : "bg-primary text-primary-foreground hover:bg-primary/90"
+                }`}
               >
                 {cta.text}
               </Link>
