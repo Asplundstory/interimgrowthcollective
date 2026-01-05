@@ -24,9 +24,11 @@ export function Hero({ headline, subheadline, cta, size = "large", backgroundIma
       {/* Background Image */}
       {hasBackground && (
         <>
-          <div 
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-            style={{ backgroundImage: `url(${backgroundImage})` }}
+          <img 
+            src={backgroundImage}
+            alt=""
+            fetchPriority="high"
+            className="absolute inset-0 w-full h-full object-cover object-center"
           />
           <div className="absolute inset-0 bg-black/40" />
         </>
