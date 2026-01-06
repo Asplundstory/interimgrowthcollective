@@ -5,16 +5,16 @@ import { siteConfig } from "@/content/site";
 
 const navigation = [
   { name: "För företag", href: "/for-companies" },
-  { name: "För kreatörer", href: "/for-creators" },
+  { name: "För yrkespersoner", href: "/for-creators" },
   { name: "Områden", href: "/areas" },
   { name: "Om oss", href: "/about" },
-  { name: "Insights", href: "/insights" },
+  { name: "Blogg", href: "/insights" },
 ];
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
-  
+
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 border-b border-border">
       <div className="container-wide">
@@ -23,7 +23,7 @@ export function Header() {
           <Link to="/" className="font-serif text-lg md:text-xl tracking-tight">
             {siteConfig.siteName}
           </Link>
-          
+
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">
             {navigation.map((item) => (
@@ -31,16 +31,14 @@ export function Header() {
                 key={item.href}
                 to={item.href}
                 className={`text-sm transition-colors ${
-                  location.pathname === item.href 
-                    ? "text-foreground" 
-                    : "text-muted-foreground hover:text-foreground"
+                  location.pathname === item.href ? "text-foreground" : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 {item.name}
               </Link>
             ))}
           </nav>
-          
+
           {/* CTA + Mobile menu button */}
           <div className="flex items-center gap-4">
             <Link
@@ -49,7 +47,7 @@ export function Header() {
             >
               Boka samtal
             </Link>
-            
+
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="md:hidden p-2 -mr-2"
@@ -59,7 +57,7 @@ export function Header() {
             </button>
           </div>
         </div>
-        
+
         {/* Mobile Navigation */}
         {isOpen && (
           <nav className="md:hidden py-6 border-t border-border">
@@ -70,9 +68,7 @@ export function Header() {
                   to={item.href}
                   onClick={() => setIsOpen(false)}
                   className={`text-base py-2 transition-colors ${
-                    location.pathname === item.href 
-                      ? "text-foreground" 
-                      : "text-muted-foreground"
+                    location.pathname === item.href ? "text-foreground" : "text-muted-foreground"
                   }`}
                 >
                   {item.name}
