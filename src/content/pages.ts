@@ -4,8 +4,8 @@
 export const pageContent = {
   home: {
     hero: {
-      headline: "Människor med känsla, handplockade för dig.",
-      subheadline: "Interimslösningar inom brand, marketing, kommunikation och kreativa discipliner.",
+      headline: "Människor med känsla. På plats.",
+      subheadline: "Interimslösningar inom varumärke, marknad, kommunikation och koncept.",
       cta: "Boka samtal",
     },
     intro: {
