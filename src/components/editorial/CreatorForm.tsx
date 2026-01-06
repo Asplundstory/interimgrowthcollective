@@ -5,6 +5,18 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { z } from "zod";
+
+const creatorSchema = z.object({
+  name: z.string().trim().min(1, "Namn krävs").max(200, "Max 200 tecken"),
+  email: z.string().trim().email("Ogiltig e-postadress").max(254, "Max 254 tecken"),
+  role: z.string().trim().min(1, "Roll krävs").max(200, "Max 200 tecken"),
+  portfolio_url: z.string().trim().url("Ogiltig URL").max(500, "Max 500 tecken"),
+  q1_feeling: z.string().trim().min(1, "Svar krävs").max(2000, "Max 2000 tecken"),
+  q2_structure: z.string().trim().min(1, "Svar krävs").max(2000, "Max 2000 tecken"),
+  q3_pressure: z.string().trim().min(1, "Svar krävs").max(2000, "Max 2000 tecken"),
+  code_of_conduct_accepted: z.literal(true, { errorMap: () => ({ message: "Du måste acceptera Code of Conduct" }) }),
+});
 
 interface CreatorFormProps {
   submitText?: string;
@@ -18,16 +30,18 @@ export function CreatorForm({
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [codeOfConduct, setCodeOfConduct] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const { toast } = useToast();
   
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!codeOfConduct) return;
     
+    setErrors({});
     setIsSubmitting(true);
     
     const formData = new FormData(e.currentTarget);
-    const data = {
+    const rawData = {
       name: formData.get('name') as string,
       email: formData.get('email') as string,
       role: formData.get('role') as string,
@@ -38,14 +52,36 @@ export function CreatorForm({
       code_of_conduct_accepted: codeOfConduct,
     };
     
+    const result = creatorSchema.safeParse(rawData);
+    
+    if (!result.success) {
+      const fieldErrors: Record<string, string> = {};
+      result.error.errors.forEach((err) => {
+        if (err.path[0]) {
+          fieldErrors[err.path[0] as string] = err.message;
+        }
+      });
+      setErrors(fieldErrors);
+      setIsSubmitting(false);
+      return;
+    }
+    
     const { error } = await supabase
       .from('creator_applications')
-      .insert(data);
+      .insert({
+        name: result.data.name,
+        email: result.data.email,
+        role: result.data.role,
+        portfolio_url: result.data.portfolio_url,
+        q1_feeling: result.data.q1_feeling,
+        q2_structure: result.data.q2_structure,
+        q3_pressure: result.data.q3_pressure,
+        code_of_conduct_accepted: result.data.code_of_conduct_accepted,
+      });
     
     setIsSubmitting(false);
     
     if (error) {
-      console.error('Error submitting application:', error);
       toast({
         title: "Något gick fel",
         description: "Försök igen eller kontakta oss direkt via e-post.",
@@ -76,8 +112,10 @@ export function CreatorForm({
               id="name" 
               name="name" 
               required 
+              maxLength={200}
               className="bg-background border-border"
             />
+            {errors.name && <p className="text-sm text-destructive">{errors.name}</p>}
           </div>
           
           <div className="space-y-2">
@@ -87,8 +125,10 @@ export function CreatorForm({
               name="email" 
               type="email" 
               required 
+              maxLength={254}
               className="bg-background border-border"
             />
+            {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
           </div>
         </div>
         
@@ -99,9 +139,11 @@ export function CreatorForm({
               id="role" 
               name="role" 
               required 
+              maxLength={200}
               placeholder="t.ex. Brand Strategist, Art Director"
               className="bg-background border-border"
             />
+            {errors.role && <p className="text-sm text-destructive">{errors.role}</p>}
           </div>
           
           <div className="space-y-2">
@@ -111,9 +153,11 @@ export function CreatorForm({
               name="portfolio" 
               type="url" 
               required 
+              maxLength={500}
               placeholder="https://"
               className="bg-background border-border"
             />
+            {errors.portfolio_url && <p className="text-sm text-destructive">{errors.portfolio_url}</p>}
           </div>
         </div>
       </div>
@@ -129,8 +173,10 @@ export function CreatorForm({
             name="q1" 
             rows={4} 
             required 
+            maxLength={2000}
             className="bg-background border-border resize-none"
           />
+          {errors.q1_feeling && <p className="text-sm text-destructive">{errors.q1_feeling}</p>}
         </div>
         
         <div className="space-y-2">
@@ -142,8 +188,10 @@ export function CreatorForm({
             name="q2" 
             rows={4} 
             required 
+            maxLength={2000}
             className="bg-background border-border resize-none"
           />
+          {errors.q2_structure && <p className="text-sm text-destructive">{errors.q2_structure}</p>}
         </div>
         
         <div className="space-y-2">
@@ -155,8 +203,10 @@ export function CreatorForm({
             name="q3" 
             rows={4} 
             required 
+            maxLength={2000}
             className="bg-background border-border resize-none"
           />
+          {errors.q3_pressure && <p className="text-sm text-destructive">{errors.q3_pressure}</p>}
         </div>
       </div>
       
