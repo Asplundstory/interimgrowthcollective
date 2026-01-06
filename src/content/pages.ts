@@ -4,7 +4,7 @@
 export const pageContent = {
   home: {
     hero: {
-      headline: "Människor med känsla. På plats.",
+      headline: "Människor med känsla, handplockade för dig.",
       subheadline: "Interimslösningar inom brand, marketing, kommunikation och kreativa discipliner.",
       cta: "Boka samtal",
     },
@@ -16,20 +16,23 @@ export const pageContent = {
       items: [
         {
           title: "Rätt person, inte bara tillgänglig person",
-          description: "Vi presenterar inte kandidater vi inte själva skulle anlita. Varje person i vårt nätverk är handplockad och kvalitetssäkrad.",
+          description:
+            "Vi presenterar inte kandidater vi inte själva skulle anlita. Varje person i vårt nätverk är handplockad och kvalitetssäkrad.",
         },
         {
           title: "Snabb leverans utan kompromiss",
-          description: "När du behöver någon imorgon ska du inte behöva vänta. Men hastighet får aldrig gå före kvalitet.",
+          description:
+            "När du behöver någon imorgon ska du inte behöva vänta. Men hastighet får aldrig gå före kvalitet.",
         },
         {
           title: "Fokus på känsla och kultur",
-          description: "Kompetens är en hygienfaktor. Det som avgör är om personen passar in i er kultur och förstår er situation.",
+          description:
+            "Kompetens är en hygienfaktor. Det som avgör är om personen passar in i er kultur och förstår er situation.",
         },
       ],
     },
   },
-  
+
   forCompanies: {
     hero: {
       headline: "För företag som söker substans",
@@ -43,11 +46,13 @@ export const pageContent = {
       steps: [
         {
           title: "Samtal",
-          description: "Vi börjar med att förstå ert behov. Inte bara vilken roll ni söker, utan vilket sammanhang personen ska verka i.",
+          description:
+            "Vi börjar med att förstå ert behov. Inte bara vilken roll ni söker, utan vilket sammanhang personen ska verka i.",
         },
         {
           title: "Matchning",
-          description: "Vi presenterar en till tre kandidater som vi bedömer passar er situation. Kvalitet före kvantitet.",
+          description:
+            "Vi presenterar en till tre kandidater som vi bedömer passar er situation. Kvalitet före kvantitet.",
         },
         {
           title: "Uppstart",
@@ -61,7 +66,7 @@ export const pageContent = {
       buttonText: "Boka samtal",
     },
   },
-  
+
   forCreators: {
     hero: {
       headline: "För kreatörer som levererar",
@@ -96,7 +101,7 @@ export const pageContent = {
       successMessage: "Tack för din ansökan. Vi går igenom alla ansökningar manuellt och återkommer inom två veckor.",
     },
   },
-  
+
   about: {
     hero: {
       headline: "Om Interim Growth Collective",
@@ -129,7 +134,7 @@ Det är inte skalbart i traditionell mening. Men det var aldrig poängen.`,
       ],
     },
   },
-  
+
   contact: {
     hero: {
       headline: "Låt oss prata",
