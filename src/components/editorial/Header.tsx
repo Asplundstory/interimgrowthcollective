@@ -5,10 +5,10 @@ import { siteConfig } from "@/content/site";
 
 const navigation = [
   { name: "För företag", href: "/for-companies" },
-  { name: "För yrkespersoner", href: "/for-creators" },
+  { name: "För kreatörer", href: "/for-creators" },
   { name: "Områden", href: "/areas" },
   { name: "Om oss", href: "/about" },
-  { name: "Blogg", href: "/insights" },
+  { name: "Inspiration", href: "/insights" },
 ];
 
 export function Header() {
