@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Layout } from "@/components/Layout";
 import { CookieConsent } from "@/components/CookieConsent";
+import { LanguageProvider } from "@/hooks/useLanguage";
 import HomePage from "@/pages/Home";
 
 // Lazy load non-critical pages
@@ -25,6 +26,22 @@ const AdminDashboard = lazy(() => import("@/pages/admin/Dashboard"));
 
 const queryClient = new QueryClient();
 
+// Route definitions to avoid duplication
+const MainRoutes = () => (
+  <>
+    <Route index element={<HomePage />} />
+    <Route path="for-companies" element={<ForCompaniesPage />} />
+    <Route path="for-creators" element={<ForCreatorsPage />} />
+    <Route path="areas" element={<AreasPage />} />
+    <Route path="about" element={<AboutPage />} />
+    <Route path="insights" element={<InsightsPage />} />
+    <Route path="insights/:slug" element={<InsightPage />} />
+    <Route path="contact" element={<ContactPage />} />
+    <Route path="privacy" element={<PrivacyPage />} />
+    <Route path="terms" element={<TermsPage />} />
+  </>
+);
+
 const App = () => (
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
@@ -32,26 +49,27 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <CookieConsent />
-          <Suspense fallback={<div className="min-h-screen" />}>
-            <Routes>
-              <Route element={<Layout />}>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/for-companies" element={<ForCompaniesPage />} />
-                <Route path="/for-creators" element={<ForCreatorsPage />} />
-                <Route path="/areas" element={<AreasPage />} />
-                <Route path="/about" element={<AboutPage />} />
-                <Route path="/insights" element={<InsightsPage />} />
-                <Route path="/insights/:slug" element={<InsightPage />} />
-                <Route path="/contact" element={<ContactPage />} />
-                <Route path="/privacy" element={<PrivacyPage />} />
-                <Route path="/terms" element={<TermsPage />} />
-                <Route path="*" element={<NotFoundPage />} />
-              </Route>
-              <Route path="/admin/login" element={<AdminLogin />} />
-              <Route path="/admin/dashboard" element={<AdminDashboard />} />
-            </Routes>
-          </Suspense>
+          <LanguageProvider>
+            <CookieConsent />
+            <Suspense fallback={<div className="min-h-screen" />}>
+              <Routes>
+                {/* Swedish routes (default) */}
+                <Route element={<Layout />}>
+                  {MainRoutes()}
+                  <Route path="*" element={<NotFoundPage />} />
+                </Route>
+                
+                {/* English routes */}
+                <Route path="/en" element={<Layout />}>
+                  {MainRoutes()}
+                </Route>
+                
+                {/* Admin routes */}
+                <Route path="/admin/login" element={<AdminLogin />} />
+                <Route path="/admin/dashboard" element={<AdminDashboard />} />
+              </Routes>
+            </Suspense>
+          </LanguageProvider>
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>

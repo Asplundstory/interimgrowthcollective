@@ -8,6 +8,7 @@ import { EditableText } from "@/components/cms";
 import { SEO } from "@/components/SEO";
 import { useCmsContent } from "@/hooks/useCmsContent";
 import { useInsights } from "@/hooks/useInsights";
+import { useLanguage } from "@/hooks/useLanguage";
 import { pageContent } from "@/content/pages";
 import { areas } from "@/content/areas";
 import defaultHeroImage from "@/assets/hero-architecture.jpg";
@@ -20,6 +21,7 @@ const defaultHomeContent = {
 export default function HomePage() {
   const { content, isAdmin, updateField } = useCmsContent("home", defaultHomeContent);
   const { insights } = useInsights();
+  const { t, getLocalizedPath, language } = useLanguage();
   
   const valueRef = useRef(null);
   const isValueInView = useInView(valueRef, { once: true, margin: "-50px" });
@@ -30,21 +32,28 @@ export default function HomePage() {
   // FAQ data for structured data
   const faqData = [
     {
-      question: "Vad är en interimkonsult?",
-      answer: "En interimkonsult är en erfaren specialist som tillfälligt förstärker er organisation. Till skillnad från traditionella konsulter kliver interimkonsulter in och tar operativt ansvar - de levererar resultat, inte rapporter.",
+      question: t("faq.1.question"),
+      answer: t("faq.1.answer"),
     },
     {
-      question: "Inom vilka områden förmedlar ni interimkonsulter?",
-      answer: "Vi förmedlar erfarna människor inom brand strategy, marketing, kommunikation och kreativa discipliner som design, arkitektur, inredning, musik och film.",
+      question: t("faq.2.question"),
+      answer: t("faq.2.answer"),
     },
     {
-      question: "Hur snabbt kan ni hitta rätt person?",
-      answer: "Vanligtvis presenterar vi kvalificerade kandidater inom 1-2 veckor. Vid akuta behov kan vi ofta agera snabbare tack vare vårt etablerade nätverk.",
+      question: t("faq.3.question"),
+      answer: t("faq.3.answer"),
     },
     {
-      question: "Vad kostar det att anlita en interimkonsult via er?",
-      answer: "Priserna varierar beroende på uppdragets längd, komplexitet och den kompetens som krävs. Kontakta oss för en offert baserad på ert specifika behov.",
+      question: t("faq.4.question"),
+      answer: t("faq.4.answer"),
     },
+  ];
+
+  // Value proposition items
+  const valueItems = [
+    { title: t("home.value.1.title"), description: t("home.value.1.description") },
+    { title: t("home.value.2.title"), description: t("home.value.2.description") },
+    { title: t("home.value.3.title"), description: t("home.value.3.description") },
   ];
 
   return (
@@ -53,22 +62,26 @@ export default function HomePage() {
       {/* Hero */}
       <Hero 
         headline={
-          <EditableText
-            value={content.hero.headline}
-            onSave={(v) => updateField("hero.headline", v)}
-            editable={isAdmin}
-            tag="span"
-          />
+          isAdmin ? (
+            <EditableText
+              value={content.hero.headline}
+              onSave={(v) => updateField("hero.headline", v)}
+              editable={isAdmin}
+              tag="span"
+            />
+          ) : t("home.hero.headline")
         }
         subheadline={
-          <EditableText
-            value={content.hero.subheadline}
-            onSave={(v) => updateField("hero.subheadline", v)}
-            editable={isAdmin}
-            tag="span"
-          />
+          isAdmin ? (
+            <EditableText
+              value={content.hero.subheadline}
+              onSave={(v) => updateField("hero.subheadline", v)}
+              editable={isAdmin}
+              tag="span"
+            />
+          ) : t("home.hero.subheadline")
         }
-        cta={{ text: content.hero.cta, href: "/contact" }}
+        cta={{ text: t("home.hero.cta"), href: getLocalizedPath("/contact") }}
         size="large"
         backgroundImage={heroImage}
         onImageChange={(url) => updateField("heroImage", url)}
@@ -78,30 +91,29 @@ export default function HomePage() {
       {/* Intro */}
       <Section background="muted" spacing="large">
         <div className="max-w-2xl">
-          <EditableText
-            value={content.intro.text}
-            onSave={(v) => updateField("intro.text", v)}
-            editable={isAdmin}
-            tag="p"
-            className="text-lg md:text-xl leading-relaxed text-muted-foreground"
-          />
+          {isAdmin ? (
+            <EditableText
+              value={content.intro.text}
+              onSave={(v) => updateField("intro.text", v)}
+              editable={isAdmin}
+              tag="p"
+              className="text-lg md:text-xl leading-relaxed text-muted-foreground"
+            />
+          ) : (
+            <p className="text-lg md:text-xl leading-relaxed text-muted-foreground">
+              {t("home.intro.text")}
+            </p>
+          )}
         </div>
       </Section>
       
       {/* Value Proposition */}
       <Section spacing="large">
         <SectionHeader 
-          headline={
-            <EditableText
-              value={content.valueProposition.headline}
-              onSave={(v) => updateField("valueProposition.headline", v)}
-              editable={isAdmin}
-              tag="span"
-            />
-          }
+          headline={t("home.value.headline")}
         />
         <div ref={valueRef} className="grid md:grid-cols-3 gap-8 md:gap-12">
-          {content.valueProposition.items.map((item, index) => (
+          {valueItems.map((item, index) => (
             <motion.div 
               key={index}
               initial={{ opacity: 0, y: 30 }}
@@ -112,20 +124,12 @@ export default function HomePage() {
                 ease: [0.25, 0.1, 0.25, 1]
               }}
             >
-              <EditableText
-                value={item.title}
-                onSave={(v) => updateField(`valueProposition.items.${index}.title`, v)}
-                editable={isAdmin}
-                tag="h3"
-                className="font-serif text-lg md:text-xl text-editorial"
-              />
-              <EditableText
-                value={item.description}
-                onSave={(v) => updateField(`valueProposition.items.${index}.description`, v)}
-                editable={isAdmin}
-                tag="p"
-                className="mt-3 text-muted-foreground leading-relaxed"
-              />
+              <h3 className="font-serif text-lg md:text-xl text-editorial">
+                {item.title}
+              </h3>
+              <p className="mt-3 text-muted-foreground leading-relaxed">
+                {item.description}
+              </p>
             </motion.div>
           ))}
         </div>
@@ -134,8 +138,8 @@ export default function HomePage() {
       {/* Areas preview */}
       <Section background="card" spacing="large">
         <SectionHeader 
-          label="Områden"
-          headline="Var vi gör skillnad"
+          label={t("home.areas.label")}
+          headline={t("home.areas.headline")}
         />
         <AreaGrid areas={areas.slice(0, 4)} />
         <motion.div 
@@ -146,10 +150,10 @@ export default function HomePage() {
           transition={{ delay: 0.5 }}
         >
           <Link 
-            to="/areas" 
+            to={getLocalizedPath("/areas")} 
             className="text-sm font-medium link-underline"
           >
-            Se alla områden
+            {t("home.areas.seeAll")}
           </Link>
         </motion.div>
       </Section>
@@ -157,8 +161,8 @@ export default function HomePage() {
       {/* Latest insights */}
       <Section spacing="large">
         <SectionHeader 
-          label="Insights"
-          headline="Senaste tankarna"
+          label={t("home.insights.label")}
+          headline={t("home.insights.headline")}
         />
         <div className="space-y-0">
           {insights.filter(p => p.published).slice(0, 3).map((post, index) => (
@@ -166,8 +170,8 @@ export default function HomePage() {
               key={post.slug}
               title={post.title}
               description={post.excerpt}
-              href={`/insights/${post.slug}`}
-              meta={new Date(post.date).toLocaleDateString('sv-SE', { 
+              href={getLocalizedPath(`/insights/${post.slug}`)}
+              meta={new Date(post.date).toLocaleDateString(language === "en" ? 'en-US' : 'sv-SE', { 
                 year: 'numeric', 
                 month: 'long', 
                 day: 'numeric' 
@@ -185,10 +189,10 @@ export default function HomePage() {
           transition={{ delay: 0.4 }}
         >
           <Link 
-            to="/insights" 
+            to={getLocalizedPath("/insights")} 
             className="text-sm font-medium link-underline"
           >
-            Alla inlägg
+            {t("home.insights.seeAll")}
           </Link>
         </motion.div>
       </Section>
@@ -196,18 +200,18 @@ export default function HomePage() {
       {/* FAQ */}
       <Section background="muted" spacing="large">
         <SectionHeader 
-          headline="Vanliga frågor"
-          label="FAQ"
+          headline={t("home.faq.headline")}
+          label={t("home.faq.label")}
         />
         <FAQ items={faqData} />
       </Section>
       
       {/* CTA */}
       <CTA 
-        headline="Redo att börja"
-        text="Berätta om ert behov. Vi återkommer inom en arbetsdag."
-        buttonText="Boka samtal"
-        href="/contact"
+        headline={t("home.cta.headline")}
+        text={t("home.cta.text")}
+        buttonText={t("home.cta.button")}
+        href={getLocalizedPath("/contact")}
         variant="subtle"
       />
     </>
