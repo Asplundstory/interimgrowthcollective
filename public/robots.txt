@@ -13,5 +13,8 @@ Allow: /
 User-agent: *
 Allow: /
 
-# Sitemap
+# Static sitemap
 Sitemap: https://interimgrowth.se/sitemap.xml
+
+# Dynamic sitemap with insights (recommended)
+Sitemap: https://bwoolbioqpuffhijfjap.supabase.co/functions/v1/sitemap
