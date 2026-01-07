@@ -1,5 +1,6 @@
 import { Hero, Section, SectionHeader, CreatorForm } from "@/components/editorial";
 import { usePageContent } from "@/hooks/usePageContent";
+import heroCreatorsImage from "@/assets/hero-creators.jpg";
 
 export default function ForCreatorsPage() {
   const { content } = usePageContent();
@@ -12,6 +13,7 @@ export default function ForCreatorsPage() {
         headline={pageData.hero.headline}
         subheadline={pageData.hero.subheadline}
         size="medium"
+        backgroundImage={heroCreatorsImage}
       />
       
       {/* Intro */}
