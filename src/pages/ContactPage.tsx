@@ -1,18 +1,37 @@
+"use client";
+
 import { Hero, Section, ContactForm } from "@/components/editorial";
-import { usePageContent } from "@/hooks/usePageContent";
+import { EditableText } from "@/components/cms";
+import { useCmsContent } from "@/hooks/useCmsContent";
+import { pageContent } from "@/content/pages";
 import { siteConfig } from "@/content/site";
 import heroContactImage from "@/assets/hero-contact.jpg";
 
+const defaultContent = pageContent.contact;
+
 export default function ContactPage() {
-  const { content } = usePageContent();
-  const pageData = content.contact;
+  const { content, isAdmin, updateField } = useCmsContent("contact", defaultContent);
 
   return (
     <>
       {/* Hero */}
       <Hero 
-        headline={pageData.hero.headline}
-        subheadline={pageData.hero.subheadline}
+        headline={
+          <EditableText
+            value={content.hero.headline}
+            onSave={(v) => updateField("hero.headline", v)}
+            editable={isAdmin}
+            tag="span"
+          />
+        }
+        subheadline={
+          <EditableText
+            value={content.hero.subheadline}
+            onSave={(v) => updateField("hero.subheadline", v)}
+            editable={isAdmin}
+            tag="span"
+          />
+        }
         size="medium"
         backgroundImage={heroContactImage}
       />
@@ -23,19 +42,27 @@ export default function ContactPage() {
           {/* Form */}
           <div>
             <ContactForm 
-              submitText={pageData.form.submitText}
-              successMessage={pageData.form.successMessage}
+              submitText={content.form.submitText}
+              successMessage={content.form.successMessage}
             />
           </div>
           
           {/* Direct contact */}
           <div className="md:pl-8">
-            <h2 className="font-serif text-xl text-editorial mb-4">
-              Direkt kontakt
-            </h2>
-            <p className="text-muted-foreground leading-relaxed mb-6">
-              Föredrar du att maila direkt? Skriv till oss så återkommer vi inom en arbetsdag.
-            </p>
+            <EditableText
+              value={content.directContact?.headline || "Direkt kontakt"}
+              onSave={(v) => updateField("directContact.headline", v)}
+              editable={isAdmin}
+              tag="h2"
+              className="font-serif text-xl text-editorial mb-4"
+            />
+            <EditableText
+              value={content.directContact?.text || "Föredrar du att maila direkt? Skriv till oss så återkommer vi inom en arbetsdag."}
+              onSave={(v) => updateField("directContact.text", v)}
+              editable={isAdmin}
+              tag="p"
+              className="text-muted-foreground leading-relaxed mb-6"
+            />
             <a 
               href={`mailto:${siteConfig.contactEmail}`}
               className="text-foreground font-medium link-underline"
