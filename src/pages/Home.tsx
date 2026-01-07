@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion, useInView } from "framer-motion";
-import { Hero, Section, SectionHeader, EditorialCard, CTA, AreaGrid } from "@/components/editorial";
+import { Hero, Section, SectionHeader, EditorialCard, CTA, AreaGrid, FAQ } from "@/components/editorial";
 import { EditableText } from "@/components/cms";
 import { SEO } from "@/components/SEO";
 import { useCmsContent } from "@/hooks/useCmsContent";
@@ -191,6 +191,15 @@ export default function HomePage() {
             Alla inlägg
           </Link>
         </motion.div>
+      </Section>
+      
+      {/* FAQ */}
+      <Section background="muted" spacing="large">
+        <SectionHeader 
+          headline="Vanliga frågor"
+          label="FAQ"
+        />
+        <FAQ items={faqData} />
       </Section>
       
       {/* CTA */}
