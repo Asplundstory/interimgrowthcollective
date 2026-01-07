@@ -80,6 +80,7 @@ export default function InsightsPage() {
                   title={post.title}
                   description={post.excerpt}
                   href={`/insights/${post.slug}`}
+                  image={post.image_url}
                   meta={
                     <>
                       {new Date(post.date).toLocaleDateString("sv-SE", {

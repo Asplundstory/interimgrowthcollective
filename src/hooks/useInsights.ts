@@ -12,6 +12,7 @@ export interface Insight {
   tags: string[];
   date: string;
   published: boolean;
+  image_url?: string | null;
 }
 
 export function useInsights() {

@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { X, Check, Plus, Trash2, Eye, EyeOff } from "lucide-react";
+import { X, Check, Trash2, Eye, EyeOff, ImageIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Insight } from "@/hooks/useInsights";
+import { ImageUpload } from "./ImageUpload";
 
 interface InsightEditorProps {
   insight?: Insight;
@@ -25,6 +26,8 @@ export function InsightEditor({
   const [tags, setTags] = useState(insight?.tags?.join(", ") || "");
   const [date, setDate] = useState(insight?.date || new Date().toISOString().split("T")[0]);
   const [published, setPublished] = useState(insight?.published ?? false);
+  const [imageUrl, setImageUrl] = useState(insight?.image_url || "");
+  const [showImageUpload, setShowImageUpload] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
   const generateSlug = (text: string) => {
@@ -59,6 +62,7 @@ export function InsightEditor({
       tags: tags.split(",").map((t) => t.trim()).filter(Boolean),
       date,
       published,
+      image_url: imageUrl || null,
     };
 
     const result = await onSave(isNew ? data : { ...data, id: insight?.id });
@@ -87,6 +91,44 @@ export function InsightEditor({
 
         {/* Form */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          {/* Featured Image */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Huvudbild</label>
+            <div className="flex items-start gap-4">
+              {imageUrl ? (
+                <div className="relative group">
+                  <img 
+                    src={imageUrl} 
+                    alt="Featured" 
+                    className="w-40 h-24 object-cover rounded-md border border-border"
+                  />
+                  <button
+                    onClick={() => setImageUrl("")}
+                    className="absolute -top-2 -right-2 p-1 bg-destructive text-destructive-foreground rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setShowImageUpload(true)}
+                  className="w-40 h-24 border-2 border-dashed border-border rounded-md flex flex-col items-center justify-center gap-1 hover:border-primary/50 transition-colors"
+                >
+                  <ImageIcon className="h-6 w-6 text-muted-foreground" />
+                  <span className="text-xs text-muted-foreground">Lägg till bild</span>
+                </button>
+              )}
+              {imageUrl && (
+                <button
+                  onClick={() => setShowImageUpload(true)}
+                  className="text-sm text-primary hover:underline"
+                >
+                  Byt bild
+                </button>
+              )}
+            </div>
+          </div>
+
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <label className="text-sm font-medium">Titel</label>
@@ -204,6 +246,32 @@ export function InsightEditor({
           </div>
         </div>
       </div>
+
+      {/* Image Upload Modal */}
+      {showImageUpload && (
+        <div className="fixed inset-0 z-[110] bg-background/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-background border border-border rounded-lg shadow-xl w-full max-w-md p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-medium">Välj huvudbild</h3>
+              <button
+                onClick={() => setShowImageUpload(false)}
+                className="p-1.5 hover:bg-muted rounded-md transition-colors"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <ImageUpload
+              value={imageUrl}
+              onUpload={(url) => {
+                setImageUrl(url);
+                setShowImageUpload(false);
+              }}
+              folder="insights"
+              aspectRatio="video"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
