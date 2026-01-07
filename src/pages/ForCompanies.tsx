@@ -1,7 +1,7 @@
 "use client";
 
-import { Hero, Section, SectionHeader, CTA } from "@/components/editorial";
-import { SEO } from "@/components/SEO";
+import { Hero, Section, SectionHeader, CTA, FAQ } from "@/components/editorial";
+import { SEO, FAQItem } from "@/components/SEO";
 import { useLanguage } from "@/hooks/useLanguage";
 import defaultHeroImage from "@/assets/hero-companies.jpg";
 
@@ -42,11 +42,27 @@ export default function ForCompaniesPage() {
     },
   ];
 
+  const faqItems: FAQItem[] = [
+    {
+      question: t("companies.faq.1.question"),
+      answer: t("companies.faq.1.answer"),
+    },
+    {
+      question: t("companies.faq.2.question"),
+      answer: t("companies.faq.2.answer"),
+    },
+    {
+      question: t("companies.faq.3.question"),
+      answer: t("companies.faq.3.answer"),
+    },
+  ];
+
   return (
     <>
       <SEO 
         title={t("nav.forCompanies")}
         description={t("companies.intro.text")}
+        faq={faqItems}
         breadcrumbs={[
           { name: language === "en" ? "Home" : "Hem", href: getLocalizedPath("/") },
           { name: t("nav.forCompanies"), href: getLocalizedPath("/for-companies") },
@@ -108,6 +124,15 @@ export default function ForCompaniesPage() {
             </div>
           ))}
         </div>
+      </Section>
+      
+      {/* FAQ */}
+      <Section spacing="large">
+        <SectionHeader 
+          label="FAQ"
+          headline={t("companies.faq.headline")}
+        />
+        <FAQ items={faqItems} />
       </Section>
       
       {/* CTA */}

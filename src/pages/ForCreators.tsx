@@ -1,7 +1,7 @@
 "use client";
 
-import { Hero, Section, SectionHeader, CreatorForm } from "@/components/editorial";
-import { SEO } from "@/components/SEO";
+import { Hero, Section, SectionHeader, CreatorForm, FAQ } from "@/components/editorial";
+import { SEO, FAQItem } from "@/components/SEO";
 import { useLanguage } from "@/hooks/useLanguage";
 import defaultHeroImage from "@/assets/hero-creators.jpg";
 
@@ -22,11 +22,27 @@ export default function ForCreatorsPage() {
     t("creators.whatWeExpect.4"),
   ];
 
+  const faqItems: FAQItem[] = [
+    {
+      question: t("creators.faq.1.question"),
+      answer: t("creators.faq.1.answer"),
+    },
+    {
+      question: t("creators.faq.2.question"),
+      answer: t("creators.faq.2.answer"),
+    },
+    {
+      question: t("creators.faq.3.question"),
+      answer: t("creators.faq.3.answer"),
+    },
+  ];
+
   return (
     <>
       <SEO 
         title={t("nav.forCreators")}
         description={t("creators.intro.text")}
+        faq={faqItems}
         breadcrumbs={[
           { name: language === "en" ? "Home" : "Hem", href: getLocalizedPath("/") },
           { name: t("nav.forCreators"), href: getLocalizedPath("/for-creators") },
@@ -92,6 +108,15 @@ export default function ForCreatorsPage() {
             successMessage={t("creators.form.success")}
           />
         </div>
+      </Section>
+      
+      {/* FAQ */}
+      <Section spacing="large">
+        <SectionHeader 
+          label="FAQ"
+          headline={t("creators.faq.headline")}
+        />
+        <FAQ items={faqItems} />
       </Section>
     </>
   );
