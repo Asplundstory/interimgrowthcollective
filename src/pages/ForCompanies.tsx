@@ -2,6 +2,7 @@
 
 import { Hero, Section, SectionHeader, CTA } from "@/components/editorial";
 import { EditableText } from "@/components/cms";
+import { SEO } from "@/components/SEO";
 import { useCmsContent } from "@/hooks/useCmsContent";
 import { pageContent } from "@/content/pages";
 import defaultHeroImage from "@/assets/hero-companies.jpg";
@@ -18,6 +19,10 @@ export default function ForCompaniesPage() {
 
   return (
     <>
+      <SEO 
+        title="För företag"
+        description="Hitta erfarna interimresurser inom brand, marketing och kommunikation. Vi förmedlar människor som levererar från dag ett."
+      />
       {/* Hero */}
       <Hero 
         headline={

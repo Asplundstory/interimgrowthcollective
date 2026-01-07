@@ -5,6 +5,7 @@ import { useParams, Link, Navigate } from "react-router-dom";
 import { ArrowLeft, Pencil } from "lucide-react";
 import { Section } from "@/components/editorial";
 import { InsightEditor } from "@/components/cms";
+import { SEO } from "@/components/SEO";
 import { useInsights, Insight } from "@/hooks/useInsights";
 
 export default function InsightPage() {
@@ -79,6 +80,15 @@ export default function InsightPage() {
 
   return (
     <>
+      <SEO 
+        title={post.title}
+        description={post.excerpt}
+        image={post.image_url || undefined}
+        article={{
+          publishedTime: post.date,
+          tags: post.tags,
+        }}
+      />
       {/* Back link */}
       <div className="container-editorial pt-8 flex items-center justify-between">
         <Link

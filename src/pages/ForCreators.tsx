@@ -2,6 +2,7 @@
 
 import { Hero, Section, SectionHeader, CreatorForm } from "@/components/editorial";
 import { EditableText } from "@/components/cms";
+import { SEO } from "@/components/SEO";
 import { useCmsContent } from "@/hooks/useCmsContent";
 import { pageContent } from "@/content/pages";
 import defaultHeroImage from "@/assets/hero-creators.jpg";
@@ -18,6 +19,10 @@ export default function ForCreatorsPage() {
 
   return (
     <>
+      <SEO 
+        title="För kreatörer"
+        description="Gå med i Interim Growth Collective. Vi söker erfarna strateger, designers och kommunikatörer som vill arbeta med spännande uppdrag."
+      />
       {/* Hero */}
       <Hero 
         headline={

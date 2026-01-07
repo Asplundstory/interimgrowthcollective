@@ -1,9 +1,15 @@
 import { Hero, Section } from "@/components/editorial";
+import { SEO } from "@/components/SEO";
 
 export default function PrivacyPage() {
   return (
     <>
-      <Hero 
+      <SEO 
+        title="Integritetspolicy"
+        description="Läs om hur Interim Growth Collective hanterar dina personuppgifter och skyddar din integritet."
+      />
+      
+      <Hero
         headline="Integritetspolicy"
         size="small"
       />

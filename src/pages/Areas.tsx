@@ -1,9 +1,15 @@
 import { Hero, Section, AreaGrid } from "@/components/editorial";
+import { SEO } from "@/components/SEO";
 import { areas } from "@/content/areas";
 
 export default function AreasPage() {
   return (
     <>
+      <SEO 
+        title="Områden"
+        description="Vi förmedlar erfarna människor inom brand, marketing, kommunikation och kreativa discipliner. Se alla våra kompetensområden."
+      />
+      
       {/* Hero */}
       <Hero 
         headline="Områden"

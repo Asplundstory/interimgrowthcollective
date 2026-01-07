@@ -1,9 +1,15 @@
 import { Hero, Section } from "@/components/editorial";
+import { SEO } from "@/components/SEO";
 
 export default function TermsPage() {
   return (
     <>
-      <Hero 
+      <SEO 
+        title="Villkor"
+        description="Läs användarvillkoren för Interim Growth Collective."
+      />
+      
+      <Hero
         headline="Villkor"
         size="small"
       />

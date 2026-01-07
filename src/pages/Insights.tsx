@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Plus, Pencil } from "lucide-react";
 import { Hero, Section, EditorialCard } from "@/components/editorial";
 import { EditableText, InsightEditor } from "@/components/cms";
+import { SEO } from "@/components/SEO";
 import { useInsights, Insight } from "@/hooks/useInsights";
 import { useCmsContent } from "@/hooks/useCmsContent";
 import defaultHeroImage from "@/assets/hero-insights.jpg";
@@ -29,6 +30,10 @@ export default function InsightsPage() {
 
   return (
     <>
+      <SEO 
+        title="Insights"
+        description="Reflektioner om kvalitet, kreativitet och att leverera under press. Läs våra senaste tankar och insikter."
+      />
       {/* Hero */}
       <Hero
         headline={

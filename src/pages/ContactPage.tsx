@@ -2,6 +2,7 @@
 
 import { Hero, Section, ContactForm } from "@/components/editorial";
 import { EditableText } from "@/components/cms";
+import { SEO } from "@/components/SEO";
 import { useCmsContent } from "@/hooks/useCmsContent";
 import { pageContent } from "@/content/pages";
 import { siteConfig } from "@/content/site";
@@ -19,6 +20,10 @@ export default function ContactPage() {
 
   return (
     <>
+      <SEO 
+        title="Kontakt"
+        description="Kontakta Interim Growth Collective. Berätta om ert behov så återkommer vi inom en arbetsdag."
+      />
       {/* Hero */}
       <Hero 
         headline={
