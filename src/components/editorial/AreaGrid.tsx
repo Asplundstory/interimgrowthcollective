@@ -24,7 +24,17 @@ export function AreaGrid({ areas }: AreaGridProps) {
             delay: index * 0.1,
             ease: [0.25, 0.1, 0.25, 1]
           }}
+          className="group"
         >
+          {/* Area Image */}
+          <div className="aspect-[16/9] overflow-hidden mb-6">
+            <img 
+              src={area.image} 
+              alt={area.title}
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+          </div>
+          
           <h3 className="font-serif text-xl md:text-2xl text-editorial">
             {area.title}
           </h3>
