@@ -1,6 +1,7 @@
 import { Hero, Section, ContactForm } from "@/components/editorial";
 import { usePageContent } from "@/hooks/usePageContent";
 import { siteConfig } from "@/content/site";
+import heroContactImage from "@/assets/hero-contact.jpg";
 
 export default function ContactPage() {
   const { content } = usePageContent();
@@ -13,6 +14,7 @@ export default function ContactPage() {
         headline={pageData.hero.headline}
         subheadline={pageData.hero.subheadline}
         size="medium"
+        backgroundImage={heroContactImage}
       />
       
       {/* Contact options */}
