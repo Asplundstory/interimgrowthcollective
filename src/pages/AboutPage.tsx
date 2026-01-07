@@ -1,5 +1,6 @@
 import { Hero, Section, SectionHeader } from "@/components/editorial";
 import { usePageContent } from "@/hooks/usePageContent";
+import heroAboutImage from "@/assets/hero-about.jpg";
 
 export default function AboutPage() {
   const { content } = usePageContent();
@@ -12,6 +13,7 @@ export default function AboutPage() {
         headline={pageData.hero.headline}
         subheadline={pageData.hero.subheadline}
         size="medium"
+        backgroundImage={heroAboutImage}
       />
       
       {/* Story */}
