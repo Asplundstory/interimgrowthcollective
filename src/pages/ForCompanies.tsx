@@ -22,6 +22,10 @@ export default function ForCompaniesPage() {
       <SEO 
         title="För företag"
         description="Hitta erfarna interimresurser inom brand, marketing och kommunikation. Vi förmedlar människor som levererar från dag ett."
+        breadcrumbs={[
+          { name: "Hem", href: "/" },
+          { name: "För företag", href: "/for-companies" },
+        ]}
       />
       {/* Hero */}
       <Hero 

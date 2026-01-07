@@ -90,6 +90,11 @@ export default function InsightPage() {
           tags: post.tags,
           author: "Interim Growth Collective",
         }}
+        breadcrumbs={[
+          { name: "Hem", href: "/" },
+          { name: "Insights", href: "/insights" },
+          { name: post.title, href: `/insights/${post.slug}` },
+        ]}
       />
       {/* Back link */}
       <div className="container-editorial pt-8 flex items-center justify-between">

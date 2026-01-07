@@ -22,6 +22,10 @@ export default function ForCreatorsPage() {
       <SEO 
         title="För kreatörer"
         description="Gå med i Interim Growth Collective. Vi söker erfarna strateger, designers och kommunikatörer som vill arbeta med spännande uppdrag."
+        breadcrumbs={[
+          { name: "Hem", href: "/" },
+          { name: "För kreatörer", href: "/for-creators" },
+        ]}
       />
       {/* Hero */}
       <Hero 
