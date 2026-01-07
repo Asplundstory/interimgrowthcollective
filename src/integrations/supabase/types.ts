@@ -158,6 +158,45 @@ export type Database = {
         }
         Relationships: []
       }
+      insights: {
+        Row: {
+          content: string
+          created_at: string
+          date: string
+          excerpt: string
+          id: string
+          published: boolean
+          slug: string
+          tags: string[] | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          date?: string
+          excerpt: string
+          id?: string
+          published?: boolean
+          slug: string
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          date?: string
+          excerpt?: string
+          id?: string
+          published?: boolean
+          slug?: string
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string

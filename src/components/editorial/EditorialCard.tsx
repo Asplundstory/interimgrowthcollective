@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { motion, useInView } from "framer-motion";
@@ -9,7 +9,7 @@ interface EditorialCardProps {
   title: string;
   description: string;
   href?: string;
-  meta?: string;
+  meta?: ReactNode;
   tags?: string[];
   index?: number;
 }
