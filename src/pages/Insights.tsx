@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Hero, Section, EditorialCard } from "@/components/editorial";
 import { getAllPosts, Post } from "@/content/adapter";
+import heroInsightsImage from "@/assets/hero-insights.jpg";
 
 export default function InsightsPage() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -20,6 +21,7 @@ export default function InsightsPage() {
         headline="Insights"
         subheadline="Reflektioner om kvalitet, kreativitet och att leverera under press."
         size="medium"
+        backgroundImage={heroInsightsImage}
       />
       
       {/* Posts */}
