@@ -60,6 +60,15 @@ export const pageContent = {
         },
       ],
     },
+    offer: {
+      headline: "Vad vi erbjuder",
+      items: [
+        { title: "Interimslösningar", description: "Erfarna människor som kliver in och tar ansvar. Från några veckor till flera månader." },
+        { title: "Projektresurser", description: "Specialister för avgränsade projekt. När ni behöver specifik kompetens under begränsad tid." },
+        { title: "Strategiskt bollplank", description: "Erfarna rådgivare för komplexa beslut. Inte konsulter som producerar slides." },
+        { title: "Team extension", description: "Förstärkning av befintliga team. Sömlös integration med er organisation." },
+      ],
+    },
     cta: {
       headline: "Redo att börja",
       text: "Berätta om ert behov. Vi återkommer inom en arbetsdag.",
@@ -143,6 +152,10 @@ Det är inte skalbart i traditionell mening. Men det var aldrig poängen.`,
     form: {
       submitText: "Skicka meddelande",
       successMessage: "Tack för ditt meddelande. Vi återkommer så snart vi kan.",
+    },
+    directContact: {
+      headline: "Direkt kontakt",
+      text: "Föredrar du att maila direkt? Skriv till oss så återkommer vi inom en arbetsdag.",
     },
   },
 } as const;

@@ -1,17 +1,36 @@
+"use client";
+
 import { Hero, Section, SectionHeader } from "@/components/editorial";
-import { usePageContent } from "@/hooks/usePageContent";
+import { EditableText } from "@/components/cms";
+import { useCmsContent } from "@/hooks/useCmsContent";
+import { pageContent } from "@/content/pages";
 import heroAboutImage from "@/assets/hero-about.jpg";
 
+const defaultContent = pageContent.about;
+
 export default function AboutPage() {
-  const { content } = usePageContent();
-  const pageData = content.about;
+  const { content, isAdmin, updateField } = useCmsContent("about", defaultContent);
 
   return (
     <>
       {/* Hero */}
       <Hero 
-        headline={pageData.hero.headline}
-        subheadline={pageData.hero.subheadline}
+        headline={
+          <EditableText
+            value={content.hero.headline}
+            onSave={(v) => updateField("hero.headline", v)}
+            editable={isAdmin}
+            tag="span"
+          />
+        }
+        subheadline={
+          <EditableText
+            value={content.hero.subheadline}
+            onSave={(v) => updateField("hero.subheadline", v)}
+            editable={isAdmin}
+            tag="span"
+          />
+        }
         size="medium"
         backgroundImage={heroAboutImage}
       />
@@ -19,35 +38,49 @@ export default function AboutPage() {
       {/* Story */}
       <Section spacing="large">
         <div className="max-w-2xl">
-          {pageData.story.text.split('\n\n').map((paragraph, index) => (
-            <p 
-              key={index} 
-              className="text-muted-foreground leading-relaxed mb-6 last:mb-0"
-            >
-              {paragraph}
-            </p>
-          ))}
+          <EditableText
+            value={content.story.text}
+            onSave={(v) => updateField("story.text", v)}
+            editable={isAdmin}
+            tag="p"
+            className="text-muted-foreground leading-relaxed whitespace-pre-line"
+          />
         </div>
       </Section>
       
       {/* Values */}
       <Section background="card" spacing="large">
         <SectionHeader 
-          headline={pageData.values.headline}
+          headline={
+            <EditableText
+              value={content.values.headline}
+              onSave={(v) => updateField("values.headline", v)}
+              editable={isAdmin}
+              tag="span"
+            />
+          }
         />
         <div className="grid md:grid-cols-3 gap-8 md:gap-12">
-          {pageData.values.items.map((value, index) => (
+          {content.values.items.map((value, index) => (
             <div 
-              key={value.title} 
+              key={index} 
               className="fade-in-up"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
-              <h3 className="font-serif text-lg md:text-xl text-editorial">
-                {value.title}
-              </h3>
-              <p className="mt-3 text-muted-foreground leading-relaxed">
-                {value.description}
-              </p>
+              <EditableText
+                value={value.title}
+                onSave={(v) => updateField(`values.items.${index}.title`, v)}
+                editable={isAdmin}
+                tag="h3"
+                className="font-serif text-lg md:text-xl text-editorial"
+              />
+              <EditableText
+                value={value.description}
+                onSave={(v) => updateField(`values.items.${index}.description`, v)}
+                editable={isAdmin}
+                tag="p"
+                className="mt-3 text-muted-foreground leading-relaxed"
+              />
             </div>
           ))}
         </div>
