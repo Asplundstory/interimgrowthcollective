@@ -1,4 +1,5 @@
 import { Helmet } from "react-helmet-async";
+import { useLocation } from "react-router-dom";
 import { siteConfig } from "@/content/site";
 
 interface ArticleData {
@@ -109,6 +110,17 @@ const generateBreadcrumbSchema = (breadcrumbs: BreadcrumbItem[], origin: string)
   })),
 });
 
+// Generate hreflang URLs
+const getHreflangUrls = (pathname: string, origin: string) => {
+  const isEnglish = pathname.startsWith("/en");
+  const basePath = isEnglish ? pathname.replace(/^\/en/, "") || "/" : pathname;
+  
+  const svUrl = `${origin}${basePath}`;
+  const enUrl = `${origin}${basePath === "/" ? "/en" : `/en${basePath}`}`;
+  
+  return { svUrl, enUrl, currentLang: isEnglish ? "en" : "sv" };
+};
+
 export function SEO({
   title,
   description = siteConfig.seo.defaultDescription,
@@ -118,23 +130,32 @@ export function SEO({
   breadcrumbs,
   noIndex = false,
 }: SEOProps) {
+  const location = useLocation();
   const fullTitle = title
     ? siteConfig.seo.titleTemplate.replace("%s", title)
     : siteConfig.seo.defaultTitle;
 
-  const origin = typeof window !== "undefined" ? window.location.origin : "";
+  const origin = typeof window !== "undefined" ? window.location.origin : "https://interimgrowthcollective.se";
   const canonicalUrl = typeof window !== "undefined" ? window.location.href : "";
   const absoluteImage = image.startsWith("http") 
     ? image 
     : `${origin}${image}`;
 
+  const { svUrl, enUrl, currentLang } = getHreflangUrls(location.pathname, origin);
+
   return (
     <Helmet>
       {/* Basic */}
+      <html lang={currentLang} />
       <title>{fullTitle}</title>
       <meta name="description" content={description} />
       {noIndex && <meta name="robots" content="noindex, nofollow" />}
       <link rel="canonical" href={canonicalUrl} />
+      
+      {/* Hreflang tags for multilingual SEO */}
+      <link rel="alternate" hrefLang="sv" href={svUrl} />
+      <link rel="alternate" hrefLang="en" href={enUrl} />
+      <link rel="alternate" hrefLang="x-default" href={svUrl} />
 
       {/* OpenGraph */}
       <meta property="og:title" content={fullTitle} />
