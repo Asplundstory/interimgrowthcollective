@@ -12,8 +12,25 @@ export default function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isSetupMode, setIsSetupMode] = useState(false);
+  const [checkingSetup, setCheckingSetup] = useState(true);
   const { isAdmin, isLoading: isCheckingAdmin } = useAdmin();
   const navigate = useNavigate();
+
+  // Check if any admins exist
+  useEffect(() => {
+    const checkAdminExists = async () => {
+      const { count } = await supabase
+        .from("user_roles")
+        .select("*", { count: "exact", head: true })
+        .eq("role", "admin");
+
+      setIsSetupMode(count === 0);
+      setCheckingSetup(false);
+    };
+
+    checkAdminExists();
+  }, []);
 
   useEffect(() => {
     if (!isCheckingAdmin && isAdmin) {
@@ -66,7 +83,62 @@ export default function AdminLogin() {
     }
   };
 
-  if (isCheckingAdmin) {
+  const handleSetup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (password.length < 6) {
+      toast.error("Lösenordet måste vara minst 6 tecken");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      // Sign up the user
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/`,
+        },
+      });
+
+      if (error) {
+        if (error.message.includes("already registered")) {
+          toast.error("E-postadressen är redan registrerad. Försök logga in istället.");
+          setIsSetupMode(false);
+        } else {
+          toast.error(error.message);
+        }
+        return;
+      }
+
+      if (data.user) {
+        // Add admin role
+        const { error: roleError } = await supabase
+          .from("user_roles")
+          .insert({
+            user_id: data.user.id,
+            role: "admin",
+          });
+
+        if (roleError) {
+          console.error("Error adding admin role:", roleError);
+          toast.error("Kunde inte skapa admin-rättigheter");
+          return;
+        }
+
+        toast.success("Admin-konto skapat! Du är nu inloggad.");
+        navigate("/");
+      }
+    } catch (err) {
+      toast.error("Ett fel uppstod");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (isCheckingAdmin || checkingSetup) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -78,13 +150,17 @@ export default function AdminLogin() {
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
       <div className="w-full max-w-sm space-y-8">
         <div className="text-center">
-          <h1 className="text-2xl font-serif">Admin</h1>
+          <h1 className="text-2xl font-serif">
+            {isSetupMode ? "Skapa första admin" : "Admin"}
+          </h1>
           <p className="text-muted-foreground mt-2">
-            Logga in för att redigera innehåll
+            {isSetupMode
+              ? "Registrera dig som administratör"
+              : "Logga in för att redigera innehåll"}
           </p>
         </div>
 
-        <form onSubmit={handleLogin} className="space-y-4">
+        <form onSubmit={isSetupMode ? handleSetup : handleLogin} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email">E-post</Label>
             <Input
@@ -107,7 +183,8 @@ export default function AdminLogin() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               required
-              autoComplete="current-password"
+              autoComplete={isSetupMode ? "new-password" : "current-password"}
+              minLength={isSetupMode ? 6 : undefined}
             />
           </div>
 
@@ -115,8 +192,10 @@ export default function AdminLogin() {
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Loggar in...
+                {isSetupMode ? "Skapar konto..." : "Loggar in..."}
               </>
+            ) : isSetupMode ? (
+              "Skapa admin-konto"
             ) : (
               "Logga in"
             )}
@@ -124,7 +203,9 @@ export default function AdminLogin() {
         </form>
 
         <p className="text-center text-xs text-muted-foreground">
-          Endast för administratörer
+          {isSetupMode
+            ? "Detta skapar det första admin-kontot"
+            : "Endast för administratörer"}
         </p>
       </div>
     </div>
