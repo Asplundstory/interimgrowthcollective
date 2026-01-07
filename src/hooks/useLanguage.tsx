@@ -140,6 +140,30 @@ const translations: Record<Language, Record<string, string>> = {
     "insights.hero.headline": "Insights",
     "insights.hero.subheadline": "Tankar och perspektiv från vårt nätverk.",
     "insights.empty": "Inga artiklar publicerade ännu.",
+    "insights.newArticle": "Ny artikel",
+    "insights.draft": "Utkast",
+    
+    // Areas page
+    "areas.context.1": "Vi begränsar oss medvetet till områden där vi har djup kompetens och ett starkt nätverk. Varje person i vårt collective har valts ut baserat på erfarenhet, mognad och förmåga att leverera under press.",
+    "areas.context.2": "Om ni behöver kompetens inom ett område som inte listas här, hör gärna av er. Vi kan ofta hjälpa till eller peka i rätt riktning.",
+    
+    // Form labels
+    "form.name": "Namn",
+    "form.email": "E-post",
+    "form.company": "Företag",
+    "form.message": "Meddelande",
+    "form.messagePlaceholder": "Beskriv ert behov...",
+    "form.role": "Roll / Disciplin",
+    "form.rolePlaceholder": "t.ex. Brand Strategist, Art Director",
+    "form.portfolio": "Länk till portfolio eller LinkedIn",
+    "form.sending": "Skickar...",
+    "form.errorTitle": "Något gick fel",
+    "form.errorDescription": "Försök igen eller kontakta oss direkt via e-post.",
+    "form.q1": "Beskriv ett uppdrag där känslan avgjorde kvaliteten i leveransen.",
+    "form.q2": "Hur skapar du struktur utan att döda kreativitet?",
+    "form.q3": "Vad behöver du för att leverera stabilt under press?",
+    "form.codeOfConduct": "Jag bekräftar att jag har läst och accepterar Interim Growth Collectives Code of Conduct.",
+    "form.reviewNote": "Alla ansökningar granskas manuellt. Vi letar efter människor som delar våra värderingar kring kvalitet och ansvar.",
     
     // Footer
     "footer.description": "Interimslösningar inom brand, marketing, kommunikation och kreativa discipliner.",
@@ -283,6 +307,30 @@ const translations: Record<Language, Record<string, string>> = {
     "insights.hero.headline": "Insights",
     "insights.hero.subheadline": "Thoughts and perspectives from our network.",
     "insights.empty": "No articles published yet.",
+    "insights.newArticle": "New article",
+    "insights.draft": "Draft",
+    
+    // Areas page
+    "areas.context.1": "We deliberately limit ourselves to areas where we have deep expertise and a strong network. Every person in our collective has been selected based on experience, maturity and ability to deliver under pressure.",
+    "areas.context.2": "If you need expertise in an area not listed here, please get in touch. We can often help or point you in the right direction.",
+    
+    // Form labels
+    "form.name": "Name",
+    "form.email": "Email",
+    "form.company": "Company",
+    "form.message": "Message",
+    "form.messagePlaceholder": "Describe your needs...",
+    "form.role": "Role / Discipline",
+    "form.rolePlaceholder": "e.g. Brand Strategist, Art Director",
+    "form.portfolio": "Link to portfolio or LinkedIn",
+    "form.sending": "Sending...",
+    "form.errorTitle": "Something went wrong",
+    "form.errorDescription": "Please try again or contact us directly by email.",
+    "form.q1": "Describe an assignment where feeling determined the quality of the delivery.",
+    "form.q2": "How do you create structure without killing creativity?",
+    "form.q3": "What do you need to deliver steadily under pressure?",
+    "form.codeOfConduct": "I confirm that I have read and accept the Interim Growth Collective Code of Conduct.",
+    "form.reviewNote": "All applications are reviewed manually. We look for people who share our values of quality and responsibility.",
     
     // Footer
     "footer.description": "Interim solutions in brand, marketing, communication and creative disciplines.",

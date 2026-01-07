@@ -1,55 +1,30 @@
 "use client";
 
 import { Hero, Section, ContactForm } from "@/components/editorial";
-import { EditableText } from "@/components/cms";
 import { SEO } from "@/components/SEO";
-import { useCmsContent } from "@/hooks/useCmsContent";
-import { pageContent } from "@/content/pages";
+import { useLanguage } from "@/hooks/useLanguage";
 import { siteConfig } from "@/content/site";
 import defaultHeroImage from "@/assets/hero-contact.jpg";
 
-const defaultContent = {
-  ...pageContent.contact,
-  heroImage: "",
-};
-
 export default function ContactPage() {
-  const { content, isAdmin, updateField } = useCmsContent("contact", defaultContent);
-
-  const heroImage = content.heroImage || defaultHeroImage;
+  const { t, getLocalizedPath, language } = useLanguage();
 
   return (
     <>
       <SEO 
-        title="Kontakt"
-        description="Kontakta Interim Growth Collective. Berätta om ert behov så återkommer vi inom en arbetsdag."
+        title={t("nav.contact")}
+        description={t("contact.hero.subheadline")}
         breadcrumbs={[
-          { name: "Hem", href: "/" },
-          { name: "Kontakt", href: "/contact" },
+          { name: language === "en" ? "Home" : "Hem", href: getLocalizedPath("/") },
+          { name: t("nav.contact"), href: getLocalizedPath("/contact") },
         ]}
       />
       {/* Hero */}
       <Hero 
-        headline={
-          <EditableText
-            value={content.hero.headline}
-            onSave={(v) => updateField("hero.headline", v)}
-            editable={isAdmin}
-            tag="span"
-          />
-        }
-        subheadline={
-          <EditableText
-            value={content.hero.subheadline}
-            onSave={(v) => updateField("hero.subheadline", v)}
-            editable={isAdmin}
-            tag="span"
-          />
-        }
+        headline={t("contact.hero.headline")}
+        subheadline={t("contact.hero.subheadline")}
         size="medium"
-        backgroundImage={heroImage}
-        onImageChange={(url) => updateField("heroImage", url)}
-        isAdmin={isAdmin}
+        backgroundImage={defaultHeroImage}
       />
       
       {/* Contact options */}
@@ -58,27 +33,19 @@ export default function ContactPage() {
           {/* Form */}
           <div>
             <ContactForm 
-              submitText={content.form.submitText}
-              successMessage={content.form.successMessage}
+              submitText={t("contact.form.submit")}
+              successMessage={t("contact.form.success")}
             />
           </div>
           
           {/* Direct contact */}
           <div className="md:pl-8">
-            <EditableText
-              value={content.directContact?.headline || "Direkt kontakt"}
-              onSave={(v) => updateField("directContact.headline", v)}
-              editable={isAdmin}
-              tag="h2"
-              className="font-serif text-xl text-editorial mb-4"
-            />
-            <EditableText
-              value={content.directContact?.text || "Föredrar du att maila direkt? Skriv till oss så återkommer vi inom en arbetsdag."}
-              onSave={(v) => updateField("directContact.text", v)}
-              editable={isAdmin}
-              tag="p"
-              className="text-muted-foreground leading-relaxed mb-6"
-            />
+            <h2 className="font-serif text-xl text-editorial mb-4">
+              {t("contact.direct.headline")}
+            </h2>
+            <p className="text-muted-foreground leading-relaxed mb-6">
+              {t("contact.direct.text")}
+            </p>
             <a 
               href={`mailto:${siteConfig.contactEmail}`}
               className="text-foreground font-medium link-underline"

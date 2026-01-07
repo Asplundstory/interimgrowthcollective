@@ -5,18 +5,8 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/hooks/useLanguage";
 import { z } from "zod";
-
-const creatorSchema = z.object({
-  name: z.string().trim().min(1, "Namn krävs").max(200, "Max 200 tecken"),
-  email: z.string().trim().email("Ogiltig e-postadress").max(254, "Max 254 tecken"),
-  role: z.string().trim().min(1, "Roll krävs").max(200, "Max 200 tecken"),
-  portfolio_url: z.string().trim().url("Ogiltig URL").max(500, "Max 500 tecken"),
-  q1_feeling: z.string().trim().min(1, "Svar krävs").max(2000, "Max 2000 tecken"),
-  q2_structure: z.string().trim().min(1, "Svar krävs").max(2000, "Max 2000 tecken"),
-  q3_pressure: z.string().trim().min(1, "Svar krävs").max(2000, "Max 2000 tecken"),
-  code_of_conduct_accepted: z.literal(true, { errorMap: () => ({ message: "Du måste acceptera Code of Conduct" }) }),
-});
 
 interface CreatorFormProps {
   submitText?: string;
@@ -24,14 +14,26 @@ interface CreatorFormProps {
 }
 
 export function CreatorForm({ 
-  submitText = "Skicka ansökan", 
-  successMessage = "Tack för din ansökan. Vi går igenom alla ansökningar manuellt och återkommer inom två veckor."
+  submitText, 
+  successMessage
 }: CreatorFormProps) {
+  const { t } = useLanguage();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [codeOfConduct, setCodeOfConduct] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const { toast } = useToast();
+
+  const creatorSchema = z.object({
+    name: z.string().trim().min(1).max(200),
+    email: z.string().trim().email().max(254),
+    role: z.string().trim().min(1).max(200),
+    portfolio_url: z.string().trim().url().max(500),
+    q1_feeling: z.string().trim().min(1).max(2000),
+    q2_structure: z.string().trim().min(1).max(2000),
+    q3_pressure: z.string().trim().min(1).max(2000),
+    code_of_conduct_accepted: z.literal(true),
+  });
   
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -82,8 +84,8 @@ export function CreatorForm({
     if (dbError) {
       console.error("Database error:", dbError);
       toast({
-        title: "Något gick fel",
-        description: "Försök igen eller kontakta oss direkt via e-post.",
+        title: t("form.errorTitle"),
+        description: t("form.errorDescription"),
         variant: "destructive",
       });
       setIsSubmitting(false);
@@ -106,7 +108,6 @@ export function CreatorForm({
 
     if (emailError) {
       console.error("Email error:", emailError);
-      // Don't block form submission if email fails - data is already saved
     }
     
     setIsSubmitting(false);
@@ -116,7 +117,7 @@ export function CreatorForm({
   if (isSubmitted) {
     return (
       <div className="py-12 text-center border border-border bg-card">
-        <p className="text-lg font-serif px-6">{successMessage}</p>
+        <p className="text-lg font-serif px-6">{successMessage || t("creators.form.success")}</p>
       </div>
     );
   }
@@ -127,7 +128,7 @@ export function CreatorForm({
       <div className="space-y-6">
         <div className="grid md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <Label htmlFor="name">Namn</Label>
+            <Label htmlFor="name">{t("form.name")}</Label>
             <Input 
               id="name" 
               name="name" 
@@ -139,7 +140,7 @@ export function CreatorForm({
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="email">E-post</Label>
+            <Label htmlFor="email">{t("form.email")}</Label>
             <Input 
               id="email" 
               name="email" 
@@ -154,20 +155,20 @@ export function CreatorForm({
         
         <div className="grid md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <Label htmlFor="role">Roll / Disciplin</Label>
+            <Label htmlFor="role">{t("form.role")}</Label>
             <Input 
               id="role" 
               name="role" 
               required 
               maxLength={200}
-              placeholder="t.ex. Brand Strategist, Art Director"
+              placeholder={t("form.rolePlaceholder")}
               className="bg-background border-border"
             />
             {errors.role && <p className="text-sm text-destructive">{errors.role}</p>}
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="portfolio">Länk till portfolio eller LinkedIn</Label>
+            <Label htmlFor="portfolio">{t("form.portfolio")}</Label>
             <Input 
               id="portfolio" 
               name="portfolio" 
@@ -186,7 +187,7 @@ export function CreatorForm({
       <div className="space-y-6 pt-4 border-t border-border">
         <div className="space-y-2">
           <Label htmlFor="q1" className="text-base">
-            Beskriv ett uppdrag där känslan avgjorde kvaliteten i leveransen.
+            {t("form.q1")}
           </Label>
           <Textarea 
             id="q1" 
@@ -201,7 +202,7 @@ export function CreatorForm({
         
         <div className="space-y-2">
           <Label htmlFor="q2" className="text-base">
-            Hur skapar du struktur utan att döda kreativitet?
+            {t("form.q2")}
           </Label>
           <Textarea 
             id="q2" 
@@ -216,7 +217,7 @@ export function CreatorForm({
         
         <div className="space-y-2">
           <Label htmlFor="q3" className="text-base">
-            Vad behöver du för att leverera stabilt under press?
+            {t("form.q3")}
           </Label>
           <Textarea 
             id="q3" 
@@ -239,7 +240,7 @@ export function CreatorForm({
           className="mt-0.5"
         />
         <Label htmlFor="coc" className="text-sm text-muted-foreground font-normal cursor-pointer">
-          Jag bekräftar att jag har läst och accepterar Interim Growth Collectives Code of Conduct.
+          {t("form.codeOfConduct")}
         </Label>
       </div>
       
@@ -248,7 +249,7 @@ export function CreatorForm({
         disabled={isSubmitting || !codeOfConduct}
         className="px-6 py-3 bg-primary text-primary-foreground text-sm font-medium transition-colors hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {isSubmitting ? "Skickar..." : submitText}
+        {isSubmitting ? t("form.sending") : (submitText || t("creators.form.submit"))}
       </button>
     </form>
   );

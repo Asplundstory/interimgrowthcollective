@@ -3,63 +3,37 @@
 import { useState } from "react";
 import { Plus, Pencil } from "lucide-react";
 import { Hero, Section, EditorialCard } from "@/components/editorial";
-import { EditableText, InsightEditor } from "@/components/cms";
+import { InsightEditor } from "@/components/cms";
 import { SEO } from "@/components/SEO";
 import { useInsights, Insight } from "@/hooks/useInsights";
-import { useCmsContent } from "@/hooks/useCmsContent";
+import { useLanguage } from "@/hooks/useLanguage";
 import defaultHeroImage from "@/assets/hero-insights.jpg";
-
-const defaultContent = {
-  hero: {
-    headline: "Insights",
-    subheadline: "Reflektioner om kvalitet, kreativitet och att leverera under press.",
-  },
-  heroImage: "",
-};
 
 export default function InsightsPage() {
   const { insights, isLoading, isAdmin, createInsight, updateInsight, deleteInsight } = useInsights();
-  const { content, updateField } = useCmsContent("insights", defaultContent);
+  const { t, getLocalizedPath, language } = useLanguage();
   const [editingInsight, setEditingInsight] = useState<Insight | null>(null);
   const [isCreating, setIsCreating] = useState(false);
 
   // Filter: admins see all, others see only published
   const visibleInsights = isAdmin ? insights : insights.filter((i) => i.published);
 
-  const heroImage = content.heroImage || defaultHeroImage;
-
   return (
     <>
       <SEO 
-        title="Insights"
-        description="Reflektioner om kvalitet, kreativitet och att leverera under press. Läs våra senaste tankar och insikter."
+        title={t("insights.hero.headline")}
+        description={t("insights.hero.subheadline")}
         breadcrumbs={[
-          { name: "Hem", href: "/" },
-          { name: "Insights", href: "/insights" },
+          { name: language === "en" ? "Home" : "Hem", href: getLocalizedPath("/") },
+          { name: t("insights.hero.headline"), href: getLocalizedPath("/insights") },
         ]}
       />
       {/* Hero */}
       <Hero
-        headline={
-          <EditableText
-            value={content.hero.headline}
-            onSave={(v) => updateField("hero.headline", v)}
-            editable={isAdmin}
-            tag="span"
-          />
-        }
-        subheadline={
-          <EditableText
-            value={content.hero.subheadline}
-            onSave={(v) => updateField("hero.subheadline", v)}
-            editable={isAdmin}
-            tag="span"
-          />
-        }
+        headline={t("insights.hero.headline")}
+        subheadline={t("insights.hero.subheadline")}
         size="medium"
-        backgroundImage={heroImage}
-        onImageChange={(url) => updateField("heroImage", url)}
-        isAdmin={isAdmin}
+        backgroundImage={defaultHeroImage}
       />
 
       {/* Admin: Add new button */}
@@ -70,7 +44,7 @@ export default function InsightsPage() {
             className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-md hover:bg-primary/90 transition-colors"
           >
             <Plus className="h-4 w-4" />
-            Ny artikel
+            {t("insights.newArticle")}
           </button>
         </div>
       )}
@@ -78,9 +52,9 @@ export default function InsightsPage() {
       {/* Posts */}
       <Section spacing="large">
         {isLoading ? (
-          <div className="text-muted-foreground">Laddar...</div>
+          <div className="text-muted-foreground">{t("common.loading")}</div>
         ) : visibleInsights.length === 0 ? (
-          <div className="text-muted-foreground">Inga inlägg ännu.</div>
+          <div className="text-muted-foreground">{t("insights.empty")}</div>
         ) : (
           <div className="space-y-0">
             {visibleInsights.map((post) => (
@@ -88,18 +62,18 @@ export default function InsightsPage() {
                 <EditorialCard
                   title={post.title}
                   description={post.excerpt}
-                  href={`/insights/${post.slug}`}
+                  href={getLocalizedPath(`/insights/${post.slug}`)}
                   image={post.image_url}
                   meta={
                     <>
-                      {new Date(post.date).toLocaleDateString("sv-SE", {
+                      {new Date(post.date).toLocaleDateString(language === "en" ? "en-US" : "sv-SE", {
                         year: "numeric",
                         month: "long",
                         day: "numeric",
                       })}
                       {!post.published && (
                         <span className="ml-2 text-xs bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400 px-2 py-0.5 rounded">
-                          Utkast
+                          {t("insights.draft")}
                         </span>
                       )}
                     </>
@@ -113,7 +87,7 @@ export default function InsightsPage() {
                       setEditingInsight(post);
                     }}
                     className="absolute top-4 right-4 p-2 bg-primary text-primary-foreground rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
-                    title="Redigera"
+                    title={language === "en" ? "Edit" : "Redigera"}
                   >
                     <Pencil className="h-4 w-4" />
                   </button>
