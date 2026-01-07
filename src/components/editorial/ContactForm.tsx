@@ -54,7 +54,7 @@ export function ContactForm({
       return;
     }
     
-    const { error } = await supabase
+    const { error: dbError } = await supabase
       .from('contact_submissions')
       .insert({
         name: result.data.name,
@@ -63,17 +63,34 @@ export function ContactForm({
         message: result.data.message,
       });
     
-    setIsSubmitting(false);
-    
-    if (error) {
+    if (dbError) {
+      console.error("Database error:", dbError);
       toast({
         title: "Något gick fel",
         description: "Försök igen eller kontakta oss direkt via e-post.",
         variant: "destructive",
       });
+      setIsSubmitting(false);
       return;
     }
+
+    // Send email notification
+    const { error: emailError } = await supabase.functions.invoke('send-notification-email', {
+      body: {
+        type: 'contact',
+        name: result.data.name,
+        email: result.data.email,
+        company: result.data.company,
+        message: result.data.message,
+      },
+    });
+
+    if (emailError) {
+      console.error("Email error:", emailError);
+      // Don't block form submission if email fails - data is already saved
+    }
     
+    setIsSubmitting(false);
     setIsSubmitted(true);
   };
   

@@ -66,7 +66,7 @@ export function CreatorForm({
       return;
     }
     
-    const { error } = await supabase
+    const { error: dbError } = await supabase
       .from('creator_applications')
       .insert({
         name: result.data.name,
@@ -79,17 +79,37 @@ export function CreatorForm({
         code_of_conduct_accepted: result.data.code_of_conduct_accepted,
       });
     
-    setIsSubmitting(false);
-    
-    if (error) {
+    if (dbError) {
+      console.error("Database error:", dbError);
       toast({
         title: "Något gick fel",
         description: "Försök igen eller kontakta oss direkt via e-post.",
         variant: "destructive",
       });
+      setIsSubmitting(false);
       return;
     }
+
+    // Send email notification
+    const { error: emailError } = await supabase.functions.invoke('send-notification-email', {
+      body: {
+        type: 'creator',
+        name: result.data.name,
+        email: result.data.email,
+        role: result.data.role,
+        portfolioUrl: result.data.portfolio_url,
+        q1Feeling: result.data.q1_feeling,
+        q2Structure: result.data.q2_structure,
+        q3Pressure: result.data.q3_pressure,
+      },
+    });
+
+    if (emailError) {
+      console.error("Email error:", emailError);
+      // Don't block form submission if email fails - data is already saved
+    }
     
+    setIsSubmitting(false);
     setIsSubmitted(true);
   };
   
