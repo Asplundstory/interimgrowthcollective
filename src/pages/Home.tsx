@@ -27,9 +27,29 @@ export default function HomePage() {
   // Use uploaded image or fallback to default
   const heroImage = content.heroImage || defaultHeroImage;
   
+  // FAQ data for structured data
+  const faqData = [
+    {
+      question: "Vad är en interimkonsult?",
+      answer: "En interimkonsult är en erfaren specialist som tillfälligt förstärker er organisation. Till skillnad från traditionella konsulter kliver interimkonsulter in och tar operativt ansvar - de levererar resultat, inte rapporter.",
+    },
+    {
+      question: "Inom vilka områden förmedlar ni interimkonsulter?",
+      answer: "Vi förmedlar erfarna människor inom brand strategy, marketing, kommunikation och kreativa discipliner som design, arkitektur, inredning, musik och film.",
+    },
+    {
+      question: "Hur snabbt kan ni hitta rätt person?",
+      answer: "Vanligtvis presenterar vi kvalificerade kandidater inom 1-2 veckor. Vid akuta behov kan vi ofta agera snabbare tack vare vårt etablerade nätverk.",
+    },
+    {
+      question: "Vad kostar det att anlita en interimkonsult via er?",
+      answer: "Priserna varierar beroende på uppdragets längd, komplexitet och den kompetens som krävs. Kontakta oss för en offert baserad på ert specifika behov.",
+    },
+  ];
+
   return (
     <>
-      <SEO />
+      <SEO faq={faqData} />
       {/* Hero */}
       <Hero 
         headline={

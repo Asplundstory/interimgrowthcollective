@@ -86,7 +86,9 @@ export default function InsightPage() {
         image={post.image_url || undefined}
         article={{
           publishedTime: post.date,
+          modifiedTime: post.updated_at,
           tags: post.tags,
+          author: "Interim Growth Collective",
         }}
       />
       {/* Back link */}
