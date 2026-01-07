@@ -49,6 +49,121 @@ const getOrganizationSchema = (origin: string) => ({
   ],
 });
 
+// LocalBusiness schema for local SEO
+const getLocalBusinessSchema = (origin: string) => ({
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "@id": `${origin}/#localbusiness`,
+  name: siteConfig.siteName,
+  description: siteConfig.description,
+  url: origin,
+  logo: `${origin}/favicon.png`,
+  image: `${origin}/og-image.jpg`,
+  email: siteConfig.contactEmail,
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Stockholm",
+    addressRegion: "Stockholm",
+    addressCountry: "SE",
+  },
+  geo: {
+    "@type": "GeoCoordinates",
+    latitude: 59.3293,
+    longitude: 18.0686,
+  },
+  areaServed: [
+    {
+      "@type": "Country",
+      name: "Sweden",
+    },
+    {
+      "@type": "AdministrativeArea",
+      name: "Scandinavia",
+    },
+  ],
+  priceRange: "$$$$",
+  openingHoursSpecification: {
+    "@type": "OpeningHoursSpecification",
+    dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+    opens: "09:00",
+    closes: "17:00",
+  },
+  sameAs: [siteConfig.social.linkedin],
+});
+
+// Service schema for service visibility
+const getServicesSchema = (origin: string) => ({
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  itemListElement: [
+    {
+      "@type": "Service",
+      "@id": `${origin}/#interim-management`,
+      position: 1,
+      name: "Interim Management",
+      description: "Erfarna interimkonsulter som tar operativt ansvar och levererar resultat inom brand, marketing och kommunikation.",
+      provider: {
+        "@type": "Organization",
+        name: siteConfig.siteName,
+      },
+      areaServed: "SE",
+      serviceType: "Interim Management",
+    },
+    {
+      "@type": "Service",
+      "@id": `${origin}/#brand-strategy`,
+      position: 2,
+      name: "Brand Strategy",
+      description: "Strategiskt varumärkesarbete med erfarna specialister inom positionering, identitet och narrativ.",
+      provider: {
+        "@type": "Organization",
+        name: siteConfig.siteName,
+      },
+      areaServed: "SE",
+      serviceType: "Brand Strategy",
+    },
+    {
+      "@type": "Service",
+      "@id": `${origin}/#marketing`,
+      position: 3,
+      name: "Marketing",
+      description: "Marknadsföringsexperter som bygger långsiktigt värde genom genomtänkta insatser och strategier.",
+      provider: {
+        "@type": "Organization",
+        name: siteConfig.siteName,
+      },
+      areaServed: "SE",
+      serviceType: "Marketing Strategy",
+    },
+    {
+      "@type": "Service",
+      "@id": `${origin}/#communication`,
+      position: 4,
+      name: "Communication",
+      description: "Kommunikationsspecialister för extern och intern kommunikation, content och PR.",
+      provider: {
+        "@type": "Organization",
+        name: siteConfig.siteName,
+      },
+      areaServed: "SE",
+      serviceType: "Communication",
+    },
+    {
+      "@type": "Service",
+      "@id": `${origin}/#creative`,
+      position: 5,
+      name: "Creative",
+      description: "Kreativa specialister inom design, arkitektur, inredning, musik och film.",
+      provider: {
+        "@type": "Organization",
+        name: siteConfig.siteName,
+      },
+      areaServed: "SE",
+      serviceType: "Creative Services",
+    },
+  ],
+});
+
 // Generate Article schema
 const generateArticleSchema = (
   title: string,
@@ -182,6 +297,16 @@ export function SEO({
       {/* JSON-LD: Organization (always) */}
       <script type="application/ld+json">
         {JSON.stringify(getOrganizationSchema(origin))}
+      </script>
+
+      {/* JSON-LD: LocalBusiness for local SEO */}
+      <script type="application/ld+json">
+        {JSON.stringify(getLocalBusinessSchema(origin))}
+      </script>
+
+      {/* JSON-LD: Services for service visibility */}
+      <script type="application/ld+json">
+        {JSON.stringify(getServicesSchema(origin))}
       </script>
 
       {/* JSON-LD: BreadcrumbList (when breadcrumbs prop provided) */}
