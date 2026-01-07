@@ -4,14 +4,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/hooks/useLanguage";
 import { z } from "zod";
-
-const contactSchema = z.object({
-  name: z.string().trim().min(1, "Namn krävs").max(200, "Max 200 tecken"),
-  email: z.string().trim().email("Ogiltig e-postadress").max(254, "Max 254 tecken"),
-  company: z.string().trim().max(200, "Max 200 tecken").nullable(),
-  message: z.string().trim().min(1, "Meddelande krävs").max(5000, "Max 5000 tecken"),
-});
 
 interface ContactFormProps {
   submitText?: string;
@@ -19,13 +13,21 @@ interface ContactFormProps {
 }
 
 export function ContactForm({ 
-  submitText = "Skicka meddelande", 
-  successMessage = "Tack för ditt meddelande. Vi återkommer så snart vi kan."
+  submitText, 
+  successMessage
 }: ContactFormProps) {
+  const { t } = useLanguage();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const { toast } = useToast();
+
+  const contactSchema = z.object({
+    name: z.string().trim().min(1, t("form.name") + " " + t("common.error")).max(200),
+    email: z.string().trim().email(t("common.error")).max(254),
+    company: z.string().trim().max(200).nullable(),
+    message: z.string().trim().min(1, t("form.message") + " " + t("common.error")).max(5000),
+  });
   
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -66,8 +68,8 @@ export function ContactForm({
     if (dbError) {
       console.error("Database error:", dbError);
       toast({
-        title: "Något gick fel",
-        description: "Försök igen eller kontakta oss direkt via e-post.",
+        title: t("form.errorTitle"),
+        description: t("form.errorDescription"),
         variant: "destructive",
       });
       setIsSubmitting(false);
@@ -87,7 +89,6 @@ export function ContactForm({
 
     if (emailError) {
       console.error("Email error:", emailError);
-      // Don't block form submission if email fails - data is already saved
     }
     
     setIsSubmitting(false);
@@ -97,7 +98,7 @@ export function ContactForm({
   if (isSubmitted) {
     return (
       <div className="py-12 text-center">
-        <p className="text-lg font-serif">{successMessage}</p>
+        <p className="text-lg font-serif">{successMessage || t("contact.form.success")}</p>
       </div>
     );
   }
@@ -106,7 +107,7 @@ export function ContactForm({
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="grid md:grid-cols-2 gap-6">
         <div className="space-y-2">
-          <Label htmlFor="name">Namn</Label>
+          <Label htmlFor="name">{t("form.name")}</Label>
           <Input 
             id="name" 
             name="name" 
@@ -118,7 +119,7 @@ export function ContactForm({
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="email">E-post</Label>
+          <Label htmlFor="email">{t("form.email")}</Label>
           <Input 
             id="email" 
             name="email" 
@@ -132,7 +133,7 @@ export function ContactForm({
       </div>
       
       <div className="space-y-2">
-        <Label htmlFor="company">Företag</Label>
+        <Label htmlFor="company">{t("form.company")}</Label>
         <Input 
           id="company" 
           name="company" 
@@ -143,7 +144,7 @@ export function ContactForm({
       </div>
       
       <div className="space-y-2">
-        <Label htmlFor="message">Meddelande</Label>
+        <Label htmlFor="message">{t("form.message")}</Label>
         <Textarea 
           id="message" 
           name="message" 
@@ -151,7 +152,7 @@ export function ContactForm({
           required 
           maxLength={5000}
           className="bg-background border-border resize-none"
-          placeholder="Beskriv ert behov..."
+          placeholder={t("form.messagePlaceholder")}
         />
         {errors.message && <p className="text-sm text-destructive">{errors.message}</p>}
       </div>
@@ -161,7 +162,7 @@ export function ContactForm({
         disabled={isSubmitting}
         className="px-6 py-3 bg-primary text-primary-foreground text-sm font-medium transition-colors hover:bg-primary/90 disabled:opacity-50"
       >
-        {isSubmitting ? "Skickar..." : submitText}
+        {isSubmitting ? t("form.sending") : (submitText || t("contact.form.submit"))}
       </button>
     </form>
   );

@@ -2,7 +2,14 @@
 
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { Area } from "@/content/areas";
+
+interface Area {
+  id: string;
+  title: string;
+  description: string;
+  examples: string[];
+  image: string;
+}
 
 interface AreaGridProps {
   areas: Area[];
