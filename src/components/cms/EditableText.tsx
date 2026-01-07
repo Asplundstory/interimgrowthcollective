@@ -70,33 +70,36 @@ export function EditableText({
 
   if (isEditing) {
     return (
-      <div className="relative group">
+      <div className="relative">
         <textarea
           ref={inputRef}
           value={editValue}
           onChange={(e) => setEditValue(e.target.value)}
           onKeyDown={handleKeyDown}
           className={cn(
-            "w-full bg-background border-2 border-primary/50 rounded-md p-2 resize-none focus:outline-none focus:border-primary",
+            "w-full bg-background border-2 border-primary/50 rounded-md p-3 resize-y focus:outline-none focus:border-primary min-h-[80px]",
             className
           )}
-          rows={Math.max(1, editValue.split("\n").length)}
+          style={{ 
+            height: "auto",
+            minHeight: `${Math.max(80, (editValue.split("\n").length + 1) * 24)}px`
+          }}
           disabled={isSaving}
         />
-        <div className="absolute -top-10 right-0 flex gap-1">
+        <div className="absolute top-2 right-2 flex gap-1">
           <button
             onClick={handleSave}
             disabled={isSaving}
-            className="p-2 bg-primary text-primary-foreground rounded-md hover:opacity-90 disabled:opacity-50"
-            title="Spara"
+            className="p-2 bg-primary text-primary-foreground rounded-md hover:opacity-90 disabled:opacity-50 shadow-md"
+            title="Spara (Enter)"
           >
             <Check className="h-4 w-4" />
           </button>
           <button
             onClick={handleCancel}
             disabled={isSaving}
-            className="p-2 bg-muted text-muted-foreground rounded-md hover:opacity-90"
-            title="Avbryt"
+            className="p-2 bg-muted text-muted-foreground rounded-md hover:opacity-90 shadow-md"
+            title="Avbryt (Esc)"
           >
             <X className="h-4 w-4" />
           </button>
