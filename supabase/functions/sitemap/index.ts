@@ -6,7 +6,7 @@ const corsHeaders = {
   "Content-Type": "application/xml",
 };
 
-const SITE_URL = "https://interimgrowth.se";
+const SITE_URL = "https://interimgrowthcollective.se";
 
 const staticPages = [
   { loc: "/", changefreq: "weekly", priority: "1.0" },
@@ -19,6 +19,34 @@ const staticPages = [
   { loc: "/privacy", changefreq: "yearly", priority: "0.3" },
   { loc: "/terms", changefreq: "yearly", priority: "0.3" },
 ];
+
+// Generate URL entry with hreflang alternates
+const generateUrlEntry = (path: string, changefreq: string, priority: string, lastmod?: string) => {
+  const svUrl = `${SITE_URL}${path}`;
+  const enUrl = path === "/" ? `${SITE_URL}/en` : `${SITE_URL}/en${path}`;
+  
+  let entry = `
+  <url>
+    <loc>${svUrl}</loc>${lastmod ? `
+    <lastmod>${lastmod}</lastmod>` : ""}
+    <changefreq>${changefreq}</changefreq>
+    <priority>${priority}</priority>
+    <xhtml:link rel="alternate" hreflang="sv" href="${svUrl}"/>
+    <xhtml:link rel="alternate" hreflang="en" href="${enUrl}"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="${svUrl}"/>
+  </url>
+  <url>
+    <loc>${enUrl}</loc>${lastmod ? `
+    <lastmod>${lastmod}</lastmod>` : ""}
+    <changefreq>${changefreq}</changefreq>
+    <priority>${priority}</priority>
+    <xhtml:link rel="alternate" hreflang="sv" href="${svUrl}"/>
+    <xhtml:link rel="alternate" hreflang="en" href="${enUrl}"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="${svUrl}"/>
+  </url>`;
+  
+  return entry;
+};
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -44,34 +72,24 @@ Deno.serve(async (req) => {
 
     console.log(`Found ${insights?.length || 0} published insights`);
 
-    // Generate XML
+    // Generate XML with xhtml namespace for hreflang
     let xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">`;
 
-    // Add static pages
+    // Add static pages (both languages)
     for (const page of staticPages) {
-      xml += `
-  <url>
-    <loc>${SITE_URL}${page.loc}</loc>
-    <changefreq>${page.changefreq}</changefreq>
-    <priority>${page.priority}</priority>
-  </url>`;
+      xml += generateUrlEntry(page.loc, page.changefreq, page.priority);
     }
 
-    // Add dynamic insight pages
+    // Add dynamic insight pages (both languages)
     if (insights && insights.length > 0) {
       for (const insight of insights) {
         const lastmod = insight.updated_at 
           ? new Date(insight.updated_at).toISOString().split("T")[0]
           : new Date(insight.date).toISOString().split("T")[0];
         
-        xml += `
-  <url>
-    <loc>${SITE_URL}/insights/${insight.slug}</loc>
-    <lastmod>${lastmod}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>`;
+        xml += generateUrlEntry(`/insights/${insight.slug}`, "monthly", "0.6", lastmod);
       }
     }
 
