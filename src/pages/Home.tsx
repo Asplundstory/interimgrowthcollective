@@ -4,14 +4,17 @@ import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion, useInView } from "framer-motion";
 import { Hero, Section, SectionHeader, EditorialCard, CTA, AreaGrid } from "@/components/editorial";
-import { usePageContent } from "@/hooks/usePageContent";
+import { EditableText } from "@/components/cms";
+import { useCmsContent } from "@/hooks/useCmsContent";
+import { pageContent } from "@/content/pages";
 import { areas } from "@/content/areas";
 import { insights } from "@/content/insights";
 import heroImage from "@/assets/hero-architecture.jpg";
 
+const defaultHomeContent = pageContent.home;
+
 export default function HomePage() {
-  const { content } = usePageContent();
-  const homeContent = content.home;
+  const { content, isAdmin, updateField } = useCmsContent("home", defaultHomeContent);
   
   const valueRef = useRef(null);
   const isValueInView = useInView(valueRef, { once: true, margin: "-50px" });
@@ -20,9 +23,23 @@ export default function HomePage() {
     <>
       {/* Hero */}
       <Hero 
-        headline={homeContent.hero.headline}
-        subheadline={homeContent.hero.subheadline}
-        cta={{ text: homeContent.hero.cta, href: "/contact" }}
+        headline={
+          <EditableText
+            value={content.hero.headline}
+            onSave={(v) => updateField("hero.headline", v)}
+            editable={isAdmin}
+            tag="span"
+          />
+        }
+        subheadline={
+          <EditableText
+            value={content.hero.subheadline}
+            onSave={(v) => updateField("hero.subheadline", v)}
+            editable={isAdmin}
+            tag="span"
+          />
+        }
+        cta={{ text: content.hero.cta, href: "/contact" }}
         size="large"
         backgroundImage={heroImage}
       />
@@ -30,21 +47,32 @@ export default function HomePage() {
       {/* Intro */}
       <Section background="muted" spacing="large">
         <div className="max-w-2xl">
-          <p className="text-lg md:text-xl leading-relaxed text-muted-foreground">
-            {homeContent.intro.text}
-          </p>
+          <EditableText
+            value={content.intro.text}
+            onSave={(v) => updateField("intro.text", v)}
+            editable={isAdmin}
+            tag="p"
+            className="text-lg md:text-xl leading-relaxed text-muted-foreground"
+          />
         </div>
       </Section>
       
       {/* Value Proposition */}
       <Section spacing="large">
         <SectionHeader 
-          headline={homeContent.valueProposition.headline}
+          headline={
+            <EditableText
+              value={content.valueProposition.headline}
+              onSave={(v) => updateField("valueProposition.headline", v)}
+              editable={isAdmin}
+              tag="span"
+            />
+          }
         />
         <div ref={valueRef} className="grid md:grid-cols-3 gap-8 md:gap-12">
-          {homeContent.valueProposition.items.map((item, index) => (
+          {content.valueProposition.items.map((item, index) => (
             <motion.div 
-              key={item.title}
+              key={index}
               initial={{ opacity: 0, y: 30 }}
               animate={isValueInView ? { opacity: 1, y: 0 } : {}}
               transition={{ 
@@ -53,12 +81,20 @@ export default function HomePage() {
                 ease: [0.25, 0.1, 0.25, 1]
               }}
             >
-              <h3 className="font-serif text-lg md:text-xl text-editorial">
-                {item.title}
-              </h3>
-              <p className="mt-3 text-muted-foreground leading-relaxed">
-                {item.description}
-              </p>
+              <EditableText
+                value={item.title}
+                onSave={(v) => updateField(`valueProposition.items.${index}.title`, v)}
+                editable={isAdmin}
+                tag="h3"
+                className="font-serif text-lg md:text-xl text-editorial"
+              />
+              <EditableText
+                value={item.description}
+                onSave={(v) => updateField(`valueProposition.items.${index}.description`, v)}
+                editable={isAdmin}
+                tag="p"
+                className="mt-3 text-muted-foreground leading-relaxed"
+              />
             </motion.div>
           ))}
         </div>

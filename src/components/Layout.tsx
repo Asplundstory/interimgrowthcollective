@@ -2,6 +2,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import { Header, Footer } from "@/components/editorial";
 import { AnimatePresence } from "framer-motion";
 import { PageTransition } from "@/components/animations";
+import { AdminBar } from "@/components/cms";
 
 export function Layout() {
   const location = useLocation();
@@ -17,6 +18,7 @@ export function Layout() {
         </AnimatePresence>
       </main>
       <Footer />
+      <AdminBar />
     </div>
   );
 }
