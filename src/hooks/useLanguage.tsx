@@ -81,6 +81,13 @@ const translations: Record<Language, Record<string, string>> = {
     "companies.offer.3.description": "Erfarna rådgivare för komplexa beslut. Inte konsulter som producerar slides.",
     "companies.offer.4.title": "Team extension",
     "companies.offer.4.description": "Förstärkning av befintliga team. Sömlös integration med er organisation.",
+    "companies.faq.headline": "Vanliga frågor för företag",
+    "companies.faq.1.question": "Hur skiljer sig en interimkonsult från en traditionell konsult?",
+    "companies.faq.1.answer": "En interimkonsult tar operativt ansvar och arbetar som en del av er organisation. Traditionella konsulter levererar ofta analyser och rekommendationer, medan interimkonsulter kliver in och genomför förändringen.",
+    "companies.faq.2.question": "Hur lång tid tar det att hitta rätt kandidat?",
+    "companies.faq.2.answer": "Vi presenterar vanligtvis kvalificerade kandidater inom 1-2 veckor. Vid akuta behov kan vi ofta agera snabbare tack vare vårt etablerade nätverk av handplockade specialister.",
+    "companies.faq.3.question": "Vad händer om det inte blir en bra match?",
+    "companies.faq.3.answer": "Vi står bakom varje rekommendation. Om matchningen inte fungerar arbetar vi snabbt för att hitta en ersättare. Vårt rykte bygger på att leverera rätt person, inte bara en person.",
     
     // For Creators
     "creators.hero.headline": "För kreatörer som levererar",
@@ -99,6 +106,13 @@ const translations: Record<Language, Record<string, string>> = {
     "creators.form.headline": "Ansök om medlemskap",
     "creators.form.submit": "Skicka ansökan",
     "creators.form.success": "Tack för din ansökan. Vi går igenom alla ansökningar manuellt och återkommer inom två veckor.",
+    "creators.faq.headline": "Vanliga frågor för kreatörer",
+    "creators.faq.1.question": "Vad krävs för att bli en del av nätverket?",
+    "creators.faq.1.answer": "Vi söker erfarna specialister med minst 8-10 år i relevant roll. Du bör kunna arbeta självständigt, leverera under press och dela våra värderingar kring kvalitet och professionalism.",
+    "creators.faq.2.question": "Hur fungerar uppdragsfördelningen?",
+    "creators.faq.2.answer": "Vi matchar uppdrag baserat på din kompetens, erfarenhet och tillgänglighet. Du väljer själv vilka uppdrag du tackar ja till - det finns inget krav på att ta alla erbjudanden.",
+    "creators.faq.3.question": "Vilken ersättning kan jag förvänta mig?",
+    "creators.faq.3.answer": "Vi tror på rättvis ersättning som reflekterar din erfarenhet och uppdragets komplexitet. Villkoren är alltid transparenta och förhandlas inför varje uppdrag.",
     
     // About
     "about.hero.headline": "Om Interim Growth Collective",
@@ -248,6 +262,13 @@ const translations: Record<Language, Record<string, string>> = {
     "companies.offer.3.description": "Experienced advisors for complex decisions. Not consultants who produce slides.",
     "companies.offer.4.title": "Team extension",
     "companies.offer.4.description": "Strengthening existing teams. Seamless integration with your organization.",
+    "companies.faq.headline": "FAQ for Companies",
+    "companies.faq.1.question": "How does an interim consultant differ from a traditional consultant?",
+    "companies.faq.1.answer": "An interim consultant takes operational responsibility and works as part of your organization. Traditional consultants often deliver analyses and recommendations, while interim consultants step in and execute the change.",
+    "companies.faq.2.question": "How long does it take to find the right candidate?",
+    "companies.faq.2.answer": "We typically present qualified candidates within 1-2 weeks. For urgent needs, we can often act faster thanks to our established network of hand-picked specialists.",
+    "companies.faq.3.question": "What happens if it's not a good match?",
+    "companies.faq.3.answer": "We stand behind every recommendation. If the match doesn't work, we work quickly to find a replacement. Our reputation is built on delivering the right person, not just any person.",
     
     // For Creators
     "creators.hero.headline": "For creators who deliver",
@@ -266,6 +287,13 @@ const translations: Record<Language, Record<string, string>> = {
     "creators.form.headline": "Apply for membership",
     "creators.form.submit": "Submit application",
     "creators.form.success": "Thank you for your application. We review all applications manually and will get back to you within two weeks.",
+    "creators.faq.headline": "FAQ for Creators",
+    "creators.faq.1.question": "What does it take to join the network?",
+    "creators.faq.1.answer": "We look for experienced specialists with at least 8-10 years in a relevant role. You should be able to work independently, deliver under pressure and share our values around quality and professionalism.",
+    "creators.faq.2.question": "How does assignment distribution work?",
+    "creators.faq.2.answer": "We match assignments based on your expertise, experience and availability. You choose which assignments to accept - there's no requirement to take all offers.",
+    "creators.faq.3.question": "What compensation can I expect?",
+    "creators.faq.3.answer": "We believe in fair compensation that reflects your experience and the assignment's complexity. Terms are always transparent and negotiated before each assignment.",
     
     // About
     "about.hero.headline": "About Interim Growth Collective",

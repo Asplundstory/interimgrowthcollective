@@ -14,7 +14,7 @@ User-agent: *
 Allow: /
 
 # Static sitemap
-Sitemap: https://interimgrowth.se/sitemap.xml
+Sitemap: https://interimgrowthcollective.se/sitemap.xml
 
 # Dynamic sitemap with insights (recommended)
-Sitemap: https://bwoolbioqpuffhijfjap.supabase.co/functions/v1/sitemap
+Sitemap: https://interimgrowthcollective.se/api/sitemap
