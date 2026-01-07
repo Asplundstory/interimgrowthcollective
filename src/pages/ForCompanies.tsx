@@ -1,5 +1,6 @@
 import { Hero, Section, SectionHeader, CTA } from "@/components/editorial";
 import { usePageContent } from "@/hooks/usePageContent";
+import heroCompaniesImage from "@/assets/hero-companies.jpg";
 
 export default function ForCompaniesPage() {
   const { content } = usePageContent();
@@ -12,6 +13,7 @@ export default function ForCompaniesPage() {
         headline={pageData.hero.headline}
         subheadline={pageData.hero.subheadline}
         size="medium"
+        backgroundImage={heroCompaniesImage}
       />
       
       {/* Intro */}
