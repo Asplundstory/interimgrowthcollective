@@ -13,23 +13,29 @@ interface FAQItem {
   answer: string;
 }
 
+interface BreadcrumbItem {
+  name: string;
+  href: string;
+}
+
 interface SEOProps {
   title?: string;
   description?: string;
   image?: string;
   article?: ArticleData;
   faq?: FAQItem[];
+  breadcrumbs?: BreadcrumbItem[];
   noIndex?: boolean;
 }
 
 // Organization schema - shown on all pages
-const organizationSchema = {
+const getOrganizationSchema = (origin: string) => ({
   "@context": "https://schema.org",
   "@type": "Organization",
   name: siteConfig.siteName,
   description: siteConfig.description,
-  url: typeof window !== "undefined" ? window.location.origin : "",
-  logo: typeof window !== "undefined" ? `${window.location.origin}/favicon.png` : "",
+  url: origin,
+  logo: `${origin}/favicon.png`,
   email: siteConfig.contactEmail,
   sameAs: [siteConfig.social.linkedin],
   areaServed: "SE",
@@ -40,7 +46,7 @@ const organizationSchema = {
     "Communication",
     "Creative Services",
   ],
-};
+});
 
 // Generate Article schema
 const generateArticleSchema = (
@@ -48,7 +54,8 @@ const generateArticleSchema = (
   description: string,
   image: string,
   article: ArticleData,
-  url: string
+  url: string,
+  origin: string
 ) => ({
   "@context": "https://schema.org",
   "@type": "Article",
@@ -66,7 +73,7 @@ const generateArticleSchema = (
     name: siteConfig.siteName,
     logo: {
       "@type": "ImageObject",
-      url: typeof window !== "undefined" ? `${window.location.origin}/favicon.png` : "",
+      url: `${origin}/favicon.png`,
     },
   },
   mainEntityOfPage: {
@@ -90,24 +97,36 @@ const generateFAQSchema = (faq: FAQItem[]) => ({
   })),
 });
 
+// Generate BreadcrumbList schema
+const generateBreadcrumbSchema = (breadcrumbs: BreadcrumbItem[], origin: string) => ({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: breadcrumbs.map((item, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    name: item.name,
+    item: `${origin}${item.href}`,
+  })),
+});
+
 export function SEO({
   title,
   description = siteConfig.seo.defaultDescription,
   image = siteConfig.seo.ogImage,
   article,
   faq,
+  breadcrumbs,
   noIndex = false,
 }: SEOProps) {
   const fullTitle = title
     ? siteConfig.seo.titleTemplate.replace("%s", title)
     : siteConfig.seo.defaultTitle;
 
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
   const canonicalUrl = typeof window !== "undefined" ? window.location.href : "";
   const absoluteImage = image.startsWith("http") 
     ? image 
-    : typeof window !== "undefined" 
-      ? `${window.location.origin}${image}` 
-      : image;
+    : `${origin}${image}`;
 
   return (
     <Helmet>
@@ -141,14 +160,21 @@ export function SEO({
 
       {/* JSON-LD: Organization (always) */}
       <script type="application/ld+json">
-        {JSON.stringify(organizationSchema)}
+        {JSON.stringify(getOrganizationSchema(origin))}
       </script>
+
+      {/* JSON-LD: BreadcrumbList (when breadcrumbs prop provided) */}
+      {breadcrumbs && breadcrumbs.length > 0 && (
+        <script type="application/ld+json">
+          {JSON.stringify(generateBreadcrumbSchema(breadcrumbs, origin))}
+        </script>
+      )}
 
       {/* JSON-LD: Article (when article prop provided) */}
       {article && (
         <script type="application/ld+json">
           {JSON.stringify(
-            generateArticleSchema(fullTitle, description, absoluteImage, article, canonicalUrl)
+            generateArticleSchema(fullTitle, description, absoluteImage, article, canonicalUrl, origin)
           )}
         </script>
       )}
@@ -164,5 +190,5 @@ export function SEO({
 }
 
 // Export types for use in other components
-export type { FAQItem };
+export type { FAQItem, BreadcrumbItem };
 

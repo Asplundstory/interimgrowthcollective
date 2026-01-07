@@ -33,6 +33,10 @@ export default function InsightsPage() {
       <SEO 
         title="Insights"
         description="Reflektioner om kvalitet, kreativitet och att leverera under press. Läs våra senaste tankar och insikter."
+        breadcrumbs={[
+          { name: "Hem", href: "/" },
+          { name: "Insights", href: "/insights" },
+        ]}
       />
       {/* Hero */}
       <Hero

@@ -22,6 +22,10 @@ export default function AboutPage() {
       <SEO 
         title="Om oss"
         description="Interim Growth Collective samlar erfarna människor inom brand, marketing och kommunikation. Lär känna vår filosofi och våra värderingar."
+        breadcrumbs={[
+          { name: "Hem", href: "/" },
+          { name: "Om oss", href: "/about" },
+        ]}
       />
       {/* Hero */}
       <Hero 

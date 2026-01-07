@@ -8,6 +8,10 @@ export default function AreasPage() {
       <SEO 
         title="Områden"
         description="Vi förmedlar erfarna människor inom brand, marketing, kommunikation och kreativa discipliner. Se alla våra kompetensområden."
+        breadcrumbs={[
+          { name: "Hem", href: "/" },
+          { name: "Områden", href: "/areas" },
+        ]}
       />
       
       {/* Hero */}

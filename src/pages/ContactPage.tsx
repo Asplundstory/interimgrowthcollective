@@ -23,6 +23,10 @@ export default function ContactPage() {
       <SEO 
         title="Kontakt"
         description="Kontakta Interim Growth Collective. Berätta om ert behov så återkommer vi inom en arbetsdag."
+        breadcrumbs={[
+          { name: "Hem", href: "/" },
+          { name: "Kontakt", href: "/contact" },
+        ]}
       />
       {/* Hero */}
       <Hero 
