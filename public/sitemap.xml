@@ -1,48 +1,148 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://interimgrowth.se/</loc>
+    <loc>https://interimgrowthcollective.se/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://interimgrowthcollective.se/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://interimgrowthcollective.se/en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://interimgrowthcollective.se/"/>
   </url>
   <url>
-    <loc>https://interimgrowth.se/for-companies</loc>
+    <loc>https://interimgrowthcollective.se/en</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://interimgrowthcollective.se/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://interimgrowthcollective.se/en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://interimgrowthcollective.se/"/>
+  </url>
+  <url>
+    <loc>https://interimgrowthcollective.se/for-companies</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://interimgrowthcollective.se/for-companies"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://interimgrowthcollective.se/en/for-companies"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://interimgrowthcollective.se/for-companies"/>
   </url>
   <url>
-    <loc>https://interimgrowth.se/for-creators</loc>
+    <loc>https://interimgrowthcollective.se/en/for-companies</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://interimgrowthcollective.se/for-companies"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://interimgrowthcollective.se/en/for-companies"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://interimgrowthcollective.se/for-companies"/>
   </url>
   <url>
-    <loc>https://interimgrowth.se/areas</loc>
+    <loc>https://interimgrowthcollective.se/for-creators</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://interimgrowthcollective.se/for-creators"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://interimgrowthcollective.se/en/for-creators"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://interimgrowthcollective.se/for-creators"/>
+  </url>
+  <url>
+    <loc>https://interimgrowthcollective.se/en/for-creators</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://interimgrowthcollective.se/for-creators"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://interimgrowthcollective.se/en/for-creators"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://interimgrowthcollective.se/for-creators"/>
+  </url>
+  <url>
+    <loc>https://interimgrowthcollective.se/areas</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://interimgrowthcollective.se/areas"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://interimgrowthcollective.se/en/areas"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://interimgrowthcollective.se/areas"/>
   </url>
   <url>
-    <loc>https://interimgrowth.se/about</loc>
+    <loc>https://interimgrowthcollective.se/en/areas</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://interimgrowthcollective.se/areas"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://interimgrowthcollective.se/en/areas"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://interimgrowthcollective.se/areas"/>
+  </url>
+  <url>
+    <loc>https://interimgrowthcollective.se/about</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://interimgrowthcollective.se/about"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://interimgrowthcollective.se/en/about"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://interimgrowthcollective.se/about"/>
   </url>
   <url>
-    <loc>https://interimgrowth.se/insights</loc>
+    <loc>https://interimgrowthcollective.se/en/about</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://interimgrowthcollective.se/about"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://interimgrowthcollective.se/en/about"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://interimgrowthcollective.se/about"/>
+  </url>
+  <url>
+    <loc>https://interimgrowthcollective.se/insights</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://interimgrowthcollective.se/insights"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://interimgrowthcollective.se/en/insights"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://interimgrowthcollective.se/insights"/>
   </url>
   <url>
-    <loc>https://interimgrowth.se/contact</loc>
+    <loc>https://interimgrowthcollective.se/en/insights</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://interimgrowthcollective.se/insights"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://interimgrowthcollective.se/en/insights"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://interimgrowthcollective.se/insights"/>
+  </url>
+  <url>
+    <loc>https://interimgrowthcollective.se/contact</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://interimgrowthcollective.se/contact"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://interimgrowthcollective.se/en/contact"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://interimgrowthcollective.se/contact"/>
   </url>
   <url>
-    <loc>https://interimgrowth.se/privacy</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
+    <loc>https://interimgrowthcollective.se/en/contact</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://interimgrowthcollective.se/contact"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://interimgrowthcollective.se/en/contact"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://interimgrowthcollective.se/contact"/>
   </url>
   <url>
-    <loc>https://interimgrowth.se/terms</loc>
+    <loc>https://interimgrowthcollective.se/privacy</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://interimgrowthcollective.se/privacy"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://interimgrowthcollective.se/en/privacy"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://interimgrowthcollective.se/privacy"/>
+  </url>
+  <url>
+    <loc>https://interimgrowthcollective.se/en/privacy</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://interimgrowthcollective.se/privacy"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://interimgrowthcollective.se/en/privacy"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://interimgrowthcollective.se/privacy"/>
+  </url>
+  <url>
+    <loc>https://interimgrowthcollective.se/terms</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://interimgrowthcollective.se/terms"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://interimgrowthcollective.se/en/terms"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://interimgrowthcollective.se/terms"/>
+  </url>
+  <url>
+    <loc>https://interimgrowthcollective.se/en/terms</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://interimgrowthcollective.se/terms"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://interimgrowthcollective.se/en/terms"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://interimgrowthcollective.se/terms"/>
   </url>
 </urlset>
