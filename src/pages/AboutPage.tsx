@@ -2,6 +2,7 @@
 
 import { Hero, Section, SectionHeader } from "@/components/editorial";
 import { EditableText } from "@/components/cms";
+import { SEO } from "@/components/SEO";
 import { useCmsContent } from "@/hooks/useCmsContent";
 import { pageContent } from "@/content/pages";
 import defaultHeroImage from "@/assets/hero-about.jpg";
@@ -18,6 +19,10 @@ export default function AboutPage() {
 
   return (
     <>
+      <SEO 
+        title="Om oss"
+        description="Interim Growth Collective samlar erfarna människor inom brand, marketing och kommunikation. Lär känna vår filosofi och våra värderingar."
+      />
       {/* Hero */}
       <Hero 
         headline={

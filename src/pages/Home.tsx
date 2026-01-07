@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { motion, useInView } from "framer-motion";
 import { Hero, Section, SectionHeader, EditorialCard, CTA, AreaGrid } from "@/components/editorial";
 import { EditableText } from "@/components/cms";
+import { SEO } from "@/components/SEO";
 import { useCmsContent } from "@/hooks/useCmsContent";
 import { useInsights } from "@/hooks/useInsights";
 import { pageContent } from "@/content/pages";
@@ -28,6 +29,7 @@ export default function HomePage() {
   
   return (
     <>
+      <SEO />
       {/* Hero */}
       <Hero 
         headline={
