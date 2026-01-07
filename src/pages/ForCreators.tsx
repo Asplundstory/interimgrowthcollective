@@ -4,12 +4,17 @@ import { Hero, Section, SectionHeader, CreatorForm } from "@/components/editoria
 import { EditableText } from "@/components/cms";
 import { useCmsContent } from "@/hooks/useCmsContent";
 import { pageContent } from "@/content/pages";
-import heroCreatorsImage from "@/assets/hero-creators.jpg";
+import defaultHeroImage from "@/assets/hero-creators.jpg";
 
-const defaultContent = pageContent.forCreators;
+const defaultContent = {
+  ...pageContent.forCreators,
+  heroImage: "",
+};
 
 export default function ForCreatorsPage() {
   const { content, isAdmin, updateField } = useCmsContent("forCreators", defaultContent);
+
+  const heroImage = content.heroImage || defaultHeroImage;
 
   return (
     <>
@@ -32,7 +37,9 @@ export default function ForCreatorsPage() {
           />
         }
         size="medium"
-        backgroundImage={heroCreatorsImage}
+        backgroundImage={heroImage}
+        onImageChange={(url) => updateField("heroImage", url)}
+        isAdmin={isAdmin}
       />
       
       {/* Intro */}

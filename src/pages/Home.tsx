@@ -6,18 +6,25 @@ import { motion, useInView } from "framer-motion";
 import { Hero, Section, SectionHeader, EditorialCard, CTA, AreaGrid } from "@/components/editorial";
 import { EditableText } from "@/components/cms";
 import { useCmsContent } from "@/hooks/useCmsContent";
+import { useInsights } from "@/hooks/useInsights";
 import { pageContent } from "@/content/pages";
 import { areas } from "@/content/areas";
-import { insights } from "@/content/insights";
-import heroImage from "@/assets/hero-architecture.jpg";
+import defaultHeroImage from "@/assets/hero-architecture.jpg";
 
-const defaultHomeContent = pageContent.home;
+const defaultHomeContent = {
+  ...pageContent.home,
+  heroImage: "",
+};
 
 export default function HomePage() {
   const { content, isAdmin, updateField } = useCmsContent("home", defaultHomeContent);
+  const { insights } = useInsights();
   
   const valueRef = useRef(null);
   const isValueInView = useInView(valueRef, { once: true, margin: "-50px" });
+
+  // Use uploaded image or fallback to default
+  const heroImage = content.heroImage || defaultHeroImage;
   
   return (
     <>
@@ -42,6 +49,8 @@ export default function HomePage() {
         cta={{ text: content.hero.cta, href: "/contact" }}
         size="large"
         backgroundImage={heroImage}
+        onImageChange={(url) => updateField("heroImage", url)}
+        isAdmin={isAdmin}
       />
       
       {/* Intro */}
@@ -130,7 +139,7 @@ export default function HomePage() {
           headline="Senaste tankarna"
         />
         <div className="space-y-0">
-          {insights.slice(0, 3).map((post, index) => (
+          {insights.filter(p => p.published).slice(0, 3).map((post, index) => (
             <EditorialCard
               key={post.slug}
               title={post.title}

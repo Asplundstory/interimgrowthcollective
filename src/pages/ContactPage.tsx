@@ -5,12 +5,17 @@ import { EditableText } from "@/components/cms";
 import { useCmsContent } from "@/hooks/useCmsContent";
 import { pageContent } from "@/content/pages";
 import { siteConfig } from "@/content/site";
-import heroContactImage from "@/assets/hero-contact.jpg";
+import defaultHeroImage from "@/assets/hero-contact.jpg";
 
-const defaultContent = pageContent.contact;
+const defaultContent = {
+  ...pageContent.contact,
+  heroImage: "",
+};
 
 export default function ContactPage() {
   const { content, isAdmin, updateField } = useCmsContent("contact", defaultContent);
+
+  const heroImage = content.heroImage || defaultHeroImage;
 
   return (
     <>
@@ -33,7 +38,9 @@ export default function ContactPage() {
           />
         }
         size="medium"
-        backgroundImage={heroContactImage}
+        backgroundImage={heroImage}
+        onImageChange={(url) => updateField("heroImage", url)}
+        isAdmin={isAdmin}
       />
       
       {/* Contact options */}

@@ -6,13 +6,14 @@ import { Hero, Section, EditorialCard } from "@/components/editorial";
 import { EditableText, InsightEditor } from "@/components/cms";
 import { useInsights, Insight } from "@/hooks/useInsights";
 import { useCmsContent } from "@/hooks/useCmsContent";
-import heroInsightsImage from "@/assets/hero-insights.jpg";
+import defaultHeroImage from "@/assets/hero-insights.jpg";
 
 const defaultContent = {
   hero: {
     headline: "Insights",
     subheadline: "Reflektioner om kvalitet, kreativitet och att leverera under press.",
   },
+  heroImage: "",
 };
 
 export default function InsightsPage() {
@@ -23,6 +24,8 @@ export default function InsightsPage() {
 
   // Filter: admins see all, others see only published
   const visibleInsights = isAdmin ? insights : insights.filter((i) => i.published);
+
+  const heroImage = content.heroImage || defaultHeroImage;
 
   return (
     <>
@@ -45,7 +48,9 @@ export default function InsightsPage() {
           />
         }
         size="medium"
-        backgroundImage={heroInsightsImage}
+        backgroundImage={heroImage}
+        onImageChange={(url) => updateField("heroImage", url)}
+        isAdmin={isAdmin}
       />
 
       {/* Admin: Add new button */}

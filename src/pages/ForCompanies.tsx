@@ -4,12 +4,17 @@ import { Hero, Section, SectionHeader, CTA } from "@/components/editorial";
 import { EditableText } from "@/components/cms";
 import { useCmsContent } from "@/hooks/useCmsContent";
 import { pageContent } from "@/content/pages";
-import heroCompaniesImage from "@/assets/hero-companies.jpg";
+import defaultHeroImage from "@/assets/hero-companies.jpg";
 
-const defaultContent = pageContent.forCompanies;
+const defaultContent = {
+  ...pageContent.forCompanies,
+  heroImage: "",
+};
 
 export default function ForCompaniesPage() {
   const { content, isAdmin, updateField } = useCmsContent("forCompanies", defaultContent);
+
+  const heroImage = content.heroImage || defaultHeroImage;
 
   return (
     <>
@@ -32,7 +37,9 @@ export default function ForCompaniesPage() {
           />
         }
         size="medium"
-        backgroundImage={heroCompaniesImage}
+        backgroundImage={heroImage}
+        onImageChange={(url) => updateField("heroImage", url)}
+        isAdmin={isAdmin}
       />
       
       {/* Intro */}

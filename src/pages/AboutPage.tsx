@@ -4,12 +4,17 @@ import { Hero, Section, SectionHeader } from "@/components/editorial";
 import { EditableText } from "@/components/cms";
 import { useCmsContent } from "@/hooks/useCmsContent";
 import { pageContent } from "@/content/pages";
-import heroAboutImage from "@/assets/hero-about.jpg";
+import defaultHeroImage from "@/assets/hero-about.jpg";
 
-const defaultContent = pageContent.about;
+const defaultContent = {
+  ...pageContent.about,
+  heroImage: "",
+};
 
 export default function AboutPage() {
   const { content, isAdmin, updateField } = useCmsContent("about", defaultContent);
+
+  const heroImage = content.heroImage || defaultHeroImage;
 
   return (
     <>
@@ -32,7 +37,9 @@ export default function AboutPage() {
           />
         }
         size="medium"
-        backgroundImage={heroAboutImage}
+        backgroundImage={heroImage}
+        onImageChange={(url) => updateField("heroImage", url)}
+        isAdmin={isAdmin}
       />
       
       {/* Story */}
