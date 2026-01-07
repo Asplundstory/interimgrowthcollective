@@ -1,8 +1,10 @@
 "use client";
 
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { ImageIcon } from "lucide-react";
+import { ImageUpload } from "@/components/cms";
 
 interface HeroProps {
   headline: ReactNode;
@@ -13,9 +15,20 @@ interface HeroProps {
   };
   size?: "large" | "medium" | "small";
   backgroundImage?: string;
+  onImageChange?: (url: string) => Promise<boolean>;
+  isAdmin?: boolean;
 }
 
-export function Hero({ headline, subheadline, cta, size = "large", backgroundImage }: HeroProps) {
+export function Hero({ 
+  headline, 
+  subheadline, 
+  cta, 
+  size = "large", 
+  backgroundImage,
+  onImageChange,
+  isAdmin = false,
+}: HeroProps) {
+  const [showImageUpload, setShowImageUpload] = useState(false);
   const hasBackground = !!backgroundImage;
   
   return (
@@ -33,6 +46,42 @@ export function Hero({ headline, subheadline, cta, size = "large", backgroundIma
           />
           <div className="absolute inset-0 bg-black/40" />
         </>
+      )}
+
+      {/* Admin: Change image button */}
+      {isAdmin && onImageChange && (
+        <button
+          onClick={() => setShowImageUpload(true)}
+          className="absolute top-4 right-4 z-20 flex items-center gap-2 px-3 py-2 bg-white/90 text-black text-sm rounded-md shadow-lg hover:bg-white transition-colors"
+        >
+          <ImageIcon className="h-4 w-4" />
+          Byt bild
+        </button>
+      )}
+
+      {/* Image upload modal */}
+      {showImageUpload && onImageChange && (
+        <div className="fixed inset-0 z-[100] bg-background/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-background border border-border rounded-lg shadow-xl w-full max-w-2xl p-6">
+            <h3 className="font-serif text-lg mb-4">Välj hero-bild</h3>
+            <ImageUpload
+              value={backgroundImage}
+              onUpload={async (url) => {
+                const success = await onImageChange(url);
+                if (success) setShowImageUpload(false);
+                return success;
+              }}
+              folder="heroes"
+              aspectRatio="hero"
+            />
+            <button
+              onClick={() => setShowImageUpload(false)}
+              className="mt-4 px-4 py-2 text-sm text-muted-foreground hover:text-foreground"
+            >
+              Avbryt
+            </button>
+          </div>
+        </div>
       )}
       
       <div className={`container-editorial ${hasBackground ? "relative z-10" : ""}`}>
