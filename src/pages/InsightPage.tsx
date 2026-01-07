@@ -134,6 +134,19 @@ export default function InsightPage() {
         </div>
       </Section>
 
+      {/* Featured Image */}
+      {post.image_url && (
+        <Section spacing="default" className="pt-0">
+          <div className="max-w-3xl rounded-lg overflow-hidden">
+            <img 
+              src={post.image_url} 
+              alt={post.title} 
+              className="w-full aspect-video object-cover"
+            />
+          </div>
+        </Section>
+      )}
+
       {/* Content */}
       <Section spacing="large" className="pt-0">
         <article className="max-w-2xl">{renderContent(post.content)}</article>
