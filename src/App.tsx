@@ -27,8 +27,8 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <CookieConsent />
       <BrowserRouter>
+        <CookieConsent />
         <Suspense fallback={<div className="min-h-screen" />}>
           <Routes>
             <Route element={<Layout />}>
