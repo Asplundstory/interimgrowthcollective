@@ -20,6 +20,7 @@ const PrivacyPage = lazy(() => import("@/pages/PrivacyPage"));
 const TermsPage = lazy(() => import("@/pages/TermsPage"));
 const NotFoundPage = lazy(() => import("@/pages/NotFoundPage"));
 const AdminLogin = lazy(() => import("@/pages/admin/Login"));
+const AdminDashboard = lazy(() => import("@/pages/admin/Dashboard"));
 
 const queryClient = new QueryClient();
 
@@ -46,6 +47,7 @@ const App = () => (
               <Route path="*" element={<NotFoundPage />} />
             </Route>
             <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
           </Routes>
         </Suspense>
       </BrowserRouter>
