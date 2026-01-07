@@ -61,8 +61,8 @@ export function Section({
 
 interface SectionHeaderProps {
   label?: string;
-  headline: string;
-  description?: string;
+  headline: ReactNode;
+  description?: ReactNode;
 }
 
 export function SectionHeader({ label, headline, description }: SectionHeaderProps) {

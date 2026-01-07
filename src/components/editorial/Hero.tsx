@@ -1,11 +1,12 @@
 "use client";
 
+import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
 interface HeroProps {
-  headline: string;
-  subheadline?: string;
+  headline: ReactNode;
+  subheadline?: ReactNode;
   cta?: {
     text: string;
     href: string;
