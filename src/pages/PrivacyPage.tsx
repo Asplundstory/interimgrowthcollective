@@ -28,7 +28,7 @@ export default function PrivacyPage() {
               med EU:s dataskyddsförordning (GDPR) och övrig tillämplig lagstiftning.
             </p>
             <p className="text-muted-foreground leading-relaxed">
-              Kontakt: <a href="mailto:hello@interimgrowth.se" className="text-primary hover:underline">hello@interimgrowth.se</a>
+              Kontakt: <a href="mailto:hej@interimgrowthcollective.se" className="text-primary hover:underline">hej@interimgrowthcollective.se</a>
             </p>
           </div>
 
@@ -135,9 +135,9 @@ export default function PrivacyPage() {
             </ul>
             <p className="text-muted-foreground leading-relaxed mt-4">
               För att utöva dina rättigheter, kontakta oss på{" "}
-              <a href="mailto:hello@interimgrowth.se" className="text-primary hover:underline">
-                hello@interimgrowth.se
-              </a>. 
+              <a href="mailto:hej@interimgrowthcollective.se" className="text-primary hover:underline">
+                hej@interimgrowthcollective.se
+              </a>.
               Vi besvarar din begäran inom 30 dagar.
             </p>
           </div>
@@ -178,8 +178,8 @@ export default function PrivacyPage() {
           <div className="pt-8 border-t border-border">
             <p className="text-sm text-muted-foreground">
               Har du frågor om hur vi hanterar dina personuppgifter? Kontakta oss på{" "}
-              <a href="mailto:hello@interimgrowth.se" className="text-primary hover:underline">
-                hello@interimgrowth.se
+              <a href="mailto:hej@interimgrowthcollective.se" className="text-primary hover:underline">
+                hej@interimgrowthcollective.se
               </a>
             </p>
           </div>
