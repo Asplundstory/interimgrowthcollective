@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      client_logos: {
+        Row: {
+          created_at: string
+          href: string | null
+          id: string
+          logo_url: string
+          name: string
+          published: boolean | null
+          sort_order: number | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          href?: string | null
+          id?: string
+          logo_url: string
+          name: string
+          published?: boolean | null
+          sort_order?: number | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          href?: string | null
+          id?: string
+          logo_url?: string
+          name?: string
+          published?: boolean | null
+          sort_order?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       cms_navigation: {
         Row: {
           created_at: string
@@ -196,6 +229,48 @@ export type Database = {
           slug?: string
           tags?: string[] | null
           title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      testimonials: {
+        Row: {
+          author: string
+          company: string
+          created_at: string
+          id: string
+          published: boolean | null
+          quote: string
+          quote_en: string | null
+          role: string
+          role_en: string | null
+          sort_order: number | null
+          updated_at: string
+        }
+        Insert: {
+          author: string
+          company: string
+          created_at?: string
+          id?: string
+          published?: boolean | null
+          quote: string
+          quote_en?: string | null
+          role: string
+          role_en?: string | null
+          sort_order?: number | null
+          updated_at?: string
+        }
+        Update: {
+          author?: string
+          company?: string
+          created_at?: string
+          id?: string
+          published?: boolean | null
+          quote?: string
+          quote_en?: string | null
+          role?: string
+          role_en?: string | null
+          sort_order?: number | null
           updated_at?: string
         }
         Relationships: []
