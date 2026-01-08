@@ -8,3 +8,5 @@ export { CreatorForm } from './CreatorForm';
 export { Header } from './Header';
 export { Footer } from './Footer';
 export { FAQ } from './FAQ';
+export { TrustSignals, sampleTestimonials } from './TrustSignals';
+export type { Testimonial, ClientLogo } from './TrustSignals';
