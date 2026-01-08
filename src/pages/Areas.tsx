@@ -61,6 +61,7 @@ export default function AreasPage() {
       
       {/* Areas */}
       <Section spacing="large">
+        <h2 className="sr-only">{language === "en" ? "Our Areas of Expertise" : "Våra kompetensområden"}</h2>
         <AreaGrid areas={areas} />
       </Section>
       

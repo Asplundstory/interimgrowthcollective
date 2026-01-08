@@ -51,6 +51,7 @@ export default function InsightsPage() {
 
       {/* Posts */}
       <Section spacing="large">
+        <h2 className="sr-only">{language === "en" ? "All Articles" : "Alla artiklar"}</h2>
         {isLoading ? (
           <div className="text-muted-foreground">{t("common.loading")}</div>
         ) : visibleInsights.length === 0 ? (
