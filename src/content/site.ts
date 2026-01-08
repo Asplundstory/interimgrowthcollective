@@ -1,12 +1,18 @@
 // Site-wide configuration
-// TODO: Uppdatera med faktisk kontaktinfo och text
 
 export const siteConfig = {
   siteName: "Interim Growth Collective",
   tagline: "Människor med känsla",
   description:
     "Interimslösningar inom brand, marketing, kommunikation och kreativa discipliner. Vi hjälper dig att hitta erfarna människor som förstår både strategi och hantverk.",
-  contactEmail: "hej@interimgrowth.se",
+  
+  // Contact emails
+  contactEmail: "hej@interimgrowthcollective.se",
+  teamEmails: {
+    general: "hej@interimgrowthcollective.se",
+    lina: "lina@interimgrowthcollective.se",
+    pelle: "pelle@interimgrowthcollective.se",
+  },
 
   // SEO defaults
   seo: {
@@ -14,11 +20,10 @@ export const siteConfig = {
     defaultTitle: "Interim Growth Collective",
     defaultDescription:
       "Interimslösningar inom brand, marketing, kommunikation och kreativa discipliner. Människor med känsla, på plats.",
-    // TODO: Byt mot faktisk OG-bild
-    ogImage: "/og-image.jpg",
+    ogImage: "/og-image.png",
   },
 
-  // Social links (TODO: Uppdatera med faktiska länkar)
+  // Social links
   social: {
     linkedin: "https://linkedin.com/company/interimgrowthcollective",
   },
