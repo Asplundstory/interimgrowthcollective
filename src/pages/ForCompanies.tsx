@@ -1,7 +1,7 @@
 "use client";
 
 import { Hero, Section, SectionHeader, CTA, FAQ } from "@/components/editorial";
-import { SEO, FAQItem } from "@/components/SEO";
+import { SEO, FAQItem, HowToData } from "@/components/SEO";
 import { useLanguage } from "@/hooks/useLanguage";
 import defaultHeroImage from "@/assets/hero-companies.jpg";
 
@@ -57,12 +57,56 @@ export default function ForCompaniesPage() {
     },
   ];
 
+  const howToHireInterim: HowToData = {
+    name: language === "en" 
+      ? "How to Hire an Interim Consultant" 
+      : "Så anlitar du en interimkonsult",
+    description: language === "en"
+      ? "A step-by-step guide to hiring the right interim consultant for your brand, marketing, or communication needs."
+      : "En steg-för-steg-guide för att anlita rätt interimkonsult inom varumärke, marknadsföring eller kommunikation.",
+    totalTime: "P7D", // Estimated 7 days for the full process
+    steps: [
+      {
+        name: language === "en" ? "Define Your Needs" : "Definiera dina behov",
+        text: language === "en"
+          ? "Identify the specific role, skills, and duration needed. Consider whether you need strategic leadership, hands-on execution, or both."
+          : "Identifiera den specifika rollen, kompetensen och längden på uppdraget. Fundera på om du behöver strategiskt ledarskap, operativt genomförande eller båda.",
+      },
+      {
+        name: language === "en" ? "Contact Us" : "Kontakta oss",
+        text: language === "en"
+          ? "Reach out with your brief. We'll schedule a consultation to understand your challenges and requirements in detail."
+          : "Hör av dig med din brief. Vi bokar ett möte för att förstå dina utmaningar och krav i detalj.",
+        url: "/contact",
+      },
+      {
+        name: language === "en" ? "Review Matched Candidates" : "Granska matchade kandidater",
+        text: language === "en"
+          ? "We present carefully selected candidates from our network who match your specific needs and company culture."
+          : "Vi presenterar noggrant utvalda kandidater från vårt nätverk som matchar dina specifika behov och företagskultur.",
+      },
+      {
+        name: language === "en" ? "Interview and Select" : "Intervjua och välj",
+        text: language === "en"
+          ? "Meet your top candidates. We facilitate the process to ensure the best fit for both parties."
+          : "Träffa dina toppkandidater. Vi underlättar processen för att säkerställa bästa matchning för båda parter.",
+      },
+      {
+        name: language === "en" ? "Onboard and Start" : "Onboarda och starta",
+        text: language === "en"
+          ? "Your interim consultant begins work with clear objectives and deliverables. We stay involved to ensure success."
+          : "Din interimkonsult börjar arbeta med tydliga mål och leverabler. Vi finns kvar för att säkerställa framgång.",
+      },
+    ],
+  };
+
   return (
     <>
       <SEO 
         title={t("nav.forCompanies")}
         description={t("companies.intro.text")}
         faq={faqItems}
+        howTo={howToHireInterim}
         breadcrumbs={[
           { name: language === "en" ? "Home" : "Hem", href: getLocalizedPath("/") },
           { name: t("nav.forCompanies"), href: getLocalizedPath("/for-companies") },

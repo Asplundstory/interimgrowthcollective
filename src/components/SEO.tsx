@@ -19,6 +19,24 @@ interface BreadcrumbItem {
   href: string;
 }
 
+interface HowToStep {
+  name: string;
+  text: string;
+  url?: string;
+  image?: string;
+}
+
+interface HowToData {
+  name: string;
+  description: string;
+  steps: HowToStep[];
+  totalTime?: string; // ISO 8601 duration, e.g., "PT30M" for 30 min
+  estimatedCost?: {
+    currency: string;
+    value: string;
+  };
+}
+
 interface SEOProps {
   title?: string;
   description?: string;
@@ -26,6 +44,7 @@ interface SEOProps {
   article?: ArticleData;
   faq?: FAQItem[];
   breadcrumbs?: BreadcrumbItem[];
+  howTo?: HowToData;
   noIndex?: boolean;
 }
 
@@ -225,6 +244,30 @@ const generateBreadcrumbSchema = (breadcrumbs: BreadcrumbItem[], origin: string)
   })),
 });
 
+// Generate HowTo schema
+const generateHowToSchema = (howTo: HowToData, origin: string) => ({
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  name: howTo.name,
+  description: howTo.description,
+  ...(howTo.totalTime && { totalTime: howTo.totalTime }),
+  ...(howTo.estimatedCost && {
+    estimatedCost: {
+      "@type": "MonetaryAmount",
+      currency: howTo.estimatedCost.currency,
+      value: howTo.estimatedCost.value,
+    },
+  }),
+  step: howTo.steps.map((step, index) => ({
+    "@type": "HowToStep",
+    position: index + 1,
+    name: step.name,
+    text: step.text,
+    ...(step.url && { url: `${origin}${step.url}` }),
+    ...(step.image && { image: step.image.startsWith("http") ? step.image : `${origin}${step.image}` }),
+  })),
+});
+
 // Generate hreflang URLs
 const getHreflangUrls = (pathname: string, origin: string) => {
   const isEnglish = pathname.startsWith("/en");
@@ -243,6 +286,7 @@ export function SEO({
   article,
   faq,
   breadcrumbs,
+  howTo,
   noIndex = false,
 }: SEOProps) {
   const location = useLocation();
@@ -331,10 +375,17 @@ export function SEO({
           {JSON.stringify(generateFAQSchema(faq))}
         </script>
       )}
+
+      {/* JSON-LD: HowTo (when howTo prop provided) */}
+      {howTo && howTo.steps.length > 0 && (
+        <script type="application/ld+json">
+          {JSON.stringify(generateHowToSchema(howTo, origin))}
+        </script>
+      )}
     </Helmet>
   );
 }
 
 // Export types for use in other components
-export type { FAQItem, BreadcrumbItem };
+export type { FAQItem, BreadcrumbItem, HowToStep, HowToData };
 
