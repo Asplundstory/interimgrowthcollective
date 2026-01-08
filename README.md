@@ -82,17 +82,17 @@ Följande filer måste ligga i `public/` för att publiceras:
 - [x] `robots.txt`
 - [x] `llms.txt` - AI-instruktioner
 - [x] `.well-known/security.txt` - Säkerhetskontakt
-- [ ] `og-image.jpg` - OpenGraph-bild (1200x630px)
+- [x] `og-image.png` - OpenGraph-bild (1200x630px)
 - [ ] `favicon.ico` - Uppdatera med faktisk favicon
 
 ## TODO innan lansering
 
 - [ ] Ersätt placeholder-copy i `src/content/pages.ts`
 - [ ] Lägg till faktiska blogginlägg i `src/content/insights.ts`
-- [ ] Skapa OG-bild och lägg i `public/og-image.jpg`
 - [ ] Uppdatera `src/content/site.ts` med faktisk e-post
-- [ ] Koppla kontaktformulär till backend (Lovable Cloud)
-- [ ] Skriv faktisk integritetspolicy och villkor
+- [x] Koppla kontaktformulär till backend (Lovable Cloud)
+- [x] Skriv faktisk integritetspolicy
+- [x] Skriv faktiska användarvillkor
 
 ## Lokal utveckling
 
