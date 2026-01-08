@@ -18,6 +18,7 @@ export default function ContactPage() {
           { name: language === "en" ? "Home" : "Hem", href: getLocalizedPath("/") },
           { name: t("nav.contact"), href: getLocalizedPath("/contact") },
         ]}
+        preloadImage={defaultHeroImage}
       />
       {/* Hero */}
       <Hero 

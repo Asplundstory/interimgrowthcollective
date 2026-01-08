@@ -91,6 +91,7 @@ export default function ForCreatorsPage() {
           { name: language === "en" ? "Home" : "Hem", href: getLocalizedPath("/") },
           { name: t("nav.forCreators"), href: getLocalizedPath("/for-creators") },
         ]}
+        preloadImage={defaultHeroImage}
       />
       {/* Hero */}
       <Hero 

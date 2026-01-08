@@ -57,6 +57,7 @@ interface SEOProps {
   howTo?: HowToData;
   video?: VideoData;
   noIndex?: boolean;
+  preloadImage?: string; // Hero image to preload for LCP optimization
 }
 
 // Organization schema - shown on all pages
@@ -346,6 +347,7 @@ export function SEO({
   howTo,
   video,
   noIndex = false,
+  preloadImage,
 }: SEOProps) {
   const location = useLocation();
   const fullTitle = title
@@ -362,6 +364,15 @@ export function SEO({
 
   return (
     <Helmet>
+      {/* Preload hero image for LCP optimization */}
+      {preloadImage && (
+        <link 
+          rel="preload" 
+          as="image" 
+          href={preloadImage} 
+        />
+      )}
+      
       {/* Basic */}
       <html lang={currentLang} />
       <title>{fullTitle}</title>
