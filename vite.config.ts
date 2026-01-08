@@ -14,9 +14,15 @@ export default defineConfig(({ mode }) => ({
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
-    dedupe: ["react", "react-dom"],
+    dedupe: ["react", "react-dom", "react-helmet-async"],
   },
   optimizeDeps: {
-    include: ["react", "react-dom"],
+    include: ["react", "react-dom", "react-helmet-async", "react/jsx-runtime", "react/jsx-dev-runtime"],
+    force: true,
+  },
+  build: {
+    commonjsOptions: {
+      include: [/node_modules/],
+    },
   },
 }));
