@@ -21,15 +21,25 @@ export function Footer() {
           </div>
           
           {/* Right side */}
-          <div className="flex flex-col md:items-end gap-4">
+          <div className="flex flex-col md:items-end gap-3">
             <a 
               href={`mailto:${siteConfig.contactEmail}`}
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               {siteConfig.contactEmail}
             </a>
+            <a 
+              href={`tel:${siteConfig.phoneFormatted}`}
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {siteConfig.phone}
+            </a>
             
-            <div className="flex gap-6 text-sm text-muted-foreground">
+            <address className="not-italic text-xs text-muted-foreground mt-2">
+              {siteConfig.address.street}, {siteConfig.address.postalCode} {siteConfig.address.city}
+            </address>
+            
+            <div className="flex gap-6 text-sm text-muted-foreground mt-2">
               <Link to={getLocalizedPath("/privacy")} className="hover:text-foreground transition-colors">
                 {t("footer.privacy")}
               </Link>
@@ -40,9 +50,12 @@ export function Footer() {
           </div>
         </div>
         
-        <div className="mt-12 pt-8 border-t border-border">
+        <div className="mt-12 pt-8 border-t border-border flex flex-col md:flex-row md:items-center md:justify-between gap-2">
           <p className="text-xs text-muted-foreground">
             © {currentYear} {siteConfig.siteName}. {t("footer.rights")}
+          </p>
+          <p className="text-xs text-muted-foreground">
+            {siteConfig.legalEntity.name} · Org.nr {siteConfig.legalEntity.orgNumber}
           </p>
         </div>
       </div>

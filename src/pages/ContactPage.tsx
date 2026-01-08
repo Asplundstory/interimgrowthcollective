@@ -46,12 +46,44 @@ export default function ContactPage() {
             <p className="text-muted-foreground leading-relaxed mb-6">
               {t("contact.direct.text")}
             </p>
-            <a 
-              href={`mailto:${siteConfig.contactEmail}`}
-              className="text-foreground font-medium link-underline"
-            >
-              {siteConfig.contactEmail}
-            </a>
+            
+            <div className="space-y-3 mb-8">
+              <a 
+                href={`mailto:${siteConfig.contactEmail}`}
+                className="block text-foreground font-medium link-underline"
+              >
+                {siteConfig.contactEmail}
+              </a>
+              <a 
+                href={`tel:${siteConfig.phoneFormatted}`}
+                className="block text-foreground font-medium link-underline"
+              >
+                {siteConfig.phone}
+              </a>
+            </div>
+            
+            <div className="pt-6 border-t border-border">
+              <h3 className="font-serif text-lg mb-3">
+                {language === "en" ? "Address" : "Adress"}
+              </h3>
+              <address className="not-italic text-muted-foreground leading-relaxed">
+                {siteConfig.address.street}<br />
+                {siteConfig.address.postalCode} {siteConfig.address.city}<br />
+                {siteConfig.address.country}
+              </address>
+            </div>
+            
+            <div className="pt-6 mt-6 border-t border-border">
+              <h3 className="font-serif text-lg mb-3">
+                {language === "en" ? "Company info" : "Företagsinformation"}
+              </h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                {siteConfig.legalEntity.note}
+              </p>
+              <p className="text-sm text-muted-foreground mt-2">
+                Org.nr: {siteConfig.legalEntity.orgNumber}
+              </p>
+            </div>
           </div>
         </div>
       </Section>
