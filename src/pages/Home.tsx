@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion, useInView } from "framer-motion";
-import { Hero, Section, SectionHeader, EditorialCard, CTA, AreaGrid, FAQ } from "@/components/editorial";
+import { Hero, Section, SectionHeader, EditorialCard, CTA, AreaGrid, FAQ, TrustSignals, sampleTestimonials } from "@/components/editorial";
 import { EditableText } from "@/components/cms";
 import { SEO } from "@/components/SEO";
 import { useCmsContent } from "@/hooks/useCmsContent";
@@ -133,6 +133,18 @@ export default function HomePage() {
             </motion.div>
           ))}
         </div>
+      </Section>
+
+      {/* Trust Signals - Testimonials */}
+      <Section spacing="large">
+        <SectionHeader 
+          label={language === "en" ? "Testimonials" : "Vad våra kunder säger"}
+          headline={language === "en" ? "Trusted by leading brands" : "Förtroende från ledande varumärken"}
+        />
+        <TrustSignals 
+          testimonials={sampleTestimonials}
+          headline=""
+        />
       </Section>
       
       {/* Areas preview */}
