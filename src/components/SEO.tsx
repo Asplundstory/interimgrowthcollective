@@ -37,6 +37,16 @@ interface HowToData {
   };
 }
 
+interface VideoData {
+  name: string;
+  description: string;
+  thumbnailUrl: string;
+  uploadDate: string; // ISO 8601 date, e.g., "2024-01-15"
+  duration?: string; // ISO 8601 duration, e.g., "PT1M30S" for 1 min 30 sec
+  contentUrl?: string; // Direct URL to video file
+  embedUrl?: string; // Embed URL (e.g., YouTube embed)
+}
+
 interface SEOProps {
   title?: string;
   description?: string;
@@ -45,6 +55,7 @@ interface SEOProps {
   faq?: FAQItem[];
   breadcrumbs?: BreadcrumbItem[];
   howTo?: HowToData;
+  video?: VideoData;
   noIndex?: boolean;
 }
 
@@ -268,6 +279,33 @@ const generateHowToSchema = (howTo: HowToData, origin: string) => ({
   })),
 });
 
+// Generate VideoObject schema
+const generateVideoSchema = (video: VideoData, origin: string) => ({
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  name: video.name,
+  description: video.description,
+  thumbnailUrl: video.thumbnailUrl.startsWith("http") 
+    ? video.thumbnailUrl 
+    : `${origin}${video.thumbnailUrl}`,
+  uploadDate: video.uploadDate,
+  ...(video.duration && { duration: video.duration }),
+  ...(video.contentUrl && { 
+    contentUrl: video.contentUrl.startsWith("http") 
+      ? video.contentUrl 
+      : `${origin}${video.contentUrl}` 
+  }),
+  ...(video.embedUrl && { embedUrl: video.embedUrl }),
+  publisher: {
+    "@type": "Organization",
+    name: siteConfig.siteName,
+    logo: {
+      "@type": "ImageObject",
+      url: `${origin}/favicon.png`,
+    },
+  },
+});
+
 // Generate hreflang URLs
 const getHreflangUrls = (pathname: string, origin: string) => {
   const isEnglish = pathname.startsWith("/en");
@@ -287,6 +325,7 @@ export function SEO({
   faq,
   breadcrumbs,
   howTo,
+  video,
   noIndex = false,
 }: SEOProps) {
   const location = useLocation();
@@ -382,10 +421,17 @@ export function SEO({
           {JSON.stringify(generateHowToSchema(howTo, origin))}
         </script>
       )}
+
+      {/* JSON-LD: VideoObject (when video prop provided) */}
+      {video && (
+        <script type="application/ld+json">
+          {JSON.stringify(generateVideoSchema(video, origin))}
+        </script>
+      )}
     </Helmet>
   );
 }
 
 // Export types for use in other components
-export type { FAQItem, BreadcrumbItem, HowToStep, HowToData };
+export type { FAQItem, BreadcrumbItem, HowToStep, HowToData, VideoData };
 
