@@ -111,6 +111,7 @@ export default function ForCompaniesPage() {
           { name: language === "en" ? "Home" : "Hem", href: getLocalizedPath("/") },
           { name: t("nav.forCompanies"), href: getLocalizedPath("/for-companies") },
         ]}
+        preloadImage={defaultHeroImage}
       />
       {/* Hero */}
       <Hero 

@@ -58,7 +58,7 @@ export default function HomePage() {
 
   return (
     <>
-      <SEO faq={faqData} />
+      <SEO faq={faqData} preloadImage={heroImage} />
       {/* Hero */}
       <Hero 
         headline={

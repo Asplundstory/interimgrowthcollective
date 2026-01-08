@@ -32,6 +32,7 @@ export default function AboutPage() {
           { name: language === "en" ? "Home" : "Hem", href: getLocalizedPath("/") },
           { name: t("nav.about"), href: getLocalizedPath("/about") },
         ]}
+        preloadImage={defaultHeroImage}
       />
       {/* Hero */}
       <Hero 

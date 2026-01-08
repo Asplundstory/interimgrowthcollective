@@ -27,6 +27,7 @@ export default function InsightsPage() {
           { name: language === "en" ? "Home" : "Hem", href: getLocalizedPath("/") },
           { name: t("insights.hero.headline"), href: getLocalizedPath("/insights") },
         ]}
+        preloadImage={defaultHeroImage}
       />
       {/* Hero */}
       <Hero
