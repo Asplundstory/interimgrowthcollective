@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion, useInView } from "framer-motion";
-import { Hero, Section, SectionHeader, EditorialCard, CTA, AreaGrid, FAQ, TrustSignals, sampleTestimonials } from "@/components/editorial";
+import { Hero, Section, SectionHeader, EditorialCard, CTA, AreaGrid, FAQ, TrustSignals } from "@/components/editorial";
 import { EditableText } from "@/components/cms";
 import { SEO } from "@/components/SEO";
 import { useCmsContent } from "@/hooks/useCmsContent";
@@ -11,6 +11,7 @@ import { useInsights } from "@/hooks/useInsights";
 import { useLanguage } from "@/hooks/useLanguage";
 import { pageContent } from "@/content/pages";
 import { areas } from "@/content/areas";
+import { testimonials, testimonialsEn, clientLogos } from "@/content/trustSignals";
 import defaultHeroImage from "@/assets/hero-architecture.jpg";
 
 const defaultHomeContent = {
@@ -142,8 +143,8 @@ export default function HomePage() {
           headline={language === "en" ? "Trusted by leading brands" : "Förtroende från ledande varumärken"}
         />
         <TrustSignals 
-          testimonials={sampleTestimonials}
-          headline=""
+          testimonials={language === "en" ? testimonialsEn : testimonials}
+          clientLogos={clientLogos}
         />
       </Section>
       
