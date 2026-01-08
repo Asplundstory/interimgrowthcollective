@@ -4,14 +4,15 @@ import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion, useInView } from "framer-motion";
 import { Hero, Section, SectionHeader, EditorialCard, CTA, AreaGrid, FAQ, TrustSignals } from "@/components/editorial";
-import { EditableText } from "@/components/cms";
+import { EditableText, TrustSignalsEditor } from "@/components/cms";
 import { SEO } from "@/components/SEO";
 import { useCmsContent } from "@/hooks/useCmsContent";
 import { useInsights } from "@/hooks/useInsights";
 import { useLanguage } from "@/hooks/useLanguage";
 import { pageContent } from "@/content/pages";
 import { areas } from "@/content/areas";
-import { testimonials, testimonialsEn, clientLogos } from "@/content/trustSignals";
+import { testimonials as staticTestimonials, testimonialsEn as staticTestimonialsEn, clientLogos as staticClientLogos } from "@/content/trustSignals";
+import { useTrustSignals } from "@/hooks/useTrustSignals";
 import defaultHeroImage from "@/assets/hero-architecture.jpg";
 
 const defaultHomeContent = {
@@ -23,6 +24,22 @@ export default function HomePage() {
   const { content, isAdmin, updateField } = useCmsContent("home", defaultHomeContent);
   const { insights } = useInsights();
   const { t, getLocalizedPath, language } = useLanguage();
+  
+  const {
+    testimonials: cmsTestimonials,
+    clientLogos: cmsClientLogos,
+    isLoading: trustSignalsLoading,
+    createTestimonial,
+    updateTestimonial,
+    deleteTestimonial,
+    createClientLogo,
+    updateClientLogo,
+    deleteClientLogo,
+  } = useTrustSignals(language);
+  
+  // Use CMS data if available, otherwise fall back to static content
+  const testimonials = cmsTestimonials.length > 0 ? cmsTestimonials : (language === "en" ? staticTestimonialsEn : staticTestimonials);
+  const clientLogos = cmsClientLogos.length > 0 ? cmsClientLogos : staticClientLogos.map((l, i) => ({ ...l, id: `static-${i}` }));
   
   const valueRef = useRef(null);
   const isValueInView = useInView(valueRef, { once: true, margin: "-50px" });
@@ -142,8 +159,22 @@ export default function HomePage() {
           label={language === "en" ? "Testimonials" : "Vad våra kunder säger"}
           headline={language === "en" ? "Trusted by leading brands" : "Förtroende från ledande varumärken"}
         />
+        {isAdmin && (
+          <div className="mb-6">
+            <TrustSignalsEditor
+              testimonials={cmsTestimonials}
+              clientLogos={cmsClientLogos}
+              onCreateTestimonial={createTestimonial}
+              onUpdateTestimonial={updateTestimonial}
+              onDeleteTestimonial={deleteTestimonial}
+              onCreateClientLogo={createClientLogo}
+              onUpdateClientLogo={updateClientLogo}
+              onDeleteClientLogo={deleteClientLogo}
+            />
+          </div>
+        )}
         <TrustSignals 
-          testimonials={language === "en" ? testimonialsEn : testimonials}
+          testimonials={testimonials}
           clientLogos={clientLogos}
         />
       </Section>
