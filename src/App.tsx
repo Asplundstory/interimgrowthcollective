@@ -1,4 +1,4 @@
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useState } from "react";
 import { HelmetProvider } from "react-helmet-async";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -24,8 +24,6 @@ const NotFoundPage = lazy(() => import("@/pages/NotFoundPage"));
 const AdminLogin = lazy(() => import("@/pages/admin/Login"));
 const AdminDashboard = lazy(() => import("@/pages/admin/Dashboard"));
 
-const queryClient = new QueryClient();
-
 // Route definitions to avoid duplication
 const MainRoutes = () => (
   <>
@@ -42,7 +40,10 @@ const MainRoutes = () => (
   </>
 );
 
-const App = () => (
+const App = () => {
+  const [queryClient] = useState(() => new QueryClient());
+  
+  return (
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
@@ -74,6 +75,7 @@ const App = () => (
       </TooltipProvider>
     </QueryClientProvider>
   </HelmetProvider>
-);
+  );
+};
 
 export default App;
