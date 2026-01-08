@@ -164,7 +164,7 @@ export default function HomePage() {
           label={t("home.insights.label")}
           headline={t("home.insights.headline")}
         />
-        <div className="space-y-0">
+        <div className="space-y-0" role="list" aria-label={t("home.insights.headline")}>
           {insights.filter(p => p.published).slice(0, 3).map((post, index) => (
             <EditorialCard
               key={post.slug}
