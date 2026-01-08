@@ -153,32 +153,43 @@ export default function HomePage() {
         </div>
       </Section>
 
-      {/* Trust Signals - Testimonials */}
-      <Section spacing="large">
-        <SectionHeader 
-          label={language === "en" ? "Testimonials" : "Vad våra kunder säger"}
-          headline={language === "en" ? "Trusted by leading brands" : "Förtroende från ledande varumärken"}
-        />
-        {isAdmin && (
-          <div className="mb-6">
-            <TrustSignalsEditor
+      {/* Trust Signals - Testimonials (only show if CMS has real data, or for admins to edit) */}
+      {(cmsTestimonials.length > 0 || cmsClientLogos.length > 0 || isAdmin) && (
+        <Section spacing="large">
+          <SectionHeader 
+            label={language === "en" ? "Testimonials" : "Vad våra kunder säger"}
+            headline={language === "en" ? "Trusted by leading brands" : "Förtroende från ledande varumärken"}
+          />
+          {isAdmin && (
+            <div className="mb-6">
+              <TrustSignalsEditor
+                testimonials={cmsTestimonials}
+                clientLogos={cmsClientLogos}
+                onCreateTestimonial={createTestimonial}
+                onUpdateTestimonial={updateTestimonial}
+                onDeleteTestimonial={deleteTestimonial}
+                onCreateClientLogo={createClientLogo}
+                onUpdateClientLogo={updateClientLogo}
+                onDeleteClientLogo={deleteClientLogo}
+              />
+            </div>
+          )}
+          {(cmsTestimonials.length > 0 || cmsClientLogos.length > 0) && (
+            <TrustSignals 
               testimonials={cmsTestimonials}
               clientLogos={cmsClientLogos}
-              onCreateTestimonial={createTestimonial}
-              onUpdateTestimonial={updateTestimonial}
-              onDeleteTestimonial={deleteTestimonial}
-              onCreateClientLogo={createClientLogo}
-              onUpdateClientLogo={updateClientLogo}
-              onDeleteClientLogo={deleteClientLogo}
             />
-          </div>
-        )}
-        <TrustSignals 
-          testimonials={testimonials}
-          clientLogos={clientLogos}
-        />
-      </Section>
-      
+          )}
+          {isAdmin && cmsTestimonials.length === 0 && cmsClientLogos.length === 0 && (
+            <p className="text-sm text-muted-foreground text-center py-8">
+              {language === "en" 
+                ? "This section is hidden for visitors. Add testimonials or logos to make it visible." 
+                : "Denna sektion är dold för besökare. Lägg till testimonials eller logotyper för att visa den."}
+            </p>
+          )}
+        </Section>
+      )}
+
       {/* Areas preview */}
       <Section background="card" spacing="large">
         <SectionHeader 
