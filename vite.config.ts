@@ -13,6 +13,10 @@ export default defineConfig(({ mode }) => ({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      // Force a single React instance (fixes "dispatcher.useState" null runtime error)
+      react: path.resolve(__dirname, "node_modules/react"),
+      "react-dom": path.resolve(__dirname, "node_modules/react-dom"),
+      "react-dom/client": path.resolve(__dirname, "node_modules/react-dom/client"),
     },
     dedupe: ["react", "react-dom", "react-helmet-async"],
   },
