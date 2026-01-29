@@ -615,6 +615,125 @@ export type Database = {
           },
         ]
       }
+      document_templates: {
+        Row: {
+          content: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          fields: Json
+          id: string
+          is_active: boolean
+          name: string
+          template_type: Database["public"]["Enums"]["template_type"]
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          fields?: Json
+          id?: string
+          is_active?: boolean
+          name: string
+          template_type?: Database["public"]["Enums"]["template_type"]
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          fields?: Json
+          id?: string
+          is_active?: boolean
+          name?: string
+          template_type?: Database["public"]["Enums"]["template_type"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      generated_documents: {
+        Row: {
+          candidate_id: string | null
+          company_id: string | null
+          content: string
+          created_at: string
+          created_by: string | null
+          deal_id: string | null
+          field_values: Json
+          id: string
+          signed_at: string | null
+          signed_by: string | null
+          status: string
+          template_id: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          candidate_id?: string | null
+          company_id?: string | null
+          content: string
+          created_at?: string
+          created_by?: string | null
+          deal_id?: string | null
+          field_values?: Json
+          id?: string
+          signed_at?: string | null
+          signed_by?: string | null
+          status?: string
+          template_id?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          candidate_id?: string | null
+          company_id?: string | null
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          deal_id?: string | null
+          field_values?: Json
+          id?: string
+          signed_at?: string | null
+          signed_by?: string | null
+          status?: string
+          template_id?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "generated_documents_candidate_id_fkey"
+            columns: ["candidate_id"]
+            isOneToOne: false
+            referencedRelation: "candidates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "generated_documents_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "generated_documents_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "deals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "generated_documents_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "document_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       insights: {
         Row: {
           content: string
@@ -939,6 +1058,7 @@ export type Database = {
       document_type: "contract" | "policy" | "invoice" | "agreement" | "other"
       invoice_status: "draft" | "sent" | "paid" | "overdue"
       proposal_status: "draft" | "sent" | "viewed" | "accepted" | "declined"
+      template_type: "assignment" | "employment" | "code_of_conduct" | "other"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1086,6 +1206,7 @@ export const Constants = {
       document_type: ["contract", "policy", "invoice", "agreement", "other"],
       invoice_status: ["draft", "sent", "paid", "overdue"],
       proposal_status: ["draft", "sent", "viewed", "accepted", "declined"],
+      template_type: ["assignment", "employment", "code_of_conduct", "other"],
     },
   },
 } as const

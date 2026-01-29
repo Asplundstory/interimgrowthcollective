@@ -28,9 +28,14 @@ const AdminProposals = lazy(() => import("@/pages/admin/Proposals"));
 const ProposalEditor = lazy(() => import("@/pages/admin/ProposalEditor"));
 const AdminCRM = lazy(() => import("@/pages/admin/CRM"));
 const AdminCandidates = lazy(() => import("@/pages/admin/Candidates"));
+const AdminDocuments = lazy(() => import("@/pages/admin/Documents"));
 const ApplyPage = lazy(() => import("@/pages/ApplyPage"));
 const ClientLogin = lazy(() => import("@/pages/client/Login"));
 const ClientPortal = lazy(() => import("@/pages/client/Portal"));
+
+// Document routes
+const TemplateEditor = lazy(() => import("@/components/documents/TemplateEditor"));
+const DocumentGenerator = lazy(() => import("@/components/documents/DocumentGenerator"));
 
 // Route definitions to avoid duplication
 const MainRoutes = () => (
@@ -85,6 +90,9 @@ const App = () => {
                 <Route path="/admin/crm" element={<AdminCRM />} />
                 <Route path="/admin/crm/*" element={<AdminCRM />} />
                 <Route path="/admin/candidates" element={<AdminCandidates />} />
+                <Route path="/admin/documents" element={<AdminDocuments />} />
+                <Route path="/admin/documents/templates/:id" element={<TemplateEditor />} />
+                <Route path="/admin/documents/generate" element={<DocumentGenerator />} />
                 
                 {/* Client portal routes */}
                 <Route path="/client/login" element={<ClientLogin />} />
