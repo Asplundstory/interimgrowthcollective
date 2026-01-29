@@ -24,6 +24,8 @@ const NotFoundPage = lazy(() => import("@/pages/NotFoundPage"));
 const ProposalPage = lazy(() => import("@/pages/ProposalPage"));
 const AdminLogin = lazy(() => import("@/pages/admin/Login"));
 const AdminDashboard = lazy(() => import("@/pages/admin/Dashboard"));
+const AdminProposals = lazy(() => import("@/pages/admin/Proposals"));
+const ProposalEditor = lazy(() => import("@/pages/admin/ProposalEditor"));
 
 // Route definitions to avoid duplication
 const MainRoutes = () => (
@@ -72,6 +74,8 @@ const App = () => {
                 {/* Admin routes */}
                 <Route path="/admin/login" element={<AdminLogin />} />
                 <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                <Route path="/admin/proposals" element={<AdminProposals />} />
+                <Route path="/admin/proposals/:id" element={<ProposalEditor />} />
               </Routes>
             </Suspense>
           </LanguageProvider>
