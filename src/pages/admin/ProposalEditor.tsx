@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import { useAdmin } from "@/hooks/useAdmin";
 import { useProposal } from "@/hooks/useProposal";
+import { ProposalPreview } from "@/components/admin/ProposalPreview";
 import {
   useUpdateProposal,
   useUpdateSlide,
@@ -38,6 +39,7 @@ import {
   Plus,
   Trash2,
   Image as ImageIcon,
+  Play,
 } from "lucide-react";
 import { toast } from "sonner";
 import { SlideEditor } from "@/components/admin/SlideEditor";
@@ -81,6 +83,7 @@ export default function ProposalEditor() {
   const [clientName, setClientName] = useState("");
   const [projectTitle, setProjectTitle] = useState("");
   const [status, setStatus] = useState("draft");
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !isAdmin) {
@@ -256,14 +259,25 @@ export default function ProposalEditor() {
               <Copy className="h-4 w-4 mr-2" />
               Kopiera länk
             </Button>
+            <Button onClick={() => setPreviewOpen(true)}>
+              <Play className="h-4 w-4 mr-2" />
+              Förhandsgranska
+            </Button>
             <Button variant="outline" asChild>
               <Link to={`/p/${proposal.slug}`} target="_blank">
                 <ExternalLink className="h-4 w-4 mr-2" />
-                Förhandsgranska
+                Öppna i ny flik
               </Link>
             </Button>
           </div>
         </div>
+
+        {/* Preview Modal */}
+        <ProposalPreview
+          open={previewOpen}
+          onOpenChange={setPreviewOpen}
+          proposal={proposal}
+        />
 
         <Tabs defaultValue="info" className="space-y-6">
           <TabsList className="grid w-full grid-cols-3">
