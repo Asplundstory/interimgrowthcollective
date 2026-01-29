@@ -1,208 +1,285 @@
 
-# Kundyta med hemliga URL:er och affärsförslag-presentationer
 
-## Översikt
-En säker kundyta där varje kund får en unik, svårgissad URL för att visa skräddarsydda affärsförslag i ett modernt presentationsformat. Presentationen byggs som en fullskärms-slideshow med Framer Motion-animationer, keyboard-navigation och en editorial design som matchar Interim Growth Collective-varumärket.
+# Affärssystem IGC - Komplett Plan
 
-## Funktioner
+## Sammanfattning
 
-### 1. Hemliga kundspecifika URL:er
-- Varje kund får en unik URL: `/p/[slug]` där slug är en svårgissad kombination (t.ex. `/p/acme-2024-xK9mQ3`)
-- URL:en är inte listbar eller sökbar - endast den som har länken kan komma åt innehållet
-- Admin kan skapa, redigera och hantera förslag via dashboarden
+Detta är en plan för att bygga ett komplett affärssystem (Business Management System) för Interim Growth Collective. Systemet integrerar CRM, kandidathantering, kundportal och dokumenthantering i en sammanhållen plattform.
 
-### 2. Presentationsformat (Slideshow)
-Varje presentation består av fullskärms-slides (100vh) med:
+## Systemöversikt
 
-**Slide 1: Titel/Välkommen**
-- Kundens företagsnamn
-- Projektnamn/rubrik
-- Subtil bakgrundsanimation
+Affärssystemet består av fyra huvudmoduler:
 
-**Slide 2: Om oss (Kort intro)**
-- "Interim Growth Collective - Människor med känsla"
-- Kort värdeproposition
-
-**Slide 3: Er utmaning**
-- Kundens specifika behov/problem (redigerbart)
-
-**Slide 4: Vår lösning**
-- Föreslagna konsulter/roller
-- Matchning med kundens behov
-
-**Slide 5: Konsultpresentationer**
-- Individuella profiler med foto, kompetens, erfarenhet
-
-**Slide 6: Leverans & upplägg**
-- Tidslinje, omfattning, on-site/remote
-
-**Slide 7: Investering**
-- Prisförslag, villkor
-
-**Slide 8: Nästa steg (CTA)**
-- Kontaktinfo, bokningsknapp
-
-### 3. Navigation & UX
-- Keyboard: piltangenter + mellanslag för att navigera
-- Prev/Next-knappar (subtila) på sidorna
-- Progress-dots längst ned
-- Smooth fade + slide-animationer (Framer Motion)
-
-## Teknisk implementation
-
-### Databasstruktur
-
-```text
-┌─────────────────────────────────────────────────────────┐
-│  proposals (Kundförslag)                                │
-├─────────────────────────────────────────────────────────┤
-│  id: UUID (PK)                                          │
-│  slug: TEXT (unique) - hemlig URL                       │
-│  client_name: TEXT - kundnamn                           │
-│  project_title: TEXT - projekttitel                     │
-│  status: ENUM (draft/sent/viewed/accepted/declined)     │
-│  valid_until: TIMESTAMP                                 │
-│  created_at: TIMESTAMP                                  │
-│  updated_at: TIMESTAMP                                  │
-│  created_by: UUID (FK → auth.users)                     │
-│  view_count: INT - antal visningar                      │
-│  last_viewed_at: TIMESTAMP                              │
-└─────────────────────────────────────────────────────────┘
-
-┌─────────────────────────────────────────────────────────┐
-│  proposal_slides (Individuella slides)                  │
-├─────────────────────────────────────────────────────────┤
-│  id: UUID (PK)                                          │
-│  proposal_id: UUID (FK → proposals)                     │
-│  slide_type: TEXT (title/challenge/solution/etc)        │
-│  sort_order: INT                                        │
-│  title: TEXT                                            │
-│  content: JSONB - flexibelt innehåll per slide-typ     │
-│  created_at: TIMESTAMP                                  │
-│  updated_at: TIMESTAMP                                  │
-└─────────────────────────────────────────────────────────┘
-
-┌─────────────────────────────────────────────────────────┐
-│  proposal_consultants (Föreslagna konsulter)            │
-├─────────────────────────────────────────────────────────┤
-│  id: UUID (PK)                                          │
-│  proposal_id: UUID (FK → proposals)                     │
-│  name: TEXT                                             │
-│  role: TEXT                                             │
-│  photo_url: TEXT                                        │
-│  bio: TEXT                                              │
-│  expertise: TEXT[]                                      │
-│  availability: TEXT                                     │
-│  sort_order: INT                                        │
-└─────────────────────────────────────────────────────────┘
-```
-
-### RLS-policies
-- **proposals**: Publikt läsbar via slug (för kunder), full åtkomst för admin
-- **proposal_slides**: Läsbar om tillhörande proposal är tillgänglig
-- **proposal_consultants**: Läsbar om tillhörande proposal är tillgänglig
-
-### Nya filer och komponenter
-
-```text
-src/
-├── pages/
-│   └── proposal/
-│       └── ProposalPage.tsx          # Kundvisning av presentation
-│
-├── components/
-│   └── proposal/
-│       ├── ProposalSlideshow.tsx     # Huvudkomponent för presentationen
-│       ├── slides/
-│       │   ├── TitleSlide.tsx        # Slide 1: Välkommen
-│       │   ├── AboutSlide.tsx        # Slide 2: Om oss
-│       │   ├── ChallengeSlide.tsx    # Slide 3: Utmaning
-│       │   ├── SolutionSlide.tsx     # Slide 4: Lösning
-│       │   ├── ConsultantSlide.tsx   # Slide 5: Konsultprofiler
-│       │   ├── DeliverySlide.tsx     # Slide 6: Leverans
-│       │   ├── InvestmentSlide.tsx   # Slide 7: Pris
-│       │   └── CTASlide.tsx          # Slide 8: Nästa steg
-│       ├── SlideNavigation.tsx       # Prev/Next/Dots
-│       └── SlideProgress.tsx         # Progress-bar
-│
-├── hooks/
-│   └── useProposal.ts                # Hämta proposal-data
-│
-└── pages/admin/
-    └── Proposals.tsx                  # Admin: Lista/skapa förslag
-```
-
-### Routing (App.tsx)
-```text
-/p/:slug          → ProposalPage (publik, ingen layout)
-/admin/proposals  → Proposals (admin-skyddad)
-```
-
-### Design & Animation
-
-**Tema: Mörkt med varma accenter**
-- Bakgrund: Djup navy gradient (`#0b1220` → `#151d2e`)
-- Text: Off-white (`#f5f5f0`)
-- Accent: Terracotta från befintlig design (`hsl(15, 35%, 55%)`)
-- Typsnitt: Inter (befintligt)
-
-**Animationer (Framer Motion)**
-- Slide-övergång: fade + horizontal slide (0.4s)
-- Staggered content-entry per slide
-- Subtil parallax på bakgrundselement
-
-**Responsivitet**
-- Optimerat för desktop (projektormöten)
-- Fungerar på surfplattor
-- Mobilvänligt (men primärt desktop)
-
-## Admin-funktionalitet
-
-### Ny flik i Dashboard
-- Lista alla förslag med status
-- Skapa nytt förslag med wizard:
-  1. Grundinfo (kund, projekt)
-  2. Välj/anpassa slides
-  3. Lägg till konsulter
-  4. Förhandsgranska
-  5. Generera hemlig länk
-- Kopiera länk till urklipp
-- Se visningsstatistik (antal klick, senast visad)
-
-## Flöde
-
-```text
-Admin                              Kund
-  │                                  │
-  ├─ Skapar nytt förslag             │
-  ├─ Fyller i slides                 │
-  ├─ Lägger till konsulter           │
-  ├─ Genererar hemlig URL            │
-  ├─ Skickar länk till kund ────────►│
-  │                                  ├─ Klickar på länk
-  │                                  ├─ Ser fullskärms-presentation
-  │  ◄─── (view_count ökar) ─────────┤
-  │                                  ├─ Navigerar med tangentbord/knappar
-  ├─ Ser att förslaget visats        │
-  │                                  └─ Kontaktar vid intresse
-```
-
-## Säkerhet
-- Slug genereras med kryptografiskt säker slumpmässig sträng (16+ tecken)
-- Ingen autentisering krävs för att visa (länken ÄR nyckeln)
-- Förslag kan ha utgångsdatum (`valid_until`)
-- RLS säkerställer att endast rätt data exponeras
-
-## Steg-för-steg implementation
-
-1. **Databas**: Skapa tabeller med migrering
-2. **Hook**: `useProposal` för att hämta proposal via slug
-3. **Slide-komponenter**: Bygg varje slide-typ med Framer Motion
-4. **Slideshow**: Huvudkomponent med navigation, keyboard-stöd
-5. **ProposalPage**: Route-komponent som hämtar och renderar
-6. **Admin**: Utöka dashboard med förslag-hantering
-7. **Routing**: Lägg till `/p/:slug` route
+1. **CRM-modul** - Leads, kontakter, företag och affärer
+2. **Kandidatdatabas** - Ansökningsformulär (Typeform-stil) med CV/LinkedIn-uppladdning
+3. **Kundportal** - Säker yta per kund med offerter, fakturor och dokument
+4. **Dokumenthantering** - Kontrakt, policys och avtal (baserat på uppladdade mallar)
 
 ---
 
-*Denna kundyta ger en professionell, modern och minnesvärd upplevelse för era kunder - helt i linje med Interim Growth Collective:s varumärkesposition som "människor med känsla".*
+## Modul 1: CRM-system
+
+### Databasstruktur
+
+**companies** (Företag)
+- id, name, org_number, industry, website
+- address, city, postal_code
+- notes, created_at, updated_at
+
+**contacts** (Kontaktpersoner)
+- id, company_id, first_name, last_name
+- email, phone, title, linkedin_url
+- is_primary, notes, created_at
+
+**deals** (Affärer/Pipelines)
+- id, company_id, contact_id, proposal_id
+- title, value, currency, status (lead/qualified/proposal/negotiation/won/lost)
+- probability, expected_close_date
+- notes, created_at, updated_at
+
+**deal_activities** (Aktivitetslogg)
+- id, deal_id, user_id, activity_type (call/email/meeting/note)
+- description, scheduled_at, completed_at
+
+### Gränssnitt
+
+- Listvy med filter och sök
+- Kanban-vy för pipeline
+- Detaljsidor med aktivitetsflöde
+- Snabbskapande av leads/kontakter
+
+---
+
+## Modul 2: Kandidatdatabas
+
+### Ansökningsformulär (Typeform-stil)
+
+Ett stegvist formulär med animerade övergångar:
+
+1. **Steg 1**: Personuppgifter (namn, email, telefon)
+2. **Steg 2**: Professionell profil (roll, LinkedIn-URL, portfolio)
+3. **Steg 3**: CV-uppladdning (PDF/DOC)
+4. **Steg 4**: Frågor om arbetsätt (befintliga frågor från CreatorForm)
+5. **Steg 5**: Referenser (namn, företag, email, telefon)
+6. **Steg 6**: Code of Conduct (baserat på Coc-IGC.docx)
+
+### Databasstruktur
+
+**candidates** (Kandidater)
+- id, first_name, last_name, email, phone
+- role, linkedin_url, portfolio_url
+- cv_url (storage bucket), status (new/screening/interview/approved/rejected)
+- availability, hourly_rate
+- notes, q1_feeling, q2_structure, q3_pressure
+- code_of_conduct_accepted, created_at
+
+**candidate_references** (Referenser)
+- id, candidate_id, name, company, title, email, phone
+
+### Säkerhet - 2FA med Google Authenticator
+
+Kandidatinloggning med:
+- Email + lösenord
+- TOTP-baserad 2FA (Google Authenticator-kompatibel)
+- Supabase Auth med MFA-funktionalitet
+
+---
+
+## Modul 3: Kundportal
+
+### Inloggning (Magic Link)
+
+Kunden loggar in utan lösenord:
+1. Anger sin email på /client-login
+2. Får en verifieringskod via email (OTP)
+3. Matar in koden och får tillgång
+
+### Kundens yta innehåller:
+
+- **Mina förslag** - Aktiva och tidigare affärsförslag (befintlig proposals)
+- **Signerade offerter** - PDF-versioner av godkända förslag
+- **Fakturor** - Lista med fakturor (referens till Wint.se, inte faktisk fakturering)
+- **Dokument** - Kontrakt, policys, avtal
+- **Avslutade uppdrag** - Historik
+
+### Databasstruktur
+
+**client_users** (Kundkonton)
+- id, company_id, email, name
+- last_login_at, created_at
+
+**client_documents** (Dokument per kund)
+- id, company_id, document_type (contract/policy/invoice/agreement)
+- title, file_url, uploaded_by, created_at
+
+**invoices** (Fakturareferenser)
+- id, company_id, deal_id, invoice_number
+- amount, currency, status (draft/sent/paid/overdue)
+- due_date, wint_reference, created_at
+
+---
+
+## Modul 4: Dokumenthantering
+
+### Mallar från uppladdade filer
+
+1. **Uppdragsavtal** - Avtal mellan IGC och kund
+   - Dynamiska fält: Kundnamn, org-nummer, kontaktperson, roll, startdatum, pris, etc.
+
+2. **Anställningsavtal** - Avtal mellan IGC och konsult
+   - Dynamiska fält: Konsultnamn, personnummer, roll, lön, kund-placering
+
+3. **Code of Conduct** - Uppförandekod för konsulter
+   - Statiskt dokument med signeringsfält
+
+### Funktionalitet
+
+- Mallbibliotek med dynamisk fyllning
+- PDF-generering
+- Digital signering (integration eller enkel bekräftelse)
+- Versionering och historik
+
+---
+
+## Teknisk Arkitektur
+
+### Nya databastabeller
+
+```
+companies
+contacts  
+deals
+deal_activities
+candidates
+candidate_references
+client_users
+client_documents
+invoices
+document_templates
+```
+
+### Nya komponenter
+
+```
+src/pages/
+  admin/
+    CRM.tsx
+    Candidates.tsx
+    Documents.tsx
+  client/
+    Portal.tsx
+    Login.tsx
+
+src/components/
+  crm/
+    CompanyList.tsx
+    CompanyDetail.tsx
+    ContactCard.tsx
+    DealPipeline.tsx
+    DealCard.tsx
+    ActivityLog.tsx
+  candidates/
+    ApplicationForm.tsx (Typeform-style)
+    CandidateList.tsx
+    CandidateDetail.tsx
+  client-portal/
+    ClientDashboard.tsx
+    ProposalList.tsx
+    DocumentList.tsx
+    InvoiceList.tsx
+  documents/
+    TemplateEditor.tsx
+    DocumentGenerator.tsx
+```
+
+### Nya hooks
+
+```
+src/hooks/
+  useCRM.ts
+  useCandidates.ts
+  useClientPortal.ts
+  useDocuments.ts
+```
+
+### Nya edge functions
+
+```
+supabase/functions/
+  send-magic-link/ (kundportal-inloggning)
+  generate-document-pdf/ (PDF-generering från mall)
+```
+
+---
+
+## Autentisering och säkerhet
+
+### Tre typer av användare
+
+| Typ | Inloggning | Åtkomst |
+|-----|-----------|---------|
+| Admin | Email + lösenord | Allt |
+| Kandidat | Email + lösenord + 2FA | Kandidatportal |
+| Kund | Magic Link (email OTP) | Kundportal |
+
+### RLS-policies
+
+- Admins: Full åtkomst till alla tabeller
+- Kandidater: Endast sin egen data
+- Kunder: Endast sin företags data och relaterade dokument
+
+---
+
+## Rekommenderad implementation (fasindelning)
+
+### Fas 1: CRM Foundation
+- Databastabeller för companies, contacts, deals
+- Listvy och detaljsidor
+- Pipeline-vy
+
+### Fas 2: Kandidatdatabas  
+- Candidates-tabell med storage för CV
+- Typeform-stil ansökningsformulär
+- Admin-vy för kandidater
+
+### Fas 3: Kundportal
+- client_users med magic link auth
+- Portal-sidor för förslag och dokument
+- Koppling till befintlig proposals
+
+### Fas 4: Dokumenthantering
+- Dokumentmallar baserade på uppladdade filer
+- PDF-generering
+- Digital bekräftelse/signering
+
+### Fas 5: 2FA och avancerad säkerhet
+- TOTP-implementation för kandidater
+- Audit logging
+- Ytterligare säkerhetsåtgärder
+
+---
+
+## Tekniska detaljer
+
+### Storage buckets att skapa
+
+- `candidate-cvs` - För CV-uppladdningar
+- `client-documents` - För kontrakt, fakturor, avtal
+- `document-templates` - För dokumentmallar
+
+### Edge functions
+
+**send-magic-link**
+- Genererar OTP-kod
+- Sparar i sessions-tabell med expiry
+- Skickar via Resend
+
+**generate-document-pdf**
+- Tar mall-ID och dynamiska värden
+- Genererar PDF med platshållare utfyllda
+- Sparar till storage och returnerar URL
+
+### Nya typer i types.ts (autogenereras)
+
+Alla nya tabeller läggs automatiskt till i Supabase-typerna efter migration.
+
