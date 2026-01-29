@@ -121,6 +121,47 @@ export type Database = {
         }
         Relationships: []
       }
+      client_documents: {
+        Row: {
+          company_id: string
+          created_at: string
+          description: string | null
+          document_type: Database["public"]["Enums"]["document_type"]
+          file_url: string
+          id: string
+          title: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          description?: string | null
+          document_type?: Database["public"]["Enums"]["document_type"]
+          file_url: string
+          id?: string
+          title: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          description?: string | null
+          document_type?: Database["public"]["Enums"]["document_type"]
+          file_url?: string
+          id?: string
+          title?: string
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_documents_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       client_logos: {
         Row: {
           created_at: string
@@ -153,6 +194,76 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      client_sessions: {
+        Row: {
+          client_user_id: string
+          created_at: string
+          expires_at: string
+          id: string
+          otp_code: string
+          verified: boolean
+        }
+        Insert: {
+          client_user_id: string
+          created_at?: string
+          expires_at: string
+          id?: string
+          otp_code: string
+          verified?: boolean
+        }
+        Update: {
+          client_user_id?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          otp_code?: string
+          verified?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_sessions_client_user_id_fkey"
+            columns: ["client_user_id"]
+            isOneToOne: false
+            referencedRelation: "client_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      client_users: {
+        Row: {
+          company_id: string
+          created_at: string
+          email: string
+          id: string
+          last_login_at: string | null
+          name: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          email: string
+          id?: string
+          last_login_at?: string | null
+          name: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          email?: string
+          id?: string
+          last_login_at?: string | null
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_users_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       cms_navigation: {
         Row: {
@@ -546,6 +657,60 @@ export type Database = {
         }
         Relationships: []
       }
+      invoices: {
+        Row: {
+          amount: number
+          company_id: string
+          created_at: string
+          currency: string
+          deal_id: string | null
+          due_date: string | null
+          id: string
+          invoice_number: string
+          status: Database["public"]["Enums"]["invoice_status"]
+          wint_reference: string | null
+        }
+        Insert: {
+          amount: number
+          company_id: string
+          created_at?: string
+          currency?: string
+          deal_id?: string | null
+          due_date?: string | null
+          id?: string
+          invoice_number: string
+          status?: Database["public"]["Enums"]["invoice_status"]
+          wint_reference?: string | null
+        }
+        Update: {
+          amount?: number
+          company_id?: string
+          created_at?: string
+          currency?: string
+          deal_id?: string | null
+          due_date?: string | null
+          id?: string
+          invoice_number?: string
+          status?: Database["public"]["Enums"]["invoice_status"]
+          wint_reference?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoices_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoices_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "deals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       proposal_consultants: {
         Row: {
           availability: string | null
@@ -771,6 +936,8 @@ export type Database = {
         | "negotiation"
         | "won"
         | "lost"
+      document_type: "contract" | "policy" | "invoice" | "agreement" | "other"
+      invoice_status: "draft" | "sent" | "paid" | "overdue"
       proposal_status: "draft" | "sent" | "viewed" | "accepted" | "declined"
     }
     CompositeTypes: {
@@ -916,6 +1083,8 @@ export const Constants = {
         "won",
         "lost",
       ],
+      document_type: ["contract", "policy", "invoice", "agreement", "other"],
+      invoice_status: ["draft", "sent", "paid", "overdue"],
       proposal_status: ["draft", "sent", "viewed", "accepted", "declined"],
     },
   },
