@@ -21,6 +21,7 @@ const ContactPage = lazy(() => import("@/pages/ContactPage"));
 const PrivacyPage = lazy(() => import("@/pages/PrivacyPage"));
 const TermsPage = lazy(() => import("@/pages/TermsPage"));
 const NotFoundPage = lazy(() => import("@/pages/NotFoundPage"));
+const ProposalPage = lazy(() => import("@/pages/ProposalPage"));
 const AdminLogin = lazy(() => import("@/pages/admin/Login"));
 const AdminDashboard = lazy(() => import("@/pages/admin/Dashboard"));
 
@@ -64,6 +65,9 @@ const App = () => {
                 <Route path="/en" element={<Layout />}>
                   {MainRoutes()}
                 </Route>
+                
+                {/* Proposal routes (no layout - fullscreen) */}
+                <Route path="/p/:slug" element={<ProposalPage />} />
                 
                 {/* Admin routes */}
                 <Route path="/admin/login" element={<AdminLogin />} />

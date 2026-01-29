@@ -233,6 +233,139 @@ export type Database = {
         }
         Relationships: []
       }
+      proposal_consultants: {
+        Row: {
+          availability: string | null
+          bio: string | null
+          created_at: string
+          expertise: string[] | null
+          id: string
+          name: string
+          photo_url: string | null
+          proposal_id: string
+          role: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          availability?: string | null
+          bio?: string | null
+          created_at?: string
+          expertise?: string[] | null
+          id?: string
+          name: string
+          photo_url?: string | null
+          proposal_id: string
+          role: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          availability?: string | null
+          bio?: string | null
+          created_at?: string
+          expertise?: string[] | null
+          id?: string
+          name?: string
+          photo_url?: string | null
+          proposal_id?: string
+          role?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "proposal_consultants_proposal_id_fkey"
+            columns: ["proposal_id"]
+            isOneToOne: false
+            referencedRelation: "proposals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      proposal_slides: {
+        Row: {
+          content: Json
+          created_at: string
+          id: string
+          proposal_id: string
+          slide_type: string
+          sort_order: number
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          content?: Json
+          created_at?: string
+          id?: string
+          proposal_id: string
+          slide_type: string
+          sort_order?: number
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          content?: Json
+          created_at?: string
+          id?: string
+          proposal_id?: string
+          slide_type?: string
+          sort_order?: number
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "proposal_slides_proposal_id_fkey"
+            columns: ["proposal_id"]
+            isOneToOne: false
+            referencedRelation: "proposals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      proposals: {
+        Row: {
+          client_name: string
+          created_at: string
+          created_by: string | null
+          id: string
+          last_viewed_at: string | null
+          project_title: string
+          slug: string
+          status: Database["public"]["Enums"]["proposal_status"]
+          updated_at: string
+          valid_until: string | null
+          view_count: number
+        }
+        Insert: {
+          client_name: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          last_viewed_at?: string | null
+          project_title: string
+          slug: string
+          status?: Database["public"]["Enums"]["proposal_status"]
+          updated_at?: string
+          valid_until?: string | null
+          view_count?: number
+        }
+        Update: {
+          client_name?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          last_viewed_at?: string | null
+          project_title?: string
+          slug?: string
+          status?: Database["public"]["Enums"]["proposal_status"]
+          updated_at?: string
+          valid_until?: string | null
+          view_count?: number
+        }
+        Relationships: []
+      }
       testimonials: {
         Row: {
           author: string
@@ -311,6 +444,7 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user"
+      proposal_status: "draft" | "sent" | "viewed" | "accepted" | "declined"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -439,6 +573,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      proposal_status: ["draft", "sent", "viewed", "accepted", "declined"],
     },
   },
 } as const
