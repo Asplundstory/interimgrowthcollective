@@ -108,10 +108,11 @@ export function ProposalSlideshow({ proposal }: ProposalSlideshowProps) {
           <TitleSlide
             clientName={proposal.client_name}
             projectTitle={proposal.project_title}
+            content={slide.content}
           />
         );
       case "about":
-        return <AboutSlide />;
+        return <AboutSlide content={slide.content} />;
       case "challenge":
         return (
           <ChallengeSlide

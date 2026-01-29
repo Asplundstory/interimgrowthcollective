@@ -3,11 +3,25 @@ import { motion } from "framer-motion";
 interface TitleSlideProps {
   clientName: string;
   projectTitle: string;
+  content?: Record<string, unknown>;
 }
 
-export function TitleSlide({ clientName, projectTitle }: TitleSlideProps) {
+export function TitleSlide({ clientName, projectTitle, content }: TitleSlideProps) {
+  const label = (content?.label as string) || "Affärsförslag för";
+  const subtitle = (content?.subtitle as string) || "";
+  const backgroundImage = content?.backgroundImage as string | undefined;
+  const scrollHint = (content?.scrollHint as string) || "Tryck → för att fortsätta";
+
   return (
     <div className="h-screen w-screen flex flex-col items-center justify-center relative overflow-hidden bg-gradient-to-br from-[#0b1220] via-[#101829] to-[#151d2e]">
+      {/* Background image if provided */}
+      {backgroundImage && (
+        <div 
+          className="absolute inset-0 bg-cover bg-center opacity-20"
+          style={{ backgroundImage: `url(${backgroundImage})` }}
+        />
+      )}
+
       {/* Subtle background pattern */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-accent/20 rounded-full blur-3xl" />
@@ -22,7 +36,7 @@ export function TitleSlide({ clientName, projectTitle }: TitleSlideProps) {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="text-[11px] tracking-[0.2em] uppercase text-white/50 mb-6"
         >
-          Affärsförslag för
+          {label}
         </motion.p>
 
         {/* Client name */}
@@ -45,6 +59,18 @@ export function TitleSlide({ clientName, projectTitle }: TitleSlideProps) {
           {projectTitle}
         </motion.p>
 
+        {/* Optional subtitle */}
+        {subtitle && (
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.7 }}
+            className="text-lg text-white/50 font-light mt-4"
+          >
+            {subtitle}
+          </motion.p>
+        )}
+
         {/* Decorative line */}
         <motion.div
           initial={{ scaleX: 0 }}
@@ -66,7 +92,7 @@ export function TitleSlide({ clientName, projectTitle }: TitleSlideProps) {
           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
           className="text-white/30 text-xs tracking-widest uppercase"
         >
-          Tryck → för att fortsätta
+          {scrollHint}
         </motion.div>
       </motion.div>
     </div>
