@@ -14,6 +14,113 @@ export type Database = {
   }
   public: {
     Tables: {
+      candidate_references: {
+        Row: {
+          candidate_id: string
+          company: string | null
+          created_at: string
+          email: string | null
+          id: string
+          name: string
+          phone: string | null
+          title: string | null
+        }
+        Insert: {
+          candidate_id: string
+          company?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          name: string
+          phone?: string | null
+          title?: string | null
+        }
+        Update: {
+          candidate_id?: string
+          company?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string
+          phone?: string | null
+          title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "candidate_references_candidate_id_fkey"
+            columns: ["candidate_id"]
+            isOneToOne: false
+            referencedRelation: "candidates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      candidates: {
+        Row: {
+          availability: string | null
+          code_of_conduct_accepted: boolean
+          created_at: string
+          cv_url: string | null
+          email: string
+          first_name: string
+          hourly_rate: number | null
+          id: string
+          last_name: string
+          linkedin_url: string | null
+          notes: string | null
+          phone: string | null
+          portfolio_url: string | null
+          q1_feeling: string | null
+          q2_structure: string | null
+          q3_pressure: string | null
+          role: string
+          status: Database["public"]["Enums"]["candidate_status"]
+          updated_at: string
+        }
+        Insert: {
+          availability?: string | null
+          code_of_conduct_accepted?: boolean
+          created_at?: string
+          cv_url?: string | null
+          email: string
+          first_name: string
+          hourly_rate?: number | null
+          id?: string
+          last_name: string
+          linkedin_url?: string | null
+          notes?: string | null
+          phone?: string | null
+          portfolio_url?: string | null
+          q1_feeling?: string | null
+          q2_structure?: string | null
+          q3_pressure?: string | null
+          role: string
+          status?: Database["public"]["Enums"]["candidate_status"]
+          updated_at?: string
+        }
+        Update: {
+          availability?: string | null
+          code_of_conduct_accepted?: boolean
+          created_at?: string
+          cv_url?: string | null
+          email?: string
+          first_name?: string
+          hourly_rate?: number | null
+          id?: string
+          last_name?: string
+          linkedin_url?: string | null
+          notes?: string | null
+          phone?: string | null
+          portfolio_url?: string | null
+          q1_feeling?: string | null
+          q2_structure?: string | null
+          q3_pressure?: string | null
+          role?: string
+          status?: Database["public"]["Enums"]["candidate_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       client_logos: {
         Row: {
           created_at: string
@@ -651,6 +758,12 @@ export type Database = {
     Enums: {
       activity_type: "call" | "email" | "meeting" | "note"
       app_role: "admin" | "user"
+      candidate_status:
+        | "new"
+        | "screening"
+        | "interview"
+        | "approved"
+        | "rejected"
       deal_status:
         | "lead"
         | "qualified"
@@ -788,6 +901,13 @@ export const Constants = {
     Enums: {
       activity_type: ["call", "email", "meeting", "note"],
       app_role: ["admin", "user"],
+      candidate_status: [
+        "new",
+        "screening",
+        "interview",
+        "approved",
+        "rejected",
+      ],
       deal_status: [
         "lead",
         "qualified",
