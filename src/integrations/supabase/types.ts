@@ -125,6 +125,48 @@ export type Database = {
         }
         Relationships: []
       }
+      companies: {
+        Row: {
+          address: string | null
+          city: string | null
+          created_at: string
+          id: string
+          industry: string | null
+          name: string
+          notes: string | null
+          org_number: string | null
+          postal_code: string | null
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          created_at?: string
+          id?: string
+          industry?: string | null
+          name: string
+          notes?: string | null
+          org_number?: string | null
+          postal_code?: string | null
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          created_at?: string
+          id?: string
+          industry?: string | null
+          name?: string
+          notes?: string | null
+          org_number?: string | null
+          postal_code?: string | null
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
       contact_submissions: {
         Row: {
           company: string | null
@@ -151,6 +193,59 @@ export type Database = {
           name?: string
         }
         Relationships: []
+      }
+      contacts: {
+        Row: {
+          company_id: string | null
+          created_at: string
+          email: string | null
+          first_name: string
+          id: string
+          is_primary: boolean | null
+          last_name: string
+          linkedin_url: string | null
+          notes: string | null
+          phone: string | null
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          company_id?: string | null
+          created_at?: string
+          email?: string | null
+          first_name: string
+          id?: string
+          is_primary?: boolean | null
+          last_name: string
+          linkedin_url?: string | null
+          notes?: string | null
+          phone?: string | null
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string | null
+          created_at?: string
+          email?: string | null
+          first_name?: string
+          id?: string
+          is_primary?: boolean | null
+          last_name?: string
+          linkedin_url?: string | null
+          notes?: string | null
+          phone?: string | null
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contacts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       creator_applications: {
         Row: {
@@ -190,6 +285,117 @@ export type Database = {
           role?: string
         }
         Relationships: []
+      }
+      deal_activities: {
+        Row: {
+          activity_type: Database["public"]["Enums"]["activity_type"]
+          completed_at: string | null
+          created_at: string
+          deal_id: string
+          description: string | null
+          id: string
+          scheduled_at: string | null
+          user_id: string
+        }
+        Insert: {
+          activity_type: Database["public"]["Enums"]["activity_type"]
+          completed_at?: string | null
+          created_at?: string
+          deal_id: string
+          description?: string | null
+          id?: string
+          scheduled_at?: string | null
+          user_id: string
+        }
+        Update: {
+          activity_type?: Database["public"]["Enums"]["activity_type"]
+          completed_at?: string | null
+          created_at?: string
+          deal_id?: string
+          description?: string | null
+          id?: string
+          scheduled_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deal_activities_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "deals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      deals: {
+        Row: {
+          company_id: string | null
+          contact_id: string | null
+          created_at: string
+          currency: string | null
+          expected_close_date: string | null
+          id: string
+          notes: string | null
+          probability: number | null
+          proposal_id: string | null
+          status: Database["public"]["Enums"]["deal_status"]
+          title: string
+          updated_at: string
+          value: number | null
+        }
+        Insert: {
+          company_id?: string | null
+          contact_id?: string | null
+          created_at?: string
+          currency?: string | null
+          expected_close_date?: string | null
+          id?: string
+          notes?: string | null
+          probability?: number | null
+          proposal_id?: string | null
+          status?: Database["public"]["Enums"]["deal_status"]
+          title: string
+          updated_at?: string
+          value?: number | null
+        }
+        Update: {
+          company_id?: string | null
+          contact_id?: string | null
+          created_at?: string
+          currency?: string | null
+          expected_close_date?: string | null
+          id?: string
+          notes?: string | null
+          probability?: number | null
+          proposal_id?: string | null
+          status?: Database["public"]["Enums"]["deal_status"]
+          title?: string
+          updated_at?: string
+          value?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deals_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "deals_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "deals_proposal_id_fkey"
+            columns: ["proposal_id"]
+            isOneToOne: false
+            referencedRelation: "proposals"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       insights: {
         Row: {
@@ -443,7 +649,15 @@ export type Database = {
       }
     }
     Enums: {
+      activity_type: "call" | "email" | "meeting" | "note"
       app_role: "admin" | "user"
+      deal_status:
+        | "lead"
+        | "qualified"
+        | "proposal"
+        | "negotiation"
+        | "won"
+        | "lost"
       proposal_status: "draft" | "sent" | "viewed" | "accepted" | "declined"
     }
     CompositeTypes: {
@@ -572,7 +786,16 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      activity_type: ["call", "email", "meeting", "note"],
       app_role: ["admin", "user"],
+      deal_status: [
+        "lead",
+        "qualified",
+        "proposal",
+        "negotiation",
+        "won",
+        "lost",
+      ],
       proposal_status: ["draft", "sent", "viewed", "accepted", "declined"],
     },
   },
