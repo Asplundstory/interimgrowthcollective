@@ -39,6 +39,7 @@ export interface GeneratedDocument {
   status: string;
   signed_at: string | null;
   signed_by: string | null;
+  signer_ip: string | null;
   created_by: string | null;
   created_at: string;
   updated_at: string;
