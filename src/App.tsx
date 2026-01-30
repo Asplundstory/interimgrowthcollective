@@ -28,11 +28,13 @@ const AdminProposals = lazy(() => import("@/pages/admin/Proposals"));
 const ProposalEditor = lazy(() => import("@/pages/admin/ProposalEditor"));
 const AdminCRM = lazy(() => import("@/pages/admin/CRM"));
 const AdminCandidates = lazy(() => import("@/pages/admin/Candidates"));
+const AdminApplications = lazy(() => import("@/pages/admin/Applications"));
 const AdminDocuments = lazy(() => import("@/pages/admin/Documents"));
 const ApplyPage = lazy(() => import("@/pages/ApplyPage"));
 const ClientLogin = lazy(() => import("@/pages/client/Login"));
 const ClientPortal = lazy(() => import("@/pages/client/Portal"));
 const SignDocument = lazy(() => import("@/pages/SignDocument"));
+const CompleteApplication = lazy(() => import("@/pages/CompleteApplication"));
 
 // Document routes
 const TemplateEditor = lazy(() => import("@/components/documents/TemplateEditor"));
@@ -86,6 +88,9 @@ const App = () => {
                 {/* Document signing route (public, no layout) */}
                 <Route path="/sign/:token" element={<SignDocument />} />
                 
+                {/* Complete application route (public, no layout) */}
+                <Route path="/apply/:token" element={<CompleteApplication />} />
+                
                 {/* Admin routes */}
                 <Route path="/admin/login" element={<AdminLogin />} />
                 <Route path="/admin/dashboard" element={<AdminDashboard />} />
@@ -94,6 +99,7 @@ const App = () => {
                 <Route path="/admin/crm" element={<AdminCRM />} />
                 <Route path="/admin/crm/*" element={<AdminCRM />} />
                 <Route path="/admin/candidates" element={<AdminCandidates />} />
+                <Route path="/admin/applications" element={<AdminApplications />} />
                 <Route path="/admin/documents" element={<AdminDocuments />} />
                 <Route path="/admin/documents/templates/:id" element={<TemplateEditor />} />
                 <Route path="/admin/documents/generate" element={<DocumentGenerator />} />

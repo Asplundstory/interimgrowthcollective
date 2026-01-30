@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Mail, User, Building2, MessageSquare, Link as LinkIcon, FileText, Presentation, Briefcase, Users, FileStack } from "lucide-react";
+import { ArrowLeft, Mail, User, Building2, MessageSquare, Link as LinkIcon, FileText, Presentation, Briefcase, Users, FileStack, UserPlus } from "lucide-react";
 
 interface ContactSubmission {
   id: string;
@@ -102,7 +102,7 @@ export default function AdminDashboard() {
             </Button>
             <h1 className="text-3xl font-bold">Admin Dashboard</h1>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <Button variant="outline" onClick={() => navigate("/admin/crm")}>
               <Briefcase className="h-4 w-4 mr-2" />
               CRM
@@ -110,6 +110,10 @@ export default function AdminDashboard() {
             <Button variant="outline" onClick={() => navigate("/admin/candidates")}>
               <Users className="h-4 w-4 mr-2" />
               Kandidater
+            </Button>
+            <Button variant="outline" onClick={() => navigate("/admin/applications")}>
+              <UserPlus className="h-4 w-4 mr-2" />
+              Ansökningar
             </Button>
             <Button variant="outline" onClick={() => navigate("/admin/documents")}>
               <FileStack className="h-4 w-4 mr-2" />
