@@ -664,6 +664,7 @@ export type Database = {
           deal_id: string | null
           field_values: Json
           id: string
+          sender_email: string | null
           signature_data: string | null
           signed_at: string | null
           signed_by: string | null
@@ -686,6 +687,7 @@ export type Database = {
           deal_id?: string | null
           field_values?: Json
           id?: string
+          sender_email?: string | null
           signature_data?: string | null
           signed_at?: string | null
           signed_by?: string | null
@@ -708,6 +710,7 @@ export type Database = {
           deal_id?: string | null
           field_values?: Json
           id?: string
+          sender_email?: string | null
           signature_data?: string | null
           signed_at?: string | null
           signed_by?: string | null

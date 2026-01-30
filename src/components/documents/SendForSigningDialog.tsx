@@ -32,17 +32,18 @@ export default function SendForSigningDialog({
 }: SendForSigningDialogProps) {
   const [signerName, setSignerName] = useState("");
   const [signerEmail, setSignerEmail] = useState("");
+  const [senderEmail, setSenderEmail] = useState("");
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
 
   const handleSend = async () => {
-    if (!signerName.trim() || !signerEmail.trim()) {
-      toast.error("Fyll i namn och e-post");
+    if (!signerName.trim() || !signerEmail.trim() || !senderEmail.trim()) {
+      toast.error("Fyll i alla obligatoriska fält");
       return;
     }
 
-    if (!signerEmail.includes("@")) {
-      toast.error("Ange en giltig e-postadress");
+    if (!signerEmail.includes("@") || !senderEmail.includes("@")) {
+      toast.error("Ange giltiga e-postadresser");
       return;
     }
 
@@ -54,6 +55,7 @@ export default function SendForSigningDialog({
           documentId,
           signerName,
           signerEmail,
+          senderEmail,
           message: message.trim() || undefined,
         },
       });
@@ -69,6 +71,7 @@ export default function SendForSigningDialog({
       // Reset form
       setSignerName("");
       setSignerEmail("");
+      setSenderEmail("");
       setMessage("");
     } catch (err: any) {
       console.error("Error sending signing email:", err);
@@ -108,6 +111,20 @@ export default function SendForSigningDialog({
               onChange={(e) => setSignerEmail(e.target.value)}
               placeholder="anna@foretag.se"
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="senderEmail">Din e-post (för bekräftelse) *</Label>
+            <Input
+              id="senderEmail"
+              type="email"
+              value={senderEmail}
+              onChange={(e) => setSenderEmail(e.target.value)}
+              placeholder="du@dittforetag.se"
+            />
+            <p className="text-xs text-muted-foreground">
+              Du får en bekräftelse när dokumentet har signerats
+            </p>
           </div>
 
           <div className="space-y-2">

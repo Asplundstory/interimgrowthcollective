@@ -108,11 +108,13 @@ export default function SignDocument() {
         userAgent: navigator.userAgent,
       });
 
+      const signedAt = new Date().toISOString();
+      
       const { error: updateError } = await supabase
         .from("generated_documents")
         .update({
           status: "signed",
-          signed_at: new Date().toISOString(),
+          signed_at: signedAt,
           signed_by: signatureName,
           signer_ip: clientIp,
           signature_data: signatureData,
@@ -123,6 +125,17 @@ export default function SignDocument() {
       if (updateError) {
         throw updateError;
       }
+
+      // Send notification to sender (fire and forget - don't block on this)
+      supabase.functions.invoke("notify-document-signed", {
+        body: {
+          documentId: document.id,
+          signerName: signatureName,
+          signedAt,
+        },
+      }).catch((err) => {
+        console.warn("Failed to send signed notification:", err);
+      });
 
       setSigned(true);
       toast.success("Dokumentet har signerats!");

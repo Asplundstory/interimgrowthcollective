@@ -15,6 +15,7 @@ interface SigningEmailRequest {
   documentId: string;
   signerEmail: string;
   signerName: string;
+  senderEmail: string;
   message?: string;
 }
 
@@ -25,7 +26,7 @@ const handler = async (req: Request): Promise<Response> => {
 
   try {
     const supabase = createClient(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!);
-    const { documentId, signerEmail, signerName, message }: SigningEmailRequest = await req.json();
+    const { documentId, signerEmail, signerName, senderEmail, message }: SigningEmailRequest = await req.json();
 
     console.log("Sending signing email for document:", documentId, "to:", signerEmail);
 
@@ -34,7 +35,7 @@ const handler = async (req: Request): Promise<Response> => {
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 7);
 
-    // Update document with signing info
+    // Update document with signing info and sender email
     const { data: document, error: updateError } = await supabase
       .from("generated_documents")
       .update({
@@ -43,6 +44,7 @@ const handler = async (req: Request): Promise<Response> => {
         signing_token_expires_at: expiresAt.toISOString(),
         signer_email: signerEmail,
         signer_name: signerName,
+        sender_email: senderEmail,
       })
       .eq("id", documentId)
       .select("title, content")
