@@ -26,6 +26,16 @@ interface ClientDocument {
   created_at: string;
 }
 
+interface SignedDocument {
+  id: string;
+  title: string;
+  content: string;
+  status: string;
+  signed_at: string | null;
+  signed_by: string | null;
+  created_at: string;
+}
+
 interface Invoice {
   id: string;
   company_id: string;
@@ -181,6 +191,26 @@ export function useClientInvoices(companyId: string | undefined) {
 
       if (error) throw error;
       return data as Invoice[];
+    },
+    enabled: !!companyId,
+  });
+}
+
+export function useClientSignedDocuments(companyId: string | undefined) {
+  return useQuery({
+    queryKey: ["client-signed-documents", companyId],
+    queryFn: async () => {
+      if (!companyId) return [];
+
+      const { data, error } = await supabase
+        .from("generated_documents")
+        .select("id, title, content, status, signed_at, signed_by, created_at")
+        .eq("company_id", companyId)
+        .eq("status", "signed")
+        .order("signed_at", { ascending: false });
+
+      if (error) throw error;
+      return data as SignedDocument[];
     },
     enabled: !!companyId,
   });

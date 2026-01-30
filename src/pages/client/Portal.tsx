@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import { sv } from "date-fns/locale";
 import { 
   LogOut, FileText, Receipt, FolderOpen, ExternalLink, 
-  Building2, Presentation
+  Building2, Presentation, FileSignature
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,6 +15,7 @@ import {
   useClientProposals, 
   useClientDocuments, 
   useClientInvoices,
+  useClientSignedDocuments,
   documentTypeLabels,
   invoiceStatusLabels,
   invoiceStatusColors
@@ -28,6 +29,7 @@ export default function ClientPortal() {
   const { data: proposals, isLoading: proposalsLoading } = useClientProposals(user?.company_id);
   const { data: documents, isLoading: documentsLoading } = useClientDocuments(user?.company_id);
   const { data: invoices, isLoading: invoicesLoading } = useClientInvoices(user?.company_id);
+  const { data: signedDocs, isLoading: signedDocsLoading } = useClientSignedDocuments(user?.company_id);
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -88,10 +90,14 @@ export default function ClientPortal() {
           </div>
 
           <Tabs defaultValue="proposals" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3 max-w-md">
+            <TabsList className="grid w-full grid-cols-4 max-w-lg">
               <TabsTrigger value="proposals" className="gap-2">
                 <Presentation className="h-4 w-4" />
                 Förslag
+              </TabsTrigger>
+              <TabsTrigger value="signed" className="gap-2">
+                <FileSignature className="h-4 w-4" />
+                Signerat
               </TabsTrigger>
               <TabsTrigger value="documents" className="gap-2">
                 <FolderOpen className="h-4 w-4" />
@@ -148,6 +154,55 @@ export default function ClientPortal() {
                                 </Link>
                               </Button>
                             )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="signed">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Signerade avtal</CardTitle>
+                  <CardDescription>Dokument du har signerat digitalt</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {signedDocsLoading ? (
+                    <div className="text-center py-8 text-muted-foreground">Laddar...</div>
+                  ) : !signedDocs || signedDocs.length === 0 ? (
+                    <div className="text-center py-8 text-muted-foreground">
+                      Inga signerade dokument ännu
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {signedDocs.map((doc) => (
+                        <div 
+                          key={doc.id} 
+                          className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+                        >
+                          <div className="flex items-center gap-4">
+                            <div className="h-10 w-10 rounded-lg bg-green-500/10 flex items-center justify-center">
+                              <FileSignature className="h-5 w-5 text-green-600" />
+                            </div>
+                            <div>
+                              <p className="font-medium">{doc.title}</p>
+                              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                <Badge variant="secondary" className="bg-green-500/10 text-green-600 text-xs">
+                                  Signerat
+                                </Badge>
+                                {doc.signed_at && (
+                                  <span>
+                                    {format(new Date(doc.signed_at), "d MMM yyyy", { locale: sv })}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="text-right text-sm text-muted-foreground">
+                            {doc.signed_by && <p>Signerat av: {doc.signed_by}</p>}
                           </div>
                         </div>
                       ))}
