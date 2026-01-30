@@ -664,8 +664,14 @@ export type Database = {
           deal_id: string | null
           field_values: Json
           id: string
+          signature_data: string | null
           signed_at: string | null
           signed_by: string | null
+          signer_email: string | null
+          signer_ip: string | null
+          signer_name: string | null
+          signing_token: string | null
+          signing_token_expires_at: string | null
           status: string
           template_id: string | null
           title: string
@@ -680,8 +686,14 @@ export type Database = {
           deal_id?: string | null
           field_values?: Json
           id?: string
+          signature_data?: string | null
           signed_at?: string | null
           signed_by?: string | null
+          signer_email?: string | null
+          signer_ip?: string | null
+          signer_name?: string | null
+          signing_token?: string | null
+          signing_token_expires_at?: string | null
           status?: string
           template_id?: string | null
           title: string
@@ -696,8 +708,14 @@ export type Database = {
           deal_id?: string | null
           field_values?: Json
           id?: string
+          signature_data?: string | null
           signed_at?: string | null
           signed_by?: string | null
+          signer_email?: string | null
+          signer_ip?: string | null
+          signer_name?: string | null
+          signing_token?: string | null
+          signing_token_expires_at?: string | null
           status?: string
           template_id?: string | null
           title?: string

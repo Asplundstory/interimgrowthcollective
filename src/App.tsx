@@ -32,6 +32,7 @@ const AdminDocuments = lazy(() => import("@/pages/admin/Documents"));
 const ApplyPage = lazy(() => import("@/pages/ApplyPage"));
 const ClientLogin = lazy(() => import("@/pages/client/Login"));
 const ClientPortal = lazy(() => import("@/pages/client/Portal"));
+const SignDocument = lazy(() => import("@/pages/SignDocument"));
 
 // Document routes
 const TemplateEditor = lazy(() => import("@/components/documents/TemplateEditor"));
@@ -81,6 +82,9 @@ const App = () => {
                 
                 {/* Proposal routes (no layout - fullscreen) */}
                 <Route path="/p/:slug" element={<ProposalPage />} />
+                
+                {/* Document signing route (public, no layout) */}
+                <Route path="/sign/:token" element={<SignDocument />} />
                 
                 {/* Admin routes */}
                 <Route path="/admin/login" element={<AdminLogin />} />

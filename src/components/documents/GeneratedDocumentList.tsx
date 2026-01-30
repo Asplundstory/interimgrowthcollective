@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { sv } from "date-fns/locale";
-import { FileText, Download, Trash2, Building2, User, MoreHorizontal, Check } from "lucide-react";
+import { FileText, Download, Trash2, Building2, User, MoreHorizontal, Check, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -40,6 +40,7 @@ import {
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import SendForSigningDialog from "./SendForSigningDialog";
 
 const statusLabels: Record<string, string> = {
   draft: "Utkast",
@@ -59,6 +60,7 @@ export default function GeneratedDocumentList() {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [signingDoc, setSigningDoc] = useState<{ id: string; title: string } | null>(null);
 
   const { data: documents, isLoading } = useGeneratedDocuments();
   const updateDocument = useUpdateGeneratedDocument();
@@ -219,10 +221,16 @@ export default function GeneratedDocumentList() {
                         Ladda ner / Skriv ut
                       </DropdownMenuItem>
                       {doc.status === 'draft' && (
-                        <DropdownMenuItem onClick={() => handleMarkSigned(doc.id)}>
-                          <Check className="h-4 w-4 mr-2" />
-                          Markera som signerat
-                        </DropdownMenuItem>
+                        <>
+                          <DropdownMenuItem onClick={() => setSigningDoc({ id: doc.id, title: doc.title })}>
+                            <Send className="h-4 w-4 mr-2" />
+                            Skicka för signering
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleMarkSigned(doc.id)}>
+                            <Check className="h-4 w-4 mr-2" />
+                            Markera som signerat
+                          </DropdownMenuItem>
+                        </>
                       )}
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
@@ -260,6 +268,16 @@ export default function GeneratedDocumentList() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {signingDoc && (
+        <SendForSigningDialog
+          open={!!signingDoc}
+          onOpenChange={(open) => !open && setSigningDoc(null)}
+          documentId={signingDoc.id}
+          documentTitle={signingDoc.title}
+          onSuccess={() => queryClient.invalidateQueries({ queryKey: ["generated-documents"] })}
+        />
+      )}
     </div>
   );
 }
