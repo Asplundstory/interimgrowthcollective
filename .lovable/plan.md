@@ -1,285 +1,128 @@
 
+# Plan: Koppling av CreatorForm till Kandidatdatabasen
 
-# Affärssystem IGC - Komplett Plan
+## Översikt
+Skapar ett tvåstegs-ansökningsflöde där kreatörer först fyller i ett enkelt intresseformulär, som sedan kan leda till en inbjudan att slutföra en fullständig registrering i kandidatdatabasen.
 
-## Sammanfattning
-
-Detta är en plan för att bygga ett komplett affärssystem (Business Management System) för Interim Growth Collective. Systemet integrerar CRM, kandidathantering, kundportal och dokumenthantering i en sammanhållen plattform.
-
-## Systemöversikt
-
-Affärssystemet består av fyra huvudmoduler:
-
-1. **CRM-modul** - Leads, kontakter, företag och affärer
-2. **Kandidatdatabas** - Ansökningsformulär (Typeform-stil) med CV/LinkedIn-uppladdning
-3. **Kundportal** - Säker yta per kund med offerter, fakturor och dokument
-4. **Dokumenthantering** - Kontrakt, policys och avtal (baserat på uppladdade mallar)
-
----
-
-## Modul 1: CRM-system
-
-### Databasstruktur
-
-**companies** (Företag)
-- id, name, org_number, industry, website
-- address, city, postal_code
-- notes, created_at, updated_at
-
-**contacts** (Kontaktpersoner)
-- id, company_id, first_name, last_name
-- email, phone, title, linkedin_url
-- is_primary, notes, created_at
-
-**deals** (Affärer/Pipelines)
-- id, company_id, contact_id, proposal_id
-- title, value, currency, status (lead/qualified/proposal/negotiation/won/lost)
-- probability, expected_close_date
-- notes, created_at, updated_at
-
-**deal_activities** (Aktivitetslogg)
-- id, deal_id, user_id, activity_type (call/email/meeting/note)
-- description, scheduled_at, completed_at
-
-### Gränssnitt
-
-- Listvy med filter och sök
-- Kanban-vy för pipeline
-- Detaljsidor med aktivitetsflöde
-- Snabbskapande av leads/kontakter
-
----
-
-## Modul 2: Kandidatdatabas
-
-### Ansökningsformulär (Typeform-stil)
-
-Ett stegvist formulär med animerade övergångar:
-
-1. **Steg 1**: Personuppgifter (namn, email, telefon)
-2. **Steg 2**: Professionell profil (roll, LinkedIn-URL, portfolio)
-3. **Steg 3**: CV-uppladdning (PDF/DOC)
-4. **Steg 4**: Frågor om arbetsätt (befintliga frågor från CreatorForm)
-5. **Steg 5**: Referenser (namn, företag, email, telefon)
-6. **Steg 6**: Code of Conduct (baserat på Coc-IGC.docx)
-
-### Databasstruktur
-
-**candidates** (Kandidater)
-- id, first_name, last_name, email, phone
-- role, linkedin_url, portfolio_url
-- cv_url (storage bucket), status (new/screening/interview/approved/rejected)
-- availability, hourly_rate
-- notes, q1_feeling, q2_structure, q3_pressure
-- code_of_conduct_accepted, created_at
-
-**candidate_references** (Referenser)
-- id, candidate_id, name, company, title, email, phone
-
-### Säkerhet - 2FA med Google Authenticator
-
-Kandidatinloggning med:
-- Email + lösenord
-- TOTP-baserad 2FA (Google Authenticator-kompatibel)
-- Supabase Auth med MFA-funktionalitet
-
----
-
-## Modul 3: Kundportal
-
-### Inloggning (Magic Link)
-
-Kunden loggar in utan lösenord:
-1. Anger sin email på /client-login
-2. Får en verifieringskod via email (OTP)
-3. Matar in koden och får tillgång
-
-### Kundens yta innehåller:
-
-- **Mina förslag** - Aktiva och tidigare affärsförslag (befintlig proposals)
-- **Signerade offerter** - PDF-versioner av godkända förslag
-- **Fakturor** - Lista med fakturor (referens till Wint.se, inte faktisk fakturering)
-- **Dokument** - Kontrakt, policys, avtal
-- **Avslutade uppdrag** - Historik
-
-### Databasstruktur
-
-**client_users** (Kundkonton)
-- id, company_id, email, name
-- last_login_at, created_at
-
-**client_documents** (Dokument per kund)
-- id, company_id, document_type (contract/policy/invoice/agreement)
-- title, file_url, uploaded_by, created_at
-
-**invoices** (Fakturareferenser)
-- id, company_id, deal_id, invoice_number
-- amount, currency, status (draft/sent/paid/overdue)
-- due_date, wint_reference, created_at
-
----
-
-## Modul 4: Dokumenthantering
-
-### Mallar från uppladdade filer
-
-1. **Uppdragsavtal** - Avtal mellan IGC och kund
-   - Dynamiska fält: Kundnamn, org-nummer, kontaktperson, roll, startdatum, pris, etc.
-
-2. **Anställningsavtal** - Avtal mellan IGC och konsult
-   - Dynamiska fält: Konsultnamn, personnummer, roll, lön, kund-placering
-
-3. **Code of Conduct** - Uppförandekod för konsulter
-   - Statiskt dokument med signeringsfält
-
-### Funktionalitet
-
-- Mallbibliotek med dynamisk fyllning
-- PDF-generering
-- Digital signering (integration eller enkel bekräftelse)
-- Versionering och historik
-
----
-
-## Teknisk Arkitektur
-
-### Nya databastabeller
-
-```
-companies
-contacts  
-deals
-deal_activities
-candidates
-candidate_references
-client_users
-client_documents
-invoices
-document_templates
+```text
+┌──────────────────────┐     ┌──────────────────────┐     ┌──────────────────────┐
+│  1. ÖPPET FORMULÄR   │────▶│  2. ADMIN-GRANSKNING │────▶│ 3. FULLSTÄNDIG REG.  │
+│  /for-creators       │     │  Godkänn/Avvisa      │     │ Via säker länk       │
+│                      │     │                      │     │                      │
+│  • Grundläggande     │     │  • Granska svar      │     │  • CV-uppladdning    │
+│    kontaktinfo       │     │  • Skicka inbjudan   │     │  • Telefon, LinkedIn │
+│  • Portfolio         │     │    via e-post        │     │  • Referenser        │
+│  • 3 frågor          │     │                      │     │  • Code of Conduct   │
+└──────────────────────┘     └──────────────────────┘     └──────────────────────┘
 ```
 
-### Nya komponenter
+## Vad kommer att förändras
 
+### 1. Ny databasstruktur
+- Lägger till kolumner i `creator_applications`:
+  - `status`: för att spåra var i processen ansökan befinner sig (ny/granskad/inbjuden/avvisad)
+  - `invitation_token`: unik länk för att slutföra registrering
+  - `invitation_sent_at`: tidsstämpel för inbjudan
+  - `invitation_expires_at`: utgångsdatum för inbjudan
+
+### 2. Admin-gränssnitt för att hantera ansökningar
+- Ny sida under `/admin/applications` för att se inkomna ansökningar från CreatorForm
+- Möjlighet att:
+  - Granska ansökan med alla svar
+  - Godkänna och skicka inbjudan via e-post
+  - Avvisa ansökan
+- Visuell statusindikator för varje ansökan
+
+### 3. E-postfunktion för inbjudan
+- Ny edge-funktion `send-candidate-invitation` som:
+  - Genererar en unik, tidsbegränsad token
+  - Skickar ett stilrent e-postmeddelande med inbjudningslänk
+  - Länkar till ett förifylt formulär
+
+### 4. Anpassat registreringsformulär
+- Ny sida `/apply/:token` som:
+  - Verifierar att token är giltig och ej utgången
+  - Visar förifyld information (namn, e-post, roll) från ursprunglig ansökan
+  - Samlar in kompletterande information:
+    - Telefonnummer
+    - LinkedIn-profil
+    - CV-uppladdning
+    - Referenser
+  - Skapar en fullständig kandidatpost i `candidates`-tabellen
+  - Markerar ursprunglig ansökan som slutförd
+
+### 5. Statusflöde
+
+```text
+Ansökningsstatus:
+  pending    → Ny ansökan väntar på granskning
+  reviewing  → Under utvärdering
+  invited    → Inbjudan skickad
+  completed  → Fullständig registrering genomförd
+  rejected   → Avvisad
 ```
-src/pages/
-  admin/
-    CRM.tsx
-    Candidates.tsx
-    Documents.tsx
-  client/
-    Portal.tsx
-    Login.tsx
-
-src/components/
-  crm/
-    CompanyList.tsx
-    CompanyDetail.tsx
-    ContactCard.tsx
-    DealPipeline.tsx
-    DealCard.tsx
-    ActivityLog.tsx
-  candidates/
-    ApplicationForm.tsx (Typeform-style)
-    CandidateList.tsx
-    CandidateDetail.tsx
-  client-portal/
-    ClientDashboard.tsx
-    ProposalList.tsx
-    DocumentList.tsx
-    InvoiceList.tsx
-  documents/
-    TemplateEditor.tsx
-    DocumentGenerator.tsx
-```
-
-### Nya hooks
-
-```
-src/hooks/
-  useCRM.ts
-  useCandidates.ts
-  useClientPortal.ts
-  useDocuments.ts
-```
-
-### Nya edge functions
-
-```
-supabase/functions/
-  send-magic-link/ (kundportal-inloggning)
-  generate-document-pdf/ (PDF-generering från mall)
-```
-
----
-
-## Autentisering och säkerhet
-
-### Tre typer av användare
-
-| Typ | Inloggning | Åtkomst |
-|-----|-----------|---------|
-| Admin | Email + lösenord | Allt |
-| Kandidat | Email + lösenord + 2FA | Kandidatportal |
-| Kund | Magic Link (email OTP) | Kundportal |
-
-### RLS-policies
-
-- Admins: Full åtkomst till alla tabeller
-- Kandidater: Endast sin egen data
-- Kunder: Endast sin företags data och relaterade dokument
-
----
-
-## Rekommenderad implementation (fasindelning)
-
-### Fas 1: CRM Foundation
-- Databastabeller för companies, contacts, deals
-- Listvy och detaljsidor
-- Pipeline-vy
-
-### Fas 2: Kandidatdatabas  
-- Candidates-tabell med storage för CV
-- Typeform-stil ansökningsformulär
-- Admin-vy för kandidater
-
-### Fas 3: Kundportal
-- client_users med magic link auth
-- Portal-sidor för förslag och dokument
-- Koppling till befintlig proposals
-
-### Fas 4: Dokumenthantering
-- Dokumentmallar baserade på uppladdade filer
-- PDF-generering
-- Digital bekräftelse/signering
-
-### Fas 5: 2FA och avancerad säkerhet
-- TOTP-implementation för kandidater
-- Audit logging
-- Ytterligare säkerhetsåtgärder
 
 ---
 
 ## Tekniska detaljer
 
-### Storage buckets att skapa
+### Databasändringar (migration)
 
-- `candidate-cvs` - För CV-uppladdningar
-- `client-documents` - För kontrakt, fakturor, avtal
-- `document-templates` - För dokumentmallar
+```sql
+-- Lägg till nya kolumner i creator_applications
+ALTER TABLE creator_applications ADD COLUMN status TEXT DEFAULT 'pending';
+ALTER TABLE creator_applications ADD COLUMN invitation_token UUID;
+ALTER TABLE creator_applications ADD COLUMN invitation_sent_at TIMESTAMPTZ;
+ALTER TABLE creator_applications ADD COLUMN invitation_expires_at TIMESTAMPTZ;
+ALTER TABLE creator_applications ADD COLUMN reviewed_by UUID;
+ALTER TABLE creator_applications ADD COLUMN reviewed_at TIMESTAMPTZ;
+ALTER TABLE creator_applications ADD COLUMN candidate_id UUID REFERENCES candidates(id);
 
-### Edge functions
+-- RLS-policy för att tillåta uppdatering med giltig token
+CREATE POLICY "Anyone can complete with valid token"
+ON creator_applications FOR UPDATE
+USING (invitation_token IS NOT NULL AND invitation_expires_at > now())
+WITH CHECK (invitation_token IS NOT NULL AND invitation_expires_at > now());
+```
 
-**send-magic-link**
-- Genererar OTP-kod
-- Sparar i sessions-tabell med expiry
-- Skickar via Resend
+### Nya filer som skapas
 
-**generate-document-pdf**
-- Tar mall-ID och dynamiska värden
-- Genererar PDF med platshållare utfyllda
-- Sparar till storage och returnerar URL
+| Fil | Beskrivning |
+|-----|-------------|
+| `src/pages/admin/Applications.tsx` | Admin-sida för ansökningsgranskning |
+| `src/components/applications/ApplicationList.tsx` | Lista med alla ansökningar |
+| `src/components/applications/ApplicationCard.tsx` | Detaljvy för en ansökan |
+| `src/components/applications/InviteDialog.tsx` | Dialog för att skicka inbjudan |
+| `src/hooks/useApplications.ts` | Hook för CRUD-operationer |
+| `src/pages/CompleteApplication.tsx` | Sida för att slutföra registrering |
+| `supabase/functions/send-candidate-invitation/index.ts` | Edge-funktion för e-postinbjudan |
 
-### Nya typer i types.ts (autogenereras)
+### Befintliga filer som uppdateras
 
-Alla nya tabeller läggs automatiskt till i Supabase-typerna efter migration.
+| Fil | Ändring |
+|-----|---------|
+| `src/App.tsx` | Nya routes: `/admin/applications`, `/apply/:token` |
+| `src/pages/admin/Dashboard.tsx` | Länk till ansökningshantering |
+| `src/integrations/supabase/types.ts` | Auto-uppdateras med nya kolumner |
 
+### E-postmall för inbjudan
+
+Inbjudningsmeddelandet kommer innehålla:
+- Personlig hälsning
+- Information om att ansökan godkänts
+- Tydlig call-to-action med länk
+- Information om att länken är giltig i 7 dagar
+- Kontaktinformation vid frågor
+
+---
+
+## Sammanfattning av användarflödet
+
+1. **Kreatör** fyller i formuläret på `/for-creators` med grundläggande info
+2. **Admin** får e-postnotifikation och granskar ansökan i `/admin/applications`
+3. **Admin** godkänner och klickar "Skicka inbjudan"
+4. **Kreatör** får e-post med personlig länk
+5. **Kreatör** klickar länken och kommer till förifylt formulär
+6. **Kreatör** fyller i kompletterande info (CV, telefon, LinkedIn, referenser)
+7. **Systemet** skapar fullständig kandidatpost och uppdaterar ansökningsstatus
+8. **Admin** kan nu se kandidaten i `/admin/candidates`
