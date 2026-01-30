@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import { sv } from "date-fns/locale";
 import { 
   LogOut, FileText, Receipt, FolderOpen, ExternalLink, 
-  Building2, Presentation, FileSignature
+  Building2, Presentation, FileSignature, Download
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -21,7 +21,7 @@ import {
   invoiceStatusColors
 } from "@/hooks/useClientPortal";
 import { SEO } from "@/components/SEO";
-
+import { generateSignedDocumentPdf } from "@/lib/generatePdf";
 export default function ClientPortal() {
   const { user, isLoading, isAuthenticated, logout } = useClientAuth();
   const navigate = useNavigate();
@@ -201,8 +201,18 @@ export default function ClientPortal() {
                               </div>
                             </div>
                           </div>
-                          <div className="text-right text-sm text-muted-foreground">
-                            {doc.signed_by && <p>Signerat av: {doc.signed_by}</p>}
+                          <div className="flex items-center gap-4">
+                            <div className="text-right text-sm text-muted-foreground">
+                              {doc.signed_by && <p>Signerat av: {doc.signed_by}</p>}
+                            </div>
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => generateSignedDocumentPdf(doc)}
+                            >
+                              <Download className="h-4 w-4 mr-2" />
+                              Ladda ner PDF
+                            </Button>
                           </div>
                         </div>
                       ))}

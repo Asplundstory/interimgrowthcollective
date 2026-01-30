@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { sv } from "date-fns/locale";
-import { FileText, Download, Trash2, Building2, User, MoreHorizontal, Check, Send } from "lucide-react";
+import { FileText, Download, Trash2, Building2, User, MoreHorizontal, Check, Send, FileDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -41,6 +41,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import SendForSigningDialog from "./SendForSigningDialog";
+import { generateSignedDocumentPdf } from "@/lib/generatePdf";
 
 const statusLabels: Record<string, string> = {
   draft: "Utkast",
@@ -220,6 +221,18 @@ export default function GeneratedDocumentList() {
                         <Download className="h-4 w-4 mr-2" />
                         Ladda ner / Skriv ut
                       </DropdownMenuItem>
+                      {doc.status === 'signed' && (
+                        <DropdownMenuItem onClick={() => generateSignedDocumentPdf({
+                          title: doc.title,
+                          content: doc.content,
+                          signed_at: doc.signed_at,
+                          signed_by: doc.signed_by,
+                          signer_ip: doc.signer_ip,
+                        })}>
+                          <FileDown className="h-4 w-4 mr-2" />
+                          Ladda ner signerat PDF
+                        </DropdownMenuItem>
+                      )}
                       {doc.status === 'draft' && (
                         <>
                           <DropdownMenuItem onClick={() => setSigningDoc({ id: doc.id, title: doc.title })}>
