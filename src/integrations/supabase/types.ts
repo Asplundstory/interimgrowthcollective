@@ -467,42 +467,71 @@ export type Database = {
       }
       creator_applications: {
         Row: {
+          candidate_id: string | null
           code_of_conduct_accepted: boolean
           created_at: string
           email: string
           id: string
+          invitation_expires_at: string | null
+          invitation_sent_at: string | null
+          invitation_token: string | null
           name: string
           portfolio_url: string
           q1_feeling: string
           q2_structure: string
           q3_pressure: string
+          reviewed_at: string | null
+          reviewed_by: string | null
           role: string
+          status: string | null
         }
         Insert: {
+          candidate_id?: string | null
           code_of_conduct_accepted?: boolean
           created_at?: string
           email: string
           id?: string
+          invitation_expires_at?: string | null
+          invitation_sent_at?: string | null
+          invitation_token?: string | null
           name: string
           portfolio_url: string
           q1_feeling: string
           q2_structure: string
           q3_pressure: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           role: string
+          status?: string | null
         }
         Update: {
+          candidate_id?: string | null
           code_of_conduct_accepted?: boolean
           created_at?: string
           email?: string
           id?: string
+          invitation_expires_at?: string | null
+          invitation_sent_at?: string | null
+          invitation_token?: string | null
           name?: string
           portfolio_url?: string
           q1_feeling?: string
           q2_structure?: string
           q3_pressure?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           role?: string
+          status?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "creator_applications_candidate_id_fkey"
+            columns: ["candidate_id"]
+            isOneToOne: false
+            referencedRelation: "candidates"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       deal_activities: {
         Row: {
