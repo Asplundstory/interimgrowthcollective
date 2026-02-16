@@ -15,7 +15,8 @@ export default function Applications() {
     applications, 
     isLoading, 
     updateStatus, 
-    sendInvitation 
+    sendInvitation,
+    resendInvitation
   } = useApplications();
 
   useEffect(() => {
@@ -97,6 +98,7 @@ export default function Applications() {
               applications={pendingApps}
               onStatusChange={updateStatus}
               onSendInvitation={sendInvitation}
+              onResendInvitation={resendInvitation}
             />
           </TabsContent>
 
@@ -105,6 +107,7 @@ export default function Applications() {
               applications={reviewingApps}
               onStatusChange={updateStatus}
               onSendInvitation={sendInvitation}
+              onResendInvitation={resendInvitation}
             />
           </TabsContent>
 
@@ -113,6 +116,7 @@ export default function Applications() {
               applications={invitedApps}
               onStatusChange={updateStatus}
               onSendInvitation={sendInvitation}
+              onResendInvitation={resendInvitation}
             />
           </TabsContent>
 
@@ -121,6 +125,7 @@ export default function Applications() {
               applications={completedApps}
               onStatusChange={updateStatus}
               onSendInvitation={sendInvitation}
+              onResendInvitation={resendInvitation}
             />
           </TabsContent>
 
@@ -129,6 +134,7 @@ export default function Applications() {
               applications={rejectedApps}
               onStatusChange={updateStatus}
               onSendInvitation={sendInvitation}
+              onResendInvitation={resendInvitation}
             />
           </TabsContent>
         </Tabs>
