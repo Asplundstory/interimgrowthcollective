@@ -17,3 +17,6 @@ verify_jwt = false
 
 [functions.send-candidate-invitation]
 verify_jwt = false
+
+[functions.aeo-audit]
+verify_jwt = false
