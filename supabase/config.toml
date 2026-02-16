@@ -20,3 +20,6 @@ verify_jwt = false
 
 [functions.seo-proxy]
 verify_jwt = false
+
+[functions.seoproxy]
+verify_jwt = false
