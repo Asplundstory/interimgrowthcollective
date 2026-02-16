@@ -133,6 +133,49 @@ export function useApplications() {
     }
   };
 
+  const resendInvitation = async (application: CreatorApplication) => {
+    try {
+      const { data, error } = await supabase.functions.invoke("send-candidate-invitation", {
+        body: {
+          applicationId: application.id,
+          name: application.name,
+          email: application.email,
+          role: application.role,
+        },
+      });
+
+      if (error) throw error;
+
+      setApplications(prev =>
+        prev.map(app =>
+          app.id === application.id
+            ? {
+                ...app,
+                status: "invited" as ApplicationStatus,
+                invitation_sent_at: new Date().toISOString(),
+                invitation_token: data.token,
+                invitation_expires_at: data.expiresAt,
+              }
+            : app
+        )
+      );
+
+      toast({
+        title: "Inbjudan skickad igen",
+        description: `Ny inbjudan skickad till ${application.email}`,
+      });
+      return true;
+    } catch (error) {
+      console.error("Error resending invitation:", error);
+      toast({
+        title: "Fel",
+        description: "Kunde inte skicka om inbjudan.",
+        variant: "destructive",
+      });
+      return false;
+    }
+  };
+
   const rejectApplication = async (id: string) => {
     return updateStatus(id, "rejected");
   };
@@ -143,6 +186,7 @@ export function useApplications() {
     fetchApplications,
     updateStatus,
     sendInvitation,
+    resendInvitation,
     rejectApplication,
   };
 }

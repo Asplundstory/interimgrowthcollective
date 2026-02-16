@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { format } from "date-fns";
+import { format, isPast } from "date-fns";
 import { sv } from "date-fns/locale";
 import { 
   User, 
@@ -12,7 +12,9 @@ import {
   Clock,
   CheckCircle2,
   XCircle,
-  MoreHorizontal
+  MoreHorizontal,
+  RefreshCw,
+  AlertTriangle
 } from "lucide-react";
 import {
   Table,
@@ -43,12 +45,14 @@ interface ApplicationListProps {
   applications: CreatorApplication[];
   onStatusChange: (id: string, status: ApplicationStatus) => Promise<boolean>;
   onSendInvitation: (application: CreatorApplication) => Promise<boolean>;
+  onResendInvitation: (application: CreatorApplication) => Promise<boolean>;
 }
 
 export function ApplicationList({ 
   applications, 
   onStatusChange, 
-  onSendInvitation 
+  onSendInvitation,
+  onResendInvitation
 }: ApplicationListProps) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
@@ -137,10 +141,18 @@ export function ApplicationList({
                     <Badge variant="outline">{app.role}</Badge>
                   </TableCell>
                   <TableCell>
-                    <Badge variant={getStatusVariant(app.status)} className="gap-1">
-                      {getStatusIcon(app.status)}
-                      {getStatusLabel(app.status)}
-                    </Badge>
+                    <div className="flex items-center gap-2">
+                      <Badge variant={getStatusVariant(app.status)} className="gap-1">
+                        {getStatusIcon(app.status)}
+                        {getStatusLabel(app.status)}
+                      </Badge>
+                      {app.status === "invited" && app.invitation_expires_at && isPast(new Date(app.invitation_expires_at)) && (
+                        <Badge variant="destructive" className="gap-1">
+                          <AlertTriangle className="h-3 w-3" />
+                          Utgången
+                        </Badge>
+                      )}
+                    </div>
                   </TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>
@@ -186,10 +198,23 @@ export function ApplicationList({
                           </>
                         )}
                         {app.status === "invited" && app.invitation_sent_at && (
-                          <DropdownMenuItem disabled>
-                            <Clock className="h-4 w-4 mr-2" />
-                            Inbjudan skickad {format(new Date(app.invitation_sent_at), "d MMM", { locale: sv })}
-                          </DropdownMenuItem>
+                          <>
+                            <DropdownMenuItem disabled>
+                              <Clock className="h-4 w-4 mr-2" />
+                              Inbjudan skickad {format(new Date(app.invitation_sent_at), "d MMM", { locale: sv })}
+                            </DropdownMenuItem>
+                            {app.invitation_expires_at && isPast(new Date(app.invitation_expires_at)) && (
+                              <DropdownMenuItem
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onResendInvitation(app);
+                                }}
+                              >
+                                <RefreshCw className="h-4 w-4 mr-2" />
+                                Skicka om inbjudan
+                              </DropdownMenuItem>
+                            )}
+                          </>
                         )}
                         <DropdownMenuItem
                           onClick={(e) => {
