@@ -1,4 +1,3 @@
-// AEO Audit proxy - calls aeoaudit.se API
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -16,28 +15,21 @@ Deno.serve(async (req: Request) => {
   if (!apiKey) {
     return new Response(
       JSON.stringify({ success: false, error: "AEO_API_KEY not configured" }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   }
 
   try {
     const url = new URL(req.url);
-    const action = url.searchParams.get("action") || "audit";
+    const action = url.searchParams.get("action") || "health";
 
     if (action === "start") {
       const body = await req.json();
-      const targetUrl = body.targetUrl;
-      const siteType = body.siteType || "service";
-
       const response = await fetch(`${AEO_API_BASE}/api-audit`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-API-Key": apiKey,
-        },
-        body: JSON.stringify({ url: targetUrl, siteType }),
+        headers: { "Content-Type": "application/json", "X-API-Key": apiKey },
+        body: JSON.stringify({ url: body.targetUrl, siteType: body.siteType || "service" }),
       });
-
       const data = await response.json();
       return new Response(JSON.stringify(data), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -48,16 +40,13 @@ Deno.serve(async (req: Request) => {
       const auditId = url.searchParams.get("auditId");
       if (!auditId) {
         return new Response(
-          JSON.stringify({ success: false, error: "auditId is required" }),
-          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          JSON.stringify({ success: false, error: "auditId required" }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
         );
       }
-
-      const response = await fetch(
-        `${AEO_API_BASE}/api-audit-result?auditId=${auditId}`,
-        { headers: { "X-API-Key": apiKey } }
-      );
-
+      const response = await fetch(`${AEO_API_BASE}/api-audit-result?auditId=${auditId}`, {
+        headers: { "X-API-Key": apiKey },
+      });
       const data = await response.json();
       return new Response(JSON.stringify(data), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -68,7 +57,6 @@ Deno.serve(async (req: Request) => {
       const response = await fetch(`${AEO_API_BASE}/api-health`, {
         headers: { "X-API-Key": apiKey },
       });
-
       const data = await response.json();
       return new Response(JSON.stringify(data), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -77,13 +65,13 @@ Deno.serve(async (req: Request) => {
 
     return new Response(
       JSON.stringify({ success: false, error: "Invalid action" }),
-      { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (error) {
     console.error("AEO Audit error:", error);
     return new Response(
       JSON.stringify({ success: false, error: error instanceof Error ? error.message : "Unknown error" }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   }
 });
