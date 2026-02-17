@@ -340,6 +340,30 @@ const generateVideoSchema = (video: VideoData, origin: string) => ({
   },
 });
 
+// WebPage schema with Speakable for voice search
+const getWebPageSchema = (title: string, description: string, url: string, origin: string) => ({
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: title,
+  description: description,
+  url: url,
+  datePublished: "2024-01-01",
+  dateModified: new Date().toISOString().split("T")[0],
+  speakable: {
+    "@type": "SpeakableSpecification",
+    cssSelector: ["h1", ".hero-text", "main p:first-of-type"],
+  },
+  publisher: {
+    "@type": "Organization",
+    name: siteConfig.siteName,
+  },
+  isPartOf: {
+    "@type": "WebSite",
+    name: siteConfig.siteName,
+    url: origin,
+  },
+});
+
 // Generate hreflang URLs
 const getHreflangUrls = (pathname: string, origin: string) => {
   const isEnglish = pathname.startsWith("/en");
@@ -417,6 +441,9 @@ export function SEO({
       {article?.publishedTime && (
         <meta property="article:published_time" content={article.publishedTime} />
       )}
+      {article?.modifiedTime && (
+        <meta property="article:modified_time" content={article.modifiedTime} />
+      )}
       {article?.tags?.map((tag) => (
         <meta key={tag} property="article:tag" content={tag} />
       ))}
@@ -439,6 +466,11 @@ export function SEO({
       {/* JSON-LD: Services for service visibility */}
       <script type="application/ld+json">
         {JSON.stringify(getServicesSchema(origin))}
+      </script>
+
+      {/* JSON-LD: WebPage with Speakable (always) */}
+      <script type="application/ld+json">
+        {JSON.stringify(getWebPageSchema(fullTitle, description, canonicalUrl, origin))}
       </script>
 
       {/* JSON-LD: BreadcrumbList (when breadcrumbs prop provided) */}

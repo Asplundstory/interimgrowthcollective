@@ -72,15 +72,15 @@ async function handleAeoProxy(req: Request, url: URL): Promise<Response> {
 
 // ─── Sitemap Generation ───
 const staticPages = [
-  { loc: "/", changefreq: "weekly", priority: "1.0" },
-  { loc: "/for-companies", changefreq: "monthly", priority: "0.9" },
-  { loc: "/for-creators", changefreq: "monthly", priority: "0.9" },
-  { loc: "/areas", changefreq: "monthly", priority: "0.8" },
-  { loc: "/about", changefreq: "monthly", priority: "0.7" },
-  { loc: "/insights", changefreq: "weekly", priority: "0.8" },
-  { loc: "/contact", changefreq: "monthly", priority: "0.8" },
-  { loc: "/privacy", changefreq: "yearly", priority: "0.3" },
-  { loc: "/terms", changefreq: "yearly", priority: "0.3" },
+  { loc: "/", changefreq: "weekly", priority: "1.0", lastmod: "2026-02-17" },
+  { loc: "/for-companies", changefreq: "monthly", priority: "0.9", lastmod: "2026-02-17" },
+  { loc: "/for-creators", changefreq: "monthly", priority: "0.9", lastmod: "2026-02-17" },
+  { loc: "/areas", changefreq: "monthly", priority: "0.8", lastmod: "2026-02-17" },
+  { loc: "/about", changefreq: "monthly", priority: "0.7", lastmod: "2026-02-17" },
+  { loc: "/insights", changefreq: "weekly", priority: "0.8", lastmod: "2026-02-17" },
+  { loc: "/contact", changefreq: "monthly", priority: "0.8", lastmod: "2026-02-17" },
+  { loc: "/privacy", changefreq: "yearly", priority: "0.3", lastmod: "2025-01-08" },
+  { loc: "/terms", changefreq: "yearly", priority: "0.3", lastmod: "2025-01-08" },
 ];
 
 const generateUrlEntry = (path: string, changefreq: string, priority: string, lastmod?: string) => {
@@ -144,7 +144,7 @@ Deno.serve(async (req) => {
         xmlns:xhtml="http://www.w3.org/1999/xhtml">`;
 
     for (const page of staticPages) {
-      xml += generateUrlEntry(page.loc, page.changefreq, page.priority);
+      xml += generateUrlEntry(page.loc, page.changefreq, page.priority, page.lastmod);
     }
 
     if (insights && insights.length > 0) {
