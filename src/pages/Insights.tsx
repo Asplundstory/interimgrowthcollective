@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Plus, Pencil } from "lucide-react";
 import { Hero, Section, EditorialCard } from "@/components/editorial";
 import { InsightEditor } from "@/components/cms";
@@ -14,9 +15,17 @@ export default function InsightsPage() {
   const { t, getLocalizedPath, language } = useLanguage();
   const [editingInsight, setEditingInsight] = useState<Insight | null>(null);
   const [isCreating, setIsCreating] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTag = searchParams.get("tag");
 
   // Filter: admins see all, others see only published
-  const visibleInsights = isAdmin ? insights : insights.filter((i) => i.published);
+  const visibleInsights = useMemo(() => {
+    const base = isAdmin ? insights : insights.filter((i) => i.published);
+    if (activeTag) {
+      return base.filter((i) => i.tags?.includes(activeTag));
+    }
+    return base;
+  }, [insights, isAdmin, activeTag]);
 
   return (
     <>
@@ -46,6 +55,22 @@ export default function InsightsPage() {
           >
             <Plus className="h-4 w-4" />
             {t("insights.newArticle")}
+          </button>
+        </div>
+      )}
+
+      {/* Tag filter */}
+      {activeTag && (
+        <div className="container-editorial py-4 border-b border-border flex items-center gap-3">
+          <span className="text-sm text-muted-foreground">
+            {language === "en" ? "Filtered by:" : "Filtrerat på:"}
+          </span>
+          <span className="text-sm font-medium bg-muted px-2.5 py-1 rounded">{activeTag}</span>
+          <button
+            onClick={() => setSearchParams({})}
+            className="text-sm text-muted-foreground hover:text-foreground underline underline-offset-2"
+          >
+            {language === "en" ? "Show all" : "Visa alla"}
           </button>
         </div>
       )}

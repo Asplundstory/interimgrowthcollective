@@ -40,6 +40,9 @@ export function Footer() {
             </address>
             
             <div className="flex gap-6 text-sm text-muted-foreground mt-2">
+              <Link to={getLocalizedPath("/press")} className="hover:text-foreground transition-colors">
+                Press & Media
+              </Link>
               <Link to={getLocalizedPath("/privacy")} className="hover:text-foreground transition-colors">
                 {t("footer.privacy")}
               </Link>

@@ -20,6 +20,7 @@ const InsightPage = lazy(() => import("@/pages/InsightPage"));
 const ContactPage = lazy(() => import("@/pages/ContactPage"));
 const PrivacyPage = lazy(() => import("@/pages/PrivacyPage"));
 const TermsPage = lazy(() => import("@/pages/TermsPage"));
+const PressPage = lazy(() => import("@/pages/PressPage"));
 const NotFoundPage = lazy(() => import("@/pages/NotFoundPage"));
 const ProposalPage = lazy(() => import("@/pages/ProposalPage"));
 const AdminLogin = lazy(() => import("@/pages/admin/Login"));
@@ -54,6 +55,7 @@ const MainRoutes = () => (
     <Route path="apply" element={<ApplyPage />} />
     <Route path="privacy" element={<PrivacyPage />} />
     <Route path="terms" element={<TermsPage />} />
+    <Route path="press" element={<PressPage />} />
   </>
 );
 
