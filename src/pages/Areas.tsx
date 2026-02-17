@@ -50,6 +50,7 @@ export default function AreasPage() {
           { name: language === "en" ? "Home" : "Hem", href: getLocalizedPath("/") },
           { name: t("nav.areas"), href: getLocalizedPath("/areas") },
         ]}
+        preloadImage={areaBrandImage}
       />
       
       {/* Hero */}
