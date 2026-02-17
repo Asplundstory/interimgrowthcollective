@@ -72,6 +72,11 @@ const getWebSiteSchema = (origin: string) => ({
     "@type": "Organization",
     name: siteConfig.siteName,
   },
+  potentialAction: {
+    "@type": "SearchAction",
+    target: `${origin}/insights?q={search_term_string}`,
+    "query-input": "required name=search_term_string",
+  },
 });
 
 // Organization schema - shown on all pages
