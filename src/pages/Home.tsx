@@ -129,6 +129,17 @@ export default function HomePage() {
               {t("home.intro.text")}
             </p>
           )}
+          <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2">
+            <Link to={getLocalizedPath("/for-companies")} className="text-sm font-medium link-underline">
+              {t("nav.forCompanies")}
+            </Link>
+            <Link to={getLocalizedPath("/for-creators")} className="text-sm font-medium link-underline">
+              {t("nav.forCreators")}
+            </Link>
+            <Link to={getLocalizedPath("/about")} className="text-sm font-medium link-underline">
+              {t("nav.about")}
+            </Link>
+          </div>
         </div>
       </Section>
       
@@ -266,6 +277,17 @@ export default function HomePage() {
           label={t("home.faq.label")}
         />
         <FAQ items={faqData} />
+        <div className="mt-10 flex flex-wrap gap-x-6 gap-y-2">
+          <Link to={getLocalizedPath("/for-companies")} className="text-sm font-medium link-underline">
+            {language === "en" ? "Learn how we help companies" : "Läs mer om hur vi hjälper företag"}
+          </Link>
+          <Link to={getLocalizedPath("/for-creators")} className="text-sm font-medium link-underline">
+            {language === "en" ? "Apply as a creator" : "Ansök som kreatör"}
+          </Link>
+          <Link to={getLocalizedPath("/contact")} className="text-sm font-medium link-underline">
+            {language === "en" ? "Get in touch" : "Kontakta oss"}
+          </Link>
+        </div>
       </Section>
       
       {/* CTA */}
