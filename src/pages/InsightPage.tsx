@@ -95,6 +95,7 @@ export default function InsightPage() {
           { name: "Insights", href: "/insights" },
           { name: post.title, href: `/insights/${post.slug}` },
         ]}
+        preloadImage={post.image_url || undefined}
       />
       {/* Back link */}
       <div className="container-editorial pt-8 flex items-center justify-between">

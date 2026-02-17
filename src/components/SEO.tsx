@@ -60,6 +60,20 @@ interface SEOProps {
   preloadImage?: string; // Hero image to preload for LCP optimization
 }
 
+// WebSite schema for sitelinks search
+const getWebSiteSchema = (origin: string) => ({
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: siteConfig.siteName,
+  url: origin,
+  description: siteConfig.description,
+  inLanguage: ["sv", "en"],
+  publisher: {
+    "@type": "Organization",
+    name: siteConfig.siteName,
+  },
+});
+
 // Organization schema - shown on all pages
 const getOrganizationSchema = (origin: string) => ({
   "@context": "https://schema.org",
@@ -406,6 +420,11 @@ export function SEO({
       {article?.tags?.map((tag) => (
         <meta key={tag} property="article:tag" content={tag} />
       ))}
+
+      {/* JSON-LD: WebSite (always) */}
+      <script type="application/ld+json">
+        {JSON.stringify(getWebSiteSchema(origin))}
+      </script>
 
       {/* JSON-LD: Organization (always) */}
       <script type="application/ld+json">
