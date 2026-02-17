@@ -23,3 +23,6 @@ verify_jwt = false
 
 [functions.seoproxy]
 verify_jwt = false
+
+[functions.aeo-audit]
+verify_jwt = false
