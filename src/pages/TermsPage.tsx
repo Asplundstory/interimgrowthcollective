@@ -8,6 +8,11 @@ export default function TermsPage() {
       <SEO 
         title="Användarvillkor"
         description="Läs användarvillkoren för Interim Growth Collective webbplats och tjänster."
+        breadcrumbs={[
+          { name: "Hem", href: "/" },
+          { name: "Användarvillkor", href: "/terms" },
+        ]}
+        noIndex
       />
       
       <Hero
@@ -25,7 +30,7 @@ export default function TermsPage() {
             <h2 className="text-xl font-semibold text-foreground">1. Allmänt</h2>
             <p className="text-muted-foreground leading-relaxed">
               Dessa användarvillkor ("Villkor") gäller för din användning av webbplatsen 
-              interimgrowth.se ("Webbplatsen") som drivs av Interim Growth Collective ("vi", "oss", "vår").
+              interimgrowthcollective.se ("Webbplatsen") som drivs av Interim Growth Collective ("vi", "oss", "vår").
             </p>
             <p className="text-muted-foreground leading-relaxed">
               Genom att använda Webbplatsen accepterar du dessa Villkor. Om du inte accepterar 
@@ -164,8 +169,8 @@ export default function TermsPage() {
             <p className="text-muted-foreground leading-relaxed mt-2">
               <strong>Interim Growth Collective</strong><br />
               E-post:{" "}
-              <a href="mailto:hello@interimgrowth.se" className="text-primary hover:underline">
-                hello@interimgrowth.se
+              <a href="mailto:hej@interimgrowthcollective.se" className="text-primary hover:underline">
+                hej@interimgrowthcollective.se
               </a>
             </p>
           </div>

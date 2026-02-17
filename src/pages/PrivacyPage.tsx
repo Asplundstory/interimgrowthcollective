@@ -7,6 +7,11 @@ export default function PrivacyPage() {
       <SEO 
         title="Integritetspolicy"
         description="Läs om hur Interim Growth Collective hanterar dina personuppgifter och skyddar din integritet enligt GDPR."
+        breadcrumbs={[
+          { name: "Hem", href: "/" },
+          { name: "Integritetspolicy", href: "/privacy" },
+        ]}
+        noIndex
       />
       
       <Hero
