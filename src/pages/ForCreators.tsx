@@ -84,7 +84,7 @@ export default function ForCreatorsPage() {
     <>
       <SEO 
         title={t("nav.forCreators")}
-        description={t("creators.intro.text")}
+        description={language === "en" ? "Join a network of experienced interim professionals in brand, marketing, communication and creative disciplines. Curated, mature, quality-driven." : "Bli en del av ett nätverk för erfarna interimkonsulter inom brand, marketing, kommunikation och kreativa discipliner. Utvalda, mogna, kvalitetsdrivna."}
         faq={faqItems}
         howTo={howToJoinNetwork}
         breadcrumbs={[

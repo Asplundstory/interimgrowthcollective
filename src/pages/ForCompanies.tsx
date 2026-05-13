@@ -104,7 +104,7 @@ export default function ForCompaniesPage() {
     <>
       <SEO 
         title={t("nav.forCompanies")}
-        description={t("companies.intro.text")}
+        description={language === "en" ? "Hire experienced interim consultants in brand, marketing and communication. Operational delivery from day one — no PowerPoints, just results." : "Hyr erfarna interimkonsulter inom brand, marketing och kommunikation. Operativ leverans från dag ett — inga PowerPoints, bara resultat."}
         faq={faqItems}
         howTo={howToHireInterim}
         breadcrumbs={[

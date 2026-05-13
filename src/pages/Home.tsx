@@ -77,7 +77,7 @@ export default function HomePage() {
   return (
     <>
       <SEO 
-        title={language === "en" ? "Interim Consultants in Brand, Marketing & Communication" : "Interimkonsulter inom Brand, Marketing & Kommunikation"}
+        title={language === "en" ? "Interim Brand & Marketing" : "Interim Brand & Marketing"}
         description={language === "en" 
           ? "Find experienced interim consultants in brand strategy, marketing, communication and creative disciplines. People with feeling, on site."
           : "Hitta erfarna interimkonsulter inom varumärkesstrategi, marknadsföring, kommunikation och kreativa discipliner. Människor med känsla, på plats."}

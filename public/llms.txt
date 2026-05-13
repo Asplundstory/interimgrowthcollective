@@ -47,12 +47,17 @@ Kreativa specialister inom art direction, grafisk design, inredningsdesign, arki
 
 Interim Growth Collective är en del av The Asplund Story AB (org.nr 559106-4216).
 
-## Sidor
+## Pages
 
-- Hem: https://interimgrowthcollective.se/
-- För företag: https://interimgrowthcollective.se/for-companies
-- För kreatörer: https://interimgrowthcollective.se/for-creators
-- Kompetensområden: https://interimgrowthcollective.se/areas
-- Om oss: https://interimgrowthcollective.se/about
-- Insikter (blogg): https://interimgrowthcollective.se/insights
-- Kontakt: https://interimgrowthcollective.se/contact
+- [Hem](https://interimgrowthcollective.se/): Översikt över Interim Growth Collective.
+- [För företag](https://interimgrowthcollective.se/for-companies): Hur vi hjälper organisationer att hitta interimkonsulter.
+- [För kreatörer](https://interimgrowthcollective.se/for-creators): Bli en del av nätverket av interimkonsulter.
+- [Kompetensområden](https://interimgrowthcollective.se/areas): Brand, marketing, kommunikation och kreativa discipliner.
+- [Om oss](https://interimgrowthcollective.se/about): Vår story, värderingar och team.
+- [Insikter](https://interimgrowthcollective.se/insights): Artiklar om interim, brand och marketing.
+- [Kontakt](https://interimgrowthcollective.se/contact): Hör av dig till oss.
+- [Ansök](https://interimgrowthcollective.se/apply): Ansök till nätverket av kreatörer.
+- [Press](https://interimgrowthcollective.se/press): Presskit och pressmaterial.
+- [Integritetspolicy](https://interimgrowthcollective.se/privacy): GDPR och dataskydd.
+- [Villkor](https://interimgrowthcollective.se/terms): Användarvillkor.
+
