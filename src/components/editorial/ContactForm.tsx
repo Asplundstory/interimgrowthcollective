@@ -56,18 +56,18 @@ export function ContactForm({
       return;
     }
     
-    const { data: insertedRows, error: dbError } = await supabase
+    const submissionId = crypto.randomUUID();
+    const { error: dbError } = await supabase
       .from('contact_submissions')
       .insert({
+        id: submissionId,
         name: result.data.name,
         email: result.data.email,
         company: result.data.company,
         message: result.data.message,
-      })
-      .select('id')
-      .single();
+      });
     
-    if (dbError || !insertedRows) {
+    if (dbError) {
       console.error("Database error:", dbError);
       toast({
         title: t("form.errorTitle"),
@@ -82,7 +82,7 @@ export function ContactForm({
     const { error: emailError } = await supabase.functions.invoke('send-notification-email', {
       body: {
         type: 'contact',
-        submissionId: insertedRows.id,
+        submissionId,
         name: result.data.name,
         email: result.data.email,
         company: result.data.company,

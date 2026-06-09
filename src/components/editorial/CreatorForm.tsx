@@ -68,9 +68,11 @@ export function CreatorForm({
       return;
     }
     
-    const { data: insertedRow, error: dbError } = await supabase
+    const applicationId = crypto.randomUUID();
+    const { error: dbError } = await supabase
       .from('creator_applications')
       .insert({
+        id: applicationId,
         name: result.data.name,
         email: result.data.email,
         role: result.data.role,
@@ -79,11 +81,9 @@ export function CreatorForm({
         q2_structure: result.data.q2_structure,
         q3_pressure: result.data.q3_pressure,
         code_of_conduct_accepted: result.data.code_of_conduct_accepted,
-      })
-      .select('id')
-      .single();
+      });
     
-    if (dbError || !insertedRow) {
+    if (dbError) {
       console.error("Database error:", dbError);
       toast({
         title: t("form.errorTitle"),
@@ -98,7 +98,7 @@ export function CreatorForm({
     const { error: emailError } = await supabase.functions.invoke('send-notification-email', {
       body: {
         type: 'creator',
-        applicationId: insertedRow.id,
+        applicationId,
         name: result.data.name,
         email: result.data.email,
         role: result.data.role,
