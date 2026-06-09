@@ -215,7 +215,7 @@ export function useCreateContact() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async (contact: Omit<Partial<Contact>, 'id' | 'created_at' | 'updated_at'> & { first_name: string; last_name: string }) => {
+    mutationFn: async (contact: Omit<Partial<Contact>, 'id' | 'created_at' | 'updated_at' | 'company'> & { first_name: string; last_name: string }) => {
       const { data, error } = await supabase
         .from("contacts")
         .insert(contact)
