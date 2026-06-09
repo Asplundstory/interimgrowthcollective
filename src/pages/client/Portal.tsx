@@ -23,13 +23,14 @@ import {
 import { SEO } from "@/components/SEO";
 import { generateSignedDocumentPdf } from "@/lib/generatePdf";
 export default function ClientPortal() {
-  const { user, isLoading, isAuthenticated, logout } = useClientAuth();
+  const { session, user, isLoading, isAuthenticated, logout } = useClientAuth();
   const navigate = useNavigate();
 
-  const { data: proposals, isLoading: proposalsLoading } = useClientProposals(user?.company_id);
-  const { data: documents, isLoading: documentsLoading } = useClientDocuments(user?.company_id);
-  const { data: invoices, isLoading: invoicesLoading } = useClientInvoices(user?.company_id);
-  const { data: signedDocs, isLoading: signedDocsLoading } = useClientSignedDocuments(user?.company_id);
+  const token = session?.token;
+  const { data: proposals, isLoading: proposalsLoading } = useClientProposals(token);
+  const { data: documents, isLoading: documentsLoading } = useClientDocuments(token);
+  const { data: invoices, isLoading: invoicesLoading } = useClientInvoices(token);
+  const { data: signedDocs, isLoading: signedDocsLoading } = useClientSignedDocuments(token);
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {

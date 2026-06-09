@@ -16,13 +16,17 @@ verify_jwt = true
 verify_jwt = false
 
 [functions.send-candidate-invitation]
-verify_jwt = false
+verify_jwt = true
 
 [functions.seo-proxy]
-verify_jwt = false
+verify_jwt = true
 
 [functions.seoproxy]
-verify_jwt = false
+verify_jwt = true
 
 [functions.aeo-audit]
+verify_jwt = true
+
+[functions.client-portal]
 verify_jwt = false
+
