@@ -202,6 +202,7 @@ export type Database = {
           expires_at: string
           id: string
           otp_code: string
+          session_token: string | null
           verified: boolean
         }
         Insert: {
@@ -210,6 +211,7 @@ export type Database = {
           expires_at: string
           id?: string
           otp_code: string
+          session_token?: string | null
           verified?: boolean
         }
         Update: {
@@ -218,6 +220,7 @@ export type Database = {
           expires_at?: string
           id?: string
           otp_code?: string
+          session_token?: string | null
           verified?: boolean
         }
         Relationships: [
@@ -1088,6 +1091,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      record_proposal_view: { Args: { _slug: string }; Returns: undefined }
     }
     Enums: {
       activity_type: "call" | "email" | "meeting" | "note"
