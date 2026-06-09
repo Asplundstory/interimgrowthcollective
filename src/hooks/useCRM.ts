@@ -239,7 +239,7 @@ export function useUpdateContact() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async ({ id, ...updates }: Partial<Contact> & { id: string }) => {
+    mutationFn: async ({ id, company: _c, ...updates }: Partial<Contact> & { id: string }) => {
       const { data, error } = await supabase
         .from("contacts")
         .update(updates)
