@@ -1,3 +1,5 @@
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -5,6 +7,30 @@ const corsHeaders = {
 };
 
 const AEO_API_BASE = "https://bchbtntgqvxqqrkhhbzd.supabase.co/functions/v1";
+
+async function requireAdmin(req: Request): Promise<{ ok: true } | { ok: false; resp: Response }> {
+  const jsonHeaders = { ...corsHeaders, "Content-Type": "application/json" };
+  const authHeader = req.headers.get("Authorization");
+  if (!authHeader?.startsWith("Bearer ")) {
+    return { ok: false, resp: new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: jsonHeaders }) };
+  }
+  const supabase = createClient(
+    Deno.env.get("SUPABASE_URL")!,
+    Deno.env.get("SUPABASE_ANON_KEY")!,
+    { global: { headers: { Authorization: authHeader } } },
+  );
+  const token = authHeader.replace("Bearer ", "");
+  const { data: claims, error } = await supabase.auth.getClaims(token);
+  if (error || !claims?.claims?.sub) {
+    return { ok: false, resp: new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: jsonHeaders }) };
+  }
+  const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+  const { data: isAdmin } = await admin.rpc("has_role", { _user_id: claims.claims.sub, _role: "admin" });
+  if (!isAdmin) {
+    return { ok: false, resp: new Response(JSON.stringify({ error: "Forbidden" }), { status: 403, headers: jsonHeaders }) };
+  }
+  return { ok: true };
+}
 
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
@@ -21,8 +47,10 @@ Deno.serve(async (req: Request) => {
     );
   }
 
+  const auth = await requireAdmin(req);
+  if (!auth.ok) return auth.resp;
+
   try {
-    // Determine action from request body
     const body = await req.json().catch(() => ({}));
     const action = body.action || "health";
 
@@ -38,12 +66,9 @@ Deno.serve(async (req: Request) => {
 
     if (action === "result") {
       if (!body.auditId) {
-        return new Response(
-          JSON.stringify({ success: false, error: "auditId required" }),
-          { status: 400, headers: jsonHeaders },
-        );
+        return new Response(JSON.stringify({ success: false, error: "auditId required" }), { status: 400, headers: jsonHeaders });
       }
-      const response = await fetch(`${AEO_API_BASE}/api-audit-result?auditId=${body.auditId}`, {
+      const response = await fetch(`${AEO_API_BASE}/api-audit-result?auditId=${encodeURIComponent(body.auditId)}`, {
         headers: { "X-API-Key": apiKey },
       });
       const data = await response.json();
@@ -58,10 +83,7 @@ Deno.serve(async (req: Request) => {
       return new Response(JSON.stringify(data), { headers: jsonHeaders });
     }
 
-    return new Response(
-      JSON.stringify({ success: false, error: "Invalid action. Use: start, result, health" }),
-      { status: 400, headers: jsonHeaders },
-    );
+    return new Response(JSON.stringify({ success: false, error: "Invalid action" }), { status: 400, headers: jsonHeaders });
   } catch (error) {
     return new Response(
       JSON.stringify({ success: false, error: error instanceof Error ? error.message : "Unknown error" }),
