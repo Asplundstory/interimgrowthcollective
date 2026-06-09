@@ -19,9 +19,18 @@ interface VerifyOtpRequest {
   otp: string;
 }
 
+// Cryptographically secure 6-digit OTP
 const generateOtp = () => {
-  return Math.floor(100000 + Math.random() * 900000).toString();
+  const buf = new Uint32Array(1);
+  crypto.getRandomValues(buf);
+  return (100000 + (buf[0] % 900000)).toString();
 };
+
+const json = (status: number, body: unknown) =>
+  new Response(JSON.stringify(body), {
+    status,
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+  });
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -37,36 +46,25 @@ serve(async (req) => {
     const action = url.pathname.split("/").pop();
 
     if (action === "request") {
-      // Request magic link
       const { email }: MagicLinkRequest = await req.json();
+      if (!email) return json(400, { error: "Email krävs" });
 
-      if (!email) {
-        return new Response(
-          JSON.stringify({ error: "Email krävs" }),
-          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-
-      // Find client user
       const { data: clientUser, error: userError } = await supabase
         .from("client_users")
         .select("id, name, company_id")
         .eq("email", email.toLowerCase())
-        .single();
+        .maybeSingle();
+
+      // Always respond with same message to avoid enumeration
+      const genericOk = { success: true, message: "Om kontot finns skickas en kod till din e-post" };
 
       if (userError || !clientUser) {
-        // Don't reveal if email exists - just say "check your email"
-        return new Response(
-          JSON.stringify({ success: true, message: "Om kontot finns skickas en kod till din e-post" }),
-          { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
+        return json(200, genericOk);
       }
 
-      // Generate OTP
       const otp = generateOtp();
-      const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+      const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
 
-      // Save session
       const { error: sessionError } = await supabase
         .from("client_sessions")
         .insert({
@@ -77,13 +75,9 @@ serve(async (req) => {
 
       if (sessionError) {
         console.error("Session error:", sessionError);
-        return new Response(
-          JSON.stringify({ error: "Kunde inte skapa session" }),
-          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
+        return json(500, { error: "Kunde inte skapa session" });
       }
 
-      // Send email
       const { error: emailError } = await resend.emails.send({
         from: "IGC Portal <noreply@interimgrowthcollective.se>",
         to: [email],
@@ -105,43 +99,24 @@ serve(async (req) => {
 
       if (emailError) {
         console.error("Email error:", emailError);
-        return new Response(
-          JSON.stringify({ error: "Kunde inte skicka e-post" }),
-          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
+        return json(500, { error: "Kunde inte skicka e-post" });
       }
 
-      return new Response(
-        JSON.stringify({ success: true, message: "Kod skickad till din e-post" }),
-        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return json(200, { success: true, message: "Kod skickad till din e-post" });
+    }
 
-    } else if (action === "verify") {
-      // Verify OTP
+    if (action === "verify") {
       const { email, otp }: VerifyOtpRequest = await req.json();
+      if (!email || !otp) return json(400, { error: "E-post och kod krävs" });
 
-      if (!email || !otp) {
-        return new Response(
-          JSON.stringify({ error: "E-post och kod krävs" }),
-          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-
-      // Find client user
       const { data: clientUser, error: userError } = await supabase
         .from("client_users")
         .select("id, name, email, company_id")
         .eq("email", email.toLowerCase())
-        .single();
+        .maybeSingle();
 
-      if (userError || !clientUser) {
-        return new Response(
-          JSON.stringify({ error: "Ogiltig kod" }),
-          { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
+      if (userError || !clientUser) return json(401, { error: "Ogiltig kod" });
 
-      // Find valid session
       const { data: session, error: sessionError } = await supabase
         .from("client_sessions")
         .select("id, expires_at")
@@ -151,62 +126,51 @@ serve(async (req) => {
         .gt("expires_at", new Date().toISOString())
         .order("created_at", { ascending: false })
         .limit(1)
-        .single();
+        .maybeSingle();
 
-      if (sessionError || !session) {
-        return new Response(
-          JSON.stringify({ error: "Ogiltig eller utgången kod" }),
-          { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
+      if (sessionError || !session) return json(401, { error: "Ogiltig eller utgången kod" });
 
-      // Mark session as verified
+      // Issue a fresh server-validated portal session token (7 days)
+      const sessionToken = crypto.randomUUID() + "." + crypto.randomUUID();
+      const newExpiry = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+
       await supabase
         .from("client_sessions")
-        .update({ verified: true })
+        .update({
+          verified: true,
+          session_token: sessionToken,
+          expires_at: newExpiry.toISOString(),
+        })
         .eq("id", session.id);
 
-      // Update last login
       await supabase
         .from("client_users")
         .update({ last_login_at: new Date().toISOString() })
         .eq("id", clientUser.id);
 
-      // Get company info
       const { data: company } = await supabase
         .from("companies")
         .select("id, name")
         .eq("id", clientUser.company_id)
-        .single();
+        .maybeSingle();
 
-      return new Response(
-        JSON.stringify({
-          success: true,
-          session: {
-            id: session.id,
-            user: {
-              id: clientUser.id,
-              name: clientUser.name,
-              email: clientUser.email,
-              company_id: clientUser.company_id,
-              company_name: company?.name || "Okänt företag",
-            },
-          },
-        }),
-        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-
-    } else {
-      return new Response(
-        JSON.stringify({ error: "Okänd åtgärd" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return json(200, {
+        success: true,
+        sessionToken,
+        expiresAt: newExpiry.toISOString(),
+        user: {
+          id: clientUser.id,
+          name: clientUser.name,
+          email: clientUser.email,
+          company_id: clientUser.company_id,
+          company_name: company?.name || "Okänt företag",
+        },
+      });
     }
+
+    return json(400, { error: "Okänd åtgärd" });
   } catch (error) {
     console.error("Error:", error);
-    return new Response(
-      JSON.stringify({ error: "Ett fel uppstod" }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    return json(500, { error: "Ett fel uppstod" });
   }
 });

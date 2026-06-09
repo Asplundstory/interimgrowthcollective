@@ -15,7 +15,20 @@ interface SignedNotificationRequest {
   documentId: string;
   signerName: string;
   signedAt: string;
+  signingToken?: string; // proof the caller actually signed
 }
+
+const json = (status: number, body: unknown) =>
+  new Response(JSON.stringify(body), {
+    status,
+    headers: { "Content-Type": "application/json", ...corsHeaders },
+  });
+
+const esc = (s: unknown) => String(s ?? "")
+  .replace(/&/g, "&amp;")
+  .replace(/</g, "&lt;")
+  .replace(/>/g, "&gt;")
+  .replace(/"/g, "&quot;");
 
 const handler = async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
@@ -24,28 +37,36 @@ const handler = async (req: Request): Promise<Response> => {
 
   try {
     const supabase = createClient(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!);
-    const { documentId, signerName, signedAt }: SignedNotificationRequest = await req.json();
+    const { documentId, signerName, signedAt, signingToken }: SignedNotificationRequest =
+      await req.json();
 
-    console.log("Sending signed notification for document:", documentId);
+    if (!documentId || !signerName || !signedAt) {
+      return json(400, { error: "Missing required fields" });
+    }
 
     // Fetch document details
     const { data: document, error: fetchError } = await supabase
       .from("generated_documents")
-      .select("title, sender_email, signer_email")
+      .select("title, sender_email, signer_email, signing_token, status")
       .eq("id", documentId)
-      .single();
+      .maybeSingle();
 
     if (fetchError || !document) {
-      console.error("Error fetching document:", fetchError);
-      throw new Error("Kunde inte hämta dokument");
+      return json(404, { error: "Document not found" });
+    }
+
+    // Authorize the caller: must present the document's signing_token,
+    // OR the document must already be in 'signed' state (called immediately after signing).
+    const signingTokenMatches =
+      !!signingToken && !!document.signing_token && signingToken === document.signing_token;
+    const isAlreadySigned = document.status === "signed";
+
+    if (!signingTokenMatches && !isAlreadySigned) {
+      return json(401, { error: "Unauthorized" });
     }
 
     if (!document.sender_email) {
-      console.log("No sender email configured, skipping notification");
-      return new Response(
-        JSON.stringify({ success: true, skipped: true, reason: "No sender email" }),
-        { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
-      );
+      return json(200, { success: true, skipped: true, reason: "No sender email" });
     }
 
     const formattedDate = new Date(signedAt).toLocaleString("sv-SE", {
@@ -56,7 +77,6 @@ const handler = async (req: Request): Promise<Response> => {
       minute: "2-digit",
     });
 
-    // Send email via Resend
     const emailResponse = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -66,73 +86,37 @@ const handler = async (req: Request): Promise<Response> => {
       body: JSON.stringify({
         from: "Interim Growth Collective <onboarding@resend.dev>",
         to: [document.sender_email],
-        subject: `✅ Dokument signerat: ${document.title}`,
+        subject: `Dokument signerat: ${esc(document.title)}`,
         html: `
           <div style="font-family: Georgia, serif; max-width: 600px; margin: 0 auto;">
             <h1 style="color: #1a1a1a; font-size: 24px;">Dokumentet har signerats</h1>
-            
             <div style="background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; padding: 20px; margin: 24px 0;">
-              <p style="color: #166534; font-size: 16px; margin: 0 0 8px 0; font-weight: 600;">
-                ✅ Signering bekräftad
-              </p>
-              <p style="color: #15803d; font-size: 14px; margin: 0;">
-                ${signerName} har signerat dokumentet.
-              </p>
+              <p style="color: #166534; font-size: 16px; margin: 0 0 8px 0; font-weight: 600;">Signering bekräftad</p>
+              <p style="color: #15803d; font-size: 14px; margin: 0;">${esc(signerName)} har signerat dokumentet.</p>
             </div>
-            
             <table style="width: 100%; border-collapse: collapse; margin: 24px 0;">
-              <tr>
-                <td style="padding: 12px 0; border-bottom: 1px solid #eee; color: #666; font-size: 14px;">Dokument</td>
-                <td style="padding: 12px 0; border-bottom: 1px solid #eee; color: #1a1a1a; font-size: 14px; font-weight: 500;">${document.title}</td>
-              </tr>
-              <tr>
-                <td style="padding: 12px 0; border-bottom: 1px solid #eee; color: #666; font-size: 14px;">Signerat av</td>
-                <td style="padding: 12px 0; border-bottom: 1px solid #eee; color: #1a1a1a; font-size: 14px;">${signerName}</td>
-              </tr>
-              <tr>
-                <td style="padding: 12px 0; border-bottom: 1px solid #eee; color: #666; font-size: 14px;">E-post</td>
-                <td style="padding: 12px 0; border-bottom: 1px solid #eee; color: #1a1a1a; font-size: 14px;">${document.signer_email}</td>
-              </tr>
-              <tr>
-                <td style="padding: 12px 0; color: #666; font-size: 14px;">Tidpunkt</td>
-                <td style="padding: 12px 0; color: #1a1a1a; font-size: 14px;">${formattedDate}</td>
-              </tr>
+              <tr><td style="padding: 12px 0; border-bottom: 1px solid #eee; color: #666; font-size: 14px;">Dokument</td><td style="padding: 12px 0; border-bottom: 1px solid #eee; color: #1a1a1a; font-size: 14px; font-weight: 500;">${esc(document.title)}</td></tr>
+              <tr><td style="padding: 12px 0; border-bottom: 1px solid #eee; color: #666; font-size: 14px;">Signerat av</td><td style="padding: 12px 0; border-bottom: 1px solid #eee; color: #1a1a1a; font-size: 14px;">${esc(signerName)}</td></tr>
+              <tr><td style="padding: 12px 0; border-bottom: 1px solid #eee; color: #666; font-size: 14px;">E-post</td><td style="padding: 12px 0; border-bottom: 1px solid #eee; color: #1a1a1a; font-size: 14px;">${esc(document.signer_email)}</td></tr>
+              <tr><td style="padding: 12px 0; color: #666; font-size: 14px;">Tidpunkt</td><td style="padding: 12px 0; color: #1a1a1a; font-size: 14px;">${esc(formattedDate)}</td></tr>
             </table>
-            
-            <p style="color: #666; font-size: 14px; line-height: 1.6;">
-              Du kan se det signerade dokumentet i admin-panelen under Dokument.
-            </p>
-            
             <hr style="border: none; border-top: 1px solid #eee; margin: 32px 0;" />
-            
-            <p style="color: #999; font-size: 12px;">
-              Interim Growth Collective<br />
-              Detta mail skickades automatiskt.
-            </p>
+            <p style="color: #999; font-size: 12px;">Interim Growth Collective</p>
           </div>
         `,
       }),
     });
 
     const emailData = await emailResponse.json();
-
     if (!emailResponse.ok) {
       console.error("Resend API error:", emailData);
       throw new Error(emailData.message || "Kunde inte skicka e-post");
     }
 
-    console.log("Signed notification email sent successfully:", emailData);
-
-    return new Response(
-      JSON.stringify({ success: true }),
-      { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
-    );
+    return json(200, { success: true });
   } catch (error: any) {
     console.error("Error in notify-document-signed function:", error);
-    return new Response(
-      JSON.stringify({ error: error.message }),
-      { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
-    );
+    return json(500, { error: error.message });
   }
 };
 
