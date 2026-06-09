@@ -215,7 +215,7 @@ export function useCreateContact() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async (contact: Omit<Partial<Contact>, 'id' | 'created_at' | 'updated_at'> & { first_name: string; last_name: string }) => {
+    mutationFn: async (contact: Omit<Partial<Contact>, 'id' | 'created_at' | 'updated_at' | 'company'> & { first_name: string; last_name: string }) => {
       const { data, error } = await supabase
         .from("contacts")
         .insert(contact)
@@ -239,7 +239,7 @@ export function useUpdateContact() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async ({ id, ...updates }: Partial<Contact> & { id: string }) => {
+    mutationFn: async ({ id, company: _c, ...updates }: Partial<Contact> & { id: string }) => {
       const { data, error } = await supabase
         .from("contacts")
         .update(updates)
@@ -326,7 +326,7 @@ export function useCreateDeal() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async (deal: Omit<Partial<Deal>, 'id' | 'created_at' | 'updated_at'> & { title: string }) => {
+    mutationFn: async (deal: Omit<Partial<Deal>, 'id' | 'created_at' | 'updated_at' | 'company' | 'contact'> & { title: string }) => {
       const { data, error } = await supabase
         .from("deals")
         .insert(deal)
@@ -350,7 +350,7 @@ export function useUpdateDeal() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async ({ id, ...updates }: Partial<Deal> & { id: string }) => {
+    mutationFn: async ({ id, company: _c, contact: _ct, ...updates }: Partial<Deal> & { id: string }) => {
       const { data, error } = await supabase
         .from("deals")
         .update(updates)
