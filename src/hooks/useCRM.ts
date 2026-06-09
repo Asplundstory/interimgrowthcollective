@@ -326,7 +326,7 @@ export function useCreateDeal() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async (deal: Omit<Partial<Deal>, 'id' | 'created_at' | 'updated_at'> & { title: string }) => {
+    mutationFn: async (deal: Omit<Partial<Deal>, 'id' | 'created_at' | 'updated_at' | 'company' | 'contact'> & { title: string }) => {
       const { data, error } = await supabase
         .from("deals")
         .insert(deal)
