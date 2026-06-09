@@ -132,6 +132,7 @@ export default function SignDocument() {
           documentId: document.id,
           signerName: signatureName,
           signedAt,
+          signingToken: token,
         },
       }).catch((err) => {
         console.warn("Failed to send signed notification:", err);
