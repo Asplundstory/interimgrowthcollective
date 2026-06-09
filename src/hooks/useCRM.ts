@@ -350,7 +350,7 @@ export function useUpdateDeal() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async ({ id, ...updates }: Partial<Deal> & { id: string }) => {
+    mutationFn: async ({ id, company: _c, contact: _ct, ...updates }: Partial<Deal> & { id: string }) => {
       const { data, error } = await supabase
         .from("deals")
         .update(updates)
