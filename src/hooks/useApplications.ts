@@ -55,8 +55,12 @@ export function useApplications() {
   }, []);
 
   const updateStatus = async (id: string, status: ApplicationStatus) => {
-    const updateData: Record<string, unknown> = { status };
-    
+    const updateData: {
+      status: ApplicationStatus;
+      reviewed_by?: string;
+      reviewed_at?: string;
+    } = { status };
+
     if (status === "reviewing") {
       const { data: { user } } = await supabase.auth.getUser();
       updateData.reviewed_by = user?.id;
