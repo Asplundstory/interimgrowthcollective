@@ -12,7 +12,8 @@ export interface ClientUser {
 }
 
 export interface ClientSession {
-  id: string;
+  token: string;
+  expiresAt: string;
   user: ClientUser;
 }
 
@@ -51,18 +52,37 @@ interface Invoice {
 
 const CLIENT_SESSION_KEY = "igc_client_session";
 
+async function portalCall<T = unknown>(
+  token: string,
+  action: string,
+): Promise<{ data?: T; error?: string }> {
+  try {
+    const { data, error } = await supabase.functions.invoke("client-portal", {
+      body: { action },
+      headers: { "x-portal-token": token },
+    });
+    if (error) return { error: error.message };
+    return { data: data?.data as T };
+  } catch (e: any) {
+    return { error: e?.message || "Network error" };
+  }
+}
+
 export function useClientAuth() {
   const [session, setSession] = useState<ClientSession | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check for existing session
     const stored = localStorage.getItem(CLIENT_SESSION_KEY);
     if (stored) {
       try {
-        const parsed = JSON.parse(stored);
-        setSession(parsed);
-      } catch (e) {
+        const parsed = JSON.parse(stored) as ClientSession;
+        if (parsed.expiresAt && new Date(parsed.expiresAt) > new Date()) {
+          setSession(parsed);
+        } else {
+          localStorage.removeItem(CLIENT_SESSION_KEY);
+        }
+      } catch {
         localStorage.removeItem(CLIENT_SESSION_KEY);
       }
     }
@@ -74,11 +94,9 @@ export function useClientAuth() {
       const { data, error } = await supabase.functions.invoke("send-magic-link/request", {
         body: { email },
       });
-
       if (error) throw error;
       return { success: true, message: data.message };
     } catch (error: any) {
-      console.error("Magic link error:", error);
       return { success: false, message: error.message || "Ett fel uppstod" };
     }
   }, []);
@@ -88,27 +106,36 @@ export function useClientAuth() {
       const { data, error } = await supabase.functions.invoke("send-magic-link/verify", {
         body: { email, otp },
       });
-
       if (error) throw error;
 
-      if (data.success && data.session) {
-        setSession(data.session);
-        localStorage.setItem(CLIENT_SESSION_KEY, JSON.stringify(data.session));
+      if (data?.success && data.sessionToken && data.user) {
+        const newSession: ClientSession = {
+          token: data.sessionToken,
+          expiresAt: data.expiresAt,
+          user: data.user,
+        };
+        setSession(newSession);
+        localStorage.setItem(CLIENT_SESSION_KEY, JSON.stringify(newSession));
         return { success: true };
       }
 
-      return { success: false, message: data.error || "Verifiering misslyckades" };
+      return { success: false, message: data?.error || "Verifiering misslyckades" };
     } catch (error: any) {
-      console.error("Verify error:", error);
       return { success: false, message: error.message || "Ogiltig eller utgången kod" };
     }
   }, []);
 
-  const logout = useCallback(() => {
+  const logout = useCallback(async () => {
+    if (session?.token) {
+      await supabase.functions.invoke("client-portal", {
+        body: { action: "logout" },
+        headers: { "x-portal-token": session.token },
+      }).catch(() => null);
+    }
     setSession(null);
     localStorage.removeItem(CLIENT_SESSION_KEY);
     toast.success("Du har loggat ut");
-  }, []);
+  }, [session]);
 
   return {
     session,
@@ -121,98 +148,55 @@ export function useClientAuth() {
   };
 }
 
-export function useClientProposals(companyId: string | undefined) {
+export function useClientProposals(token: string | undefined) {
   return useQuery({
-    queryKey: ["client-proposals", companyId],
+    queryKey: ["client-proposals", token],
     queryFn: async () => {
-      if (!companyId) return [];
-
-      // Get deals linked to this company that have proposals
-      const { data: deals, error } = await supabase
-        .from("deals")
-        .select(`
-          id,
-          title,
-          status,
-          value,
-          currency,
-          proposal_id,
-          proposals (
-            id,
-            project_title,
-            client_name,
-            status,
-            slug,
-            created_at,
-            updated_at
-          )
-        `)
-        .eq("company_id", companyId)
-        .not("proposal_id", "is", null)
-        .order("created_at", { ascending: false });
-
-      if (error) throw error;
-      return deals || [];
+      if (!token) return [];
+      const { data, error } = await portalCall<any[]>(token, "proposals");
+      if (error) throw new Error(error);
+      return data || [];
     },
-    enabled: !!companyId,
+    enabled: !!token,
   });
 }
 
-export function useClientDocuments(companyId: string | undefined) {
+export function useClientDocuments(token: string | undefined) {
   return useQuery({
-    queryKey: ["client-documents", companyId],
+    queryKey: ["client-documents", token],
     queryFn: async () => {
-      if (!companyId) return [];
-
-      const { data, error } = await supabase
-        .from("client_documents")
-        .select("*")
-        .eq("company_id", companyId)
-        .order("created_at", { ascending: false });
-
-      if (error) throw error;
-      return data as ClientDocument[];
+      if (!token) return [];
+      const { data, error } = await portalCall<ClientDocument[]>(token, "documents");
+      if (error) throw new Error(error);
+      return data || [];
     },
-    enabled: !!companyId,
+    enabled: !!token,
   });
 }
 
-export function useClientInvoices(companyId: string | undefined) {
+export function useClientInvoices(token: string | undefined) {
   return useQuery({
-    queryKey: ["client-invoices", companyId],
+    queryKey: ["client-invoices", token],
     queryFn: async () => {
-      if (!companyId) return [];
-
-      const { data, error } = await supabase
-        .from("invoices")
-        .select("*")
-        .eq("company_id", companyId)
-        .order("created_at", { ascending: false });
-
-      if (error) throw error;
-      return data as Invoice[];
+      if (!token) return [];
+      const { data, error } = await portalCall<Invoice[]>(token, "invoices");
+      if (error) throw new Error(error);
+      return data || [];
     },
-    enabled: !!companyId,
+    enabled: !!token,
   });
 }
 
-export function useClientSignedDocuments(companyId: string | undefined) {
+export function useClientSignedDocuments(token: string | undefined) {
   return useQuery({
-    queryKey: ["client-signed-documents", companyId],
+    queryKey: ["client-signed-documents", token],
     queryFn: async () => {
-      if (!companyId) return [];
-
-      const { data, error } = await supabase
-        .from("generated_documents")
-        .select("id, title, content, status, signed_at, signed_by, created_at")
-        .eq("company_id", companyId)
-        .eq("status", "signed")
-        .order("signed_at", { ascending: false });
-
-      if (error) throw error;
-      return data as SignedDocument[];
+      if (!token) return [];
+      const { data, error } = await portalCall<SignedDocument[]>(token, "signed_documents");
+      if (error) throw new Error(error);
+      return data || [];
     },
-    enabled: !!companyId,
+    enabled: !!token,
   });
 }
 

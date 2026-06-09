@@ -88,33 +88,13 @@ export function useProposal(slug: string) {
   });
 }
 
-export function useRecordProposalView(proposalId: string | undefined) {
+export function useRecordProposalView(slug: string | undefined) {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: async () => {
-      if (!proposalId) return;
-      
-      // Fetch current view count and increment
-      const { data: proposal, error: fetchError } = await supabase
-        .from("proposals")
-        .select("view_count")
-        .eq("id", proposalId)
-        .single();
-      
-      if (fetchError) throw fetchError;
-      
-      const newViewCount = (proposal?.view_count || 0) + 1;
-      
-      // Update view count and last viewed timestamp
-      const { error } = await supabase
-        .from("proposals")
-        .update({
-          view_count: newViewCount,
-          last_viewed_at: new Date().toISOString(),
-        })
-        .eq("id", proposalId);
-
+      if (!slug) return;
+      const { error } = await supabase.rpc("record_proposal_view", { _slug: slug });
       if (error) throw error;
     },
     onSuccess: () => {

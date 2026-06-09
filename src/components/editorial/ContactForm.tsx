@@ -56,9 +56,11 @@ export function ContactForm({
       return;
     }
     
+    const submissionId = crypto.randomUUID();
     const { error: dbError } = await supabase
       .from('contact_submissions')
       .insert({
+        id: submissionId,
         name: result.data.name,
         email: result.data.email,
         company: result.data.company,
@@ -80,6 +82,7 @@ export function ContactForm({
     const { error: emailError } = await supabase.functions.invoke('send-notification-email', {
       body: {
         type: 'contact',
+        submissionId,
         name: result.data.name,
         email: result.data.email,
         company: result.data.company,

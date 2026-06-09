@@ -9,7 +9,7 @@ const corsHeaders = {
 const SITE_URL = "https://interimgrowthcollective.se";
 const AEO_API_BASE = "https://bchbtntgqvxqqrkhhbzd.supabase.co/functions/v1";
 
-// ─── AEO Audit Proxy ───
+// ─── AEO Audit Proxy (admin only) ───
 async function handleAeoProxy(req: Request, url: URL): Promise<Response> {
   const jsonHeaders = { ...corsHeaders, "Content-Type": "application/json" };
   const apiKey = Deno.env.get("AEO_API_KEY");
@@ -18,6 +18,26 @@ async function handleAeoProxy(req: Request, url: URL): Promise<Response> {
       JSON.stringify({ success: false, error: "AEO_API_KEY not configured" }),
       { status: 500, headers: jsonHeaders },
     );
+  }
+
+  // Require an admin JWT to prevent abuse of AEO_API_KEY
+  const authHeader = req.headers.get("Authorization");
+  if (!authHeader?.startsWith("Bearer ")) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: jsonHeaders });
+  }
+  const userClient = createClient(
+    Deno.env.get("SUPABASE_URL")!,
+    Deno.env.get("SUPABASE_ANON_KEY")!,
+    { global: { headers: { Authorization: authHeader } } },
+  );
+  const { data: claims, error: claimsError } = await userClient.auth.getClaims(authHeader.replace("Bearer ", ""));
+  if (claimsError || !claims?.claims?.sub) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: jsonHeaders });
+  }
+  const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+  const { data: isAdmin } = await admin.rpc("has_role", { _user_id: claims.claims.sub, _role: "admin" });
+  if (!isAdmin) {
+    return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403, headers: jsonHeaders });
   }
 
   const aeoAction = url.searchParams.get("aeoAction") || "health";

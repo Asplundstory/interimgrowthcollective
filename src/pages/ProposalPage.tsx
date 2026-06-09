@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function ProposalPage() {
   const { slug } = useParams<{ slug: string }>();
   const { data: proposal, isLoading, error } = useProposal(slug || "");
-  const recordView = useRecordProposalView(proposal?.id);
+  const recordView = useRecordProposalView(slug);
   const hasRecordedView = useRef(false);
 
   // Record view on first load

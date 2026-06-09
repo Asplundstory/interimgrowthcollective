@@ -68,9 +68,11 @@ export function CreatorForm({
       return;
     }
     
+    const applicationId = crypto.randomUUID();
     const { error: dbError } = await supabase
       .from('creator_applications')
       .insert({
+        id: applicationId,
         name: result.data.name,
         email: result.data.email,
         role: result.data.role,
@@ -96,6 +98,7 @@ export function CreatorForm({
     const { error: emailError } = await supabase.functions.invoke('send-notification-email', {
       body: {
         type: 'creator',
+        applicationId,
         name: result.data.name,
         email: result.data.email,
         role: result.data.role,
